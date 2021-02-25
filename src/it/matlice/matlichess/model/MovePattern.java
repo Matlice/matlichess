@@ -29,17 +29,31 @@ public class MovePattern {
      * @param row the row index of the location to check
      * @param col the column index of the location to check
      * @param color the player's color
+     * @param addIfEmpty add the destination location if it's empty (false for pawns)
      * @return true if it's needed to stop the iteration, false to continue
      */
-    private boolean piece_can_take(int row, int col, Color color) {
+    private boolean piece_can_take(int row, int col, Color color, boolean addIfEmpty) {
         if (row > 7 || row < 0 || col > 7 || col < 0) return true;
         if (chessboard.getPieceAt(col, row) != null) {
             if (chessboard.getPieceAt(col, row).getColor().equals(color.opponent()))
                 locations.add(new Location(col, row));
             return true;
         }
-        locations.add(new Location(col, row));
+        if (addIfEmpty) locations.add(new Location(col, row));
         return false;
+    }
+
+    /**
+     * Utility class function used to add {@link Location}s to the private variable, according to the instruction given by the patterns
+     * When the program validates if a Chess box is reachable, it calls this method to save the locations.
+     * Returns a boolean to continue or stop the iteration.
+     * @param row the row index of the location to check
+     * @param col the column index of the location to check
+     * @param color the player's color
+     * @return true if it's needed to stop the iteration, false to continue
+     */
+    private boolean piece_can_take(int row, int col, Color color) {
+        return piece_can_take(row, col, color, true);
     }
 
     /**
@@ -48,6 +62,36 @@ public class MovePattern {
      */
     public Set<Location> get() {
         return locations;
+    }
+
+    public MovePattern addPawn() {
+        var col = pieceLocation.col();
+        var row = pieceLocation.row();
+
+        // todo add promotion
+
+        if (myColor == Color.WHITE) {
+            if (row == 7) return this; // end of chessboard, should not happen
+            else if (row == 1) // if still in original row, then it can go up two squares
+                if (chessboard.getPieceAt(col, row+1) == null && chessboard.getPieceAt(col, row+2) == null)
+                    locations.add(new Location(col, row+2));
+        } else /* if (myColor == Color.BLACK) */ {
+            if (row == 0) return this;
+            else if (row == 6)
+                if (chessboard.getPieceAt(col, row-1) == null && chessboard.getPieceAt(col, row-2) == null)
+                    locations.add(new Location(col, row-2));
+        }
+
+        var dir = (myColor == Color.WHITE) ? 1 : -1;
+
+        if (chessboard.getPieceAt(col, row+dir) == null) {
+            locations.add(new Location(col, row+dir));
+        }
+
+        if (col < 7) piece_can_take(row+dir, col+1, myColor, false);
+        if (col > 0) piece_can_take(row+dir, col-1, myColor, false);
+
+        return this;
     }
 
     /**
