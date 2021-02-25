@@ -23,6 +23,6 @@ public class EntryPoint {
 
         var a = k.getAvailableMoves(c, new Location("A1"));
 
-        System.out.println("aaa");
+        System.out.println(c);
     }
 }

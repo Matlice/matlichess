@@ -163,4 +163,21 @@ public class Chessboard {
     public Map<String, Map<Piece, Location>> getPieces() {
         return pieces;
     }
+
+    @Override
+    public String toString() {
+        var s = new StringBuilder();
+        for (int i = 7; i >= 0; i--) {
+            s.append("  +---+---+---+---+---+---+---+---+\n");
+            for (int j = 0; j < 8; j++) {
+                if(j == 0) s.append(i).append(" ");
+
+                if(this.getPieceAt(j, i) == null) s.append("|   ");
+                else s.append("| ").append(this.getPieceAt(j, i).getShortName()).append(" ");
+            }
+            s.append("|\n");
+        }
+        s.append("  +---+---+---+---+---+---+---+---+\n    A   B   C   D   E   F   G   H");
+        return s.toString();
+    }
 }
