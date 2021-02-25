@@ -22,11 +22,15 @@ public abstract class Piece {
     public boolean hasMoved() {
         return has_moved;
     }
+    public void _reset_movement(boolean v) {
+        has_moved = v;
+    }
 
     /**
      * Notifies that a piece has made its first move
+     * @param to Where the piece has been moved to
      */
-    public void hasBeenMoved() {
+    public void hasBeenMoved(Chessboard c, Location to) {
         this.has_moved = true;
     }
 

@@ -146,13 +146,21 @@ public class MovePattern {
      * @return the updated pattern
      */
     public MovePattern validate(){
+        var has_moved = chessboard.getPieceAt(pieceLocation).hasMoved();
         ArrayList<Location> locations = new ArrayList<>(this.locations);
         for (Location dest : locations) {
             Chessboard nextMoveBoard = chessboard.clone();
+            chessboard.getPieceAt(pieceLocation)._reset_movement(has_moved);
             nextMoveBoard._make_move(pieceLocation, dest);
             if (chessboard.getKing(this.myColor).isUnderCheck(nextMoveBoard, dest))
                 this.locations.remove(dest);
+            chessboard.getPieceAt(pieceLocation)._reset_movement(has_moved);
         }
+        return this;
+    }
+
+    public MovePattern addSquare(Location l){
+        this.locations.add(l);
         return this;
     }
 }

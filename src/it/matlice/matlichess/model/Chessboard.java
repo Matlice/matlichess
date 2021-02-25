@@ -41,6 +41,10 @@ public class Chessboard {
         _set_piece_at(loc, piece);
     }
 
+    public void setPiece(Piece piece, String loc) {
+        this.setPiece(piece, new Location(loc));
+    }
+
     /**
      * Puts the {@link King} on a certain box in the chessboard
      * @param k the {@link King} to put
@@ -49,6 +53,10 @@ public class Chessboard {
     public void setKing(King k, Location loc) {
         this.setPiece(k, loc);
         this.kings[k.getColor().index] = k;
+    }
+
+    public void setKing(King k, String loc) {
+        this.setKing(k, new Location(loc));
     }
 
     /**
@@ -98,7 +106,7 @@ public class Chessboard {
     public Piece _make_move(Location src, Location destination){
         Piece toCapture = getPieceAt(destination);
         removePiece(destination);
-        getPieceAt(src).hasBeenMoved();
+        getPieceAt(src).hasBeenMoved(this, destination);
         _set_piece_at(destination, getPieceAt(src));
         chessboard[src.col()][src.row()] = null;
         return toCapture;
@@ -116,6 +124,11 @@ public class Chessboard {
         if (!getPieceAt(src).isMoveAllowed(this, destination, src)) throw new InvalidMoveException();
         return _make_move(src, destination);
     }
+
+    public Piece move(String src, String destination) {
+        return move(new Location(src), new Location(destination));
+    }
+
 
     /**
      * Returns the opponent's King
@@ -162,5 +175,22 @@ public class Chessboard {
      */
     public Map<String, Map<Piece, Location>> getPieces() {
         return pieces;
+    }
+
+    @Override
+    public String toString() {
+        var s = new StringBuilder();
+        for (int i = 7; i >= 0; i--) {
+            s.append("  +---+---+---+---+---+---+---+---+\n");
+            for (int j = 0; j < 8; j++) {
+                if(j == 0) s.append(i).append(" ");
+
+                if(this.getPieceAt(j, i) == null) s.append("|   ");
+                else s.append("| ").append(this.getPieceAt(j, i).getShortName()).append(" ");
+            }
+            s.append("|\n");
+        }
+        s.append("  +---+---+---+---+---+---+---+---+\n    A   B   C   D   E   F   G   H");
+        return s.toString();
     }
 }
