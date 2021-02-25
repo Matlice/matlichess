@@ -194,7 +194,7 @@ public class MovePattern {
         for (Location dest : locations) {
             Chessboard nextMoveBoard = chessboard.clone();
             nextMoveBoard._make_move(pieceLocation, dest);
-            if (chessboard.getKing(this.myColor).isUnderCheck(nextMoveBoard, dest))
+            if (chessboard.getKing(this.myColor).isUnderCheck(nextMoveBoard))
                 this.locations.remove(dest);
         }
         return this;

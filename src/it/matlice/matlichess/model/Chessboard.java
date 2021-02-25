@@ -71,7 +71,7 @@ public class Chessboard {
     }
 
     /**
-     * Removes a Piece from the chessboard
+     * Removes a Piece from the chessboard reference map
      * @param toRemove the {@link Piece} to remove
      */
     private void _removePiece(Piece toRemove){
@@ -85,6 +85,7 @@ public class Chessboard {
      */
     public void removePiece(Location location){
         _removePiece(getPieceAt(location));
+        chessboard[location.col()][location.row()] = null;
     }
 
     /**
@@ -96,9 +97,10 @@ public class Chessboard {
      */
     public Piece _make_move(Location src, Location destination){
         Piece toCapture = getPieceAt(destination);
+        removePiece(destination);
         getPieceAt(src).hasBeenMoved();
         _set_piece_at(destination, getPieceAt(src));
-        _removePiece(toCapture);
+        chessboard[src.col()][src.row()] = null;
         return toCapture;
     }
 
@@ -160,5 +162,22 @@ public class Chessboard {
      */
     public Map<String, Map<Piece, Location>> getPieces() {
         return pieces;
+    }
+
+    @Override
+    public String toString() {
+        var s = new StringBuilder();
+        for (int i = 7; i >= 0; i--) {
+            s.append("  +---+---+---+---+---+---+---+---+\n");
+            for (int j = 0; j < 8; j++) {
+                if(j == 0) s.append(i).append(" ");
+
+                if(this.getPieceAt(j, i) == null) s.append("|   ");
+                else s.append("| ").append(this.getPieceAt(j, i).getShortName()).append(" ");
+            }
+            s.append("|\n");
+        }
+        s.append("  +---+---+---+---+---+---+---+---+\n    A   B   C   D   E   F   G   H");
+        return s.toString();
     }
 }
