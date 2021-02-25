@@ -5,6 +5,9 @@ import it.matlice.matlichess.model.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Identifies the Rook Piece in a chess game
+ */
 public class Rook extends Piece {
 
     public Rook(Color color){
@@ -12,7 +15,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    protected MovePattern unvalidated_move_pattern(Chessboard chessboard, Location myPosition) {
+    public MovePattern unvalidated_move_pattern(Chessboard chessboard, Location myPosition) {
         return new MovePattern(chessboard, myPosition, this.getColor())
                 .addColumn()
                 .addRow();

@@ -1,7 +1,12 @@
 package it.matlice.matlichess.model;
 
 import java.util.Arrays;
+import java.util.Set;
 
+/**
+ * Abstract class to identify a general chess piece. It contains attributes which are the same for all the pieces
+ * Every concrete piece which inherits this class will implements its unique way to move
+ */
 public abstract class Piece {
 
     private String name;
@@ -10,10 +15,17 @@ public abstract class Piece {
     private Color color;
     private boolean has_moved = false;
 
+    /**
+     * Checks if the piece has already made a move
+     * @return a boolean to describe if the piece has moved
+     */
     public boolean hasMoved() {
         return has_moved;
     }
 
+    /**
+     * Notifies that a piece has made its first move
+     */
     public void hasBeenMoved() {
         this.has_moved = true;
     }
@@ -25,33 +37,65 @@ public abstract class Piece {
         this.color = color;
     }
 
+    /**
+     * Getter for the name of the piece
+     * @return the name of the piece
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Getter for the color of the piece
+     * @return the color of the piece
+     */
     public Color getColor() {
         return color;
     }
 
+    /**
+     * Getter for the short name of the piece
+     * @return the short name of the piece
+     */
     public String getShortName() {
         return shortName;
     }
 
+    /**
+     * Getter for the value of the piece
+     * @return the value of the piece
+     */
     public int getValue() {
         return value;
     }
 
-    protected abstract MovePattern unvalidated_move_pattern(Chessboard chessboard, Location myPosition);
+    /**
+     * Describes the Locations reachable by a chess Piece without checking if the king is under attack
+     * @param chessboard the {@link Chessboard} where are placed the pieces
+     * @param myPosition the Position of the Piece
+     * @return the MovePattern of the piece without checking if the king is under attack
+     */
+    public abstract MovePattern unvalidated_move_pattern(Chessboard chessboard, Location myPosition);
 
-    public Location[] getAvailableMoves(Chessboard chessboard, Location myPosition){
+    /**
+     * Describes the Locations reachable by a chess Piece
+     * @param chessboard the {@link Chessboard} where are placed the pieces
+     * @param myPosition the Position of the Piece
+     * @return the MovePattern of the piece
+     */
+    public Set<Location> getAvailableMoves(Chessboard chessboard, Location myPosition){
         return this.unvalidated_move_pattern(chessboard, myPosition).validate().get();
     }
 
-    public boolean isPlaceAllowed(Chessboard chessboard, Location l, Location myPosition){
-        return Arrays.stream(getAvailableMoves(chessboard, myPosition)).filter((Location e) -> e == l).toArray().length == 1;
+    /**
+     * Returns if the piece can move to a certain Location
+     * @param chessboard the {@link Chessboard} where are placed the pieces
+     * @param destination the final Position
+     * @param myPosition the Position of the Piece
+     * @return if the piece can move to a certain Location
+     */
+    public boolean isMoveAllowed(Chessboard chessboard, Location destination, Location myPosition){
+        return getAvailableMoves(chessboard, myPosition).contains(destination);
     }
 
-    public boolean canCapture(Chessboard chessboard, Location capture, Location myposition){ ;
-        return Arrays.stream(unvalidated_move_pattern(chessboard, myposition).get()).filter((Location e) -> e.equals(capture)).toArray().length == 1 && chessboard.getPieceAt(capture) != null;
-    }
 }

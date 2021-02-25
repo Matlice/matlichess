@@ -6,6 +6,10 @@ import it.matlice.matlichess.model.Location;
 import it.matlice.matlichess.model.pieces.King;
 import it.matlice.matlichess.model.pieces.Rook;
 
+
+/**
+ * EntryPoint of the program
+ */
 public class EntryPoint {
     public static void main(String[] args) {
         var k = new King(Color.BLACK);

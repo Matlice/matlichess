@@ -4,6 +4,9 @@ import it.matlice.matlichess.exceptions.ChessboardLocationException;
 
 import java.util.Objects;
 
+/**
+ * Class to describe a particular coordinate on a chessboard
+ */
 public class Location {
     private int col;
     private int row;
@@ -13,6 +16,12 @@ public class Location {
         this.row = row;
     }
 
+    /**
+     * Constructor which parses the official notation of the Location
+     * example: a1 -> column=0, row=0
+     * example: d6 -> column=3, row=5
+     * @param location String containing the official notation
+     */
     public Location(String location) {
         if (location.length() != 2) throw new ChessboardLocationException();
         this.col = (location.charAt(0) & 0x5F)-0x41;
@@ -42,10 +51,6 @@ public class Location {
                 col == location.col;
     }
 
-    /**
-     * make sure same location instances have same hash
-     * @return
-     */
     @Override
     public int hashCode() {
         return Objects.hash(col, row);
