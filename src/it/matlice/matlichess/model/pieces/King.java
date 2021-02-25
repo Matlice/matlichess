@@ -13,31 +13,40 @@ public class King extends Piece {
     private final Location BLACK_KING_ROOK_LOCATION = new Location("H8");
     private final Location WHITE_QUEEN_ROOK_LOCATION = new Location("A1");
     private final Location WHITE_KING_ROOK_LOCATION = new Location("H1");
-    private Rook queen_rook, king_rook;
 
-    public King(Color color, Rook queen_rook, Rook king_rook) {
+    public King(Color color) {
         super("King", "K", Math.abs(~0), color);
-        this.queen_rook = queen_rook;
-        this.king_rook = king_rook;
     }
 
     /**
-     * Given a chessboard pattern, returns if the king is under attack
+     * Given a chessboard and a position, returns if the position is under attack
+     *
+     * @param chessboard the {@link Chessboard} where are placed the pieces
+     * @param location the location to check
+     * @return true if the king is under attack, else false
+     */
+    public boolean isUnderCheck(Chessboard chessboard, Location location) {
+        for (Map<Piece, Location> family : chessboard.getPieces().values())
+            for (Map.Entry<Piece, Location> value : family.entrySet()) {
+                if (value.getKey() instanceof King) break;
+                // value contains an opponent Piece and his Location
+                if (value.getKey().getColor().equals(this.getColor().opponent()))
+                    // unvalidated_move_pattern is used because is not necessary to move the opponent piece to check
+                    if (value.getKey().unvalidated_move_pattern(chessboard, value.getValue()).get().contains(location))
+                        return true;
+            }
+        return false;
+    }
+
+    /**
+     * Given a chessboard, returns if the king is under attack
      *
      * @param chessboard the {@link Chessboard} where are placed the pieces
      * @return true if the king is under attack, else false
      */
     public boolean isUnderCheck(Chessboard chessboard) {
-        for (Map<Piece, Location> family : chessboard.getPieces().values())
-            for (Map.Entry<Piece, Location> value : family.entrySet())
-                // value contains an opponent Piece and his Location
-                if (value.getKey().getColor().equals(this.getColor().opponent()))
-                    // unvalidated_move_pattern is used because is not necessary to move the opponent piece to check
-                    if (value.getKey().unvalidated_move_pattern(chessboard, value.getValue()).get().contains(chessboard.getPieces().get("King").get(chessboard.getKing(this.getColor()))))
-                        return true;
-        return false;
+        return isUnderCheck(chessboard, chessboard.getPieces().get("King").get(chessboard.getKing(this.getColor())));
     }
-
 
     private boolean canCastle(Chessboard c, String side) {
         //if the king has moved we cant castle
@@ -50,8 +59,10 @@ public class King extends Piece {
             case "Queen": {
                 //castling queen side
                 //cant castle if the rook has moved or have been taken
-                if (!(c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_QUEEN_ROOK_LOCATION : BLACK_QUEEN_ROOK_LOCATION) == queen_rook) || queen_rook.hasMoved())
+                var rook = c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_QUEEN_ROOK_LOCATION : BLACK_QUEEN_ROOK_LOCATION);
+                if (!rook.getName().equals("Rook") || rook.hasMoved())
                     return false;
+
                 //there are some pieces between me and the rook?
                 //does the king have to cross attacked locations?
                 if (this.getColor().equals(Color.WHITE)) {
@@ -70,7 +81,8 @@ public class King extends Piece {
             case "King": {
                 //castling king side
                 //cant castle if the rook has moved or have been taken
-                if (!(c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_KING_ROOK_LOCATION : BLACK_KING_ROOK_LOCATION) == king_rook) || king_rook.hasMoved())
+                var rook = c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_KING_ROOK_LOCATION : BLACK_KING_ROOK_LOCATION);
+                if (!rook.getName().equals("Rook") || rook.hasMoved())
                     return false;
                 //there are some pieces between me and the rook?
                 //does the king have to cross attacked locations?
