@@ -1,21 +1,28 @@
 package it.matlice.matlichess.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MovePattern {
 
-    private ArrayList<Location> locations = new ArrayList<>();
+    private Set<Location> locations = new HashSet<>();
     private Chessboard chessboard;
+    private Location l;
+    private Color mycolor;
 
-    public MovePattern(Chessboard c) {
+    public MovePattern(Chessboard c, Location l, Color mycolor) {
         this.chessboard = c;
+        this.l = l;
+        this.mycolor = mycolor;
     }
 
     private boolean piece_can_take(int row, int col, Color color) {
         //do not ask.
         if (row > 7 || row < 0 || col > 7 || col < 0) return true;
         if (chessboard.getPieceAt(col, row) != null) {
-            if (chessboard.getPieceAt(col, row).getColor() != color)
+            if (chessboard.getPieceAt(col, row).getColor() == color.opponent())
                 locations.add(new Location(col, row));
             return true;
         }
@@ -24,10 +31,10 @@ public class MovePattern {
     }
 
     public Location[] get() {
-        return (Location[]) locations.toArray();
+        return locations.toArray(Location[]::new);
     }
 
-    public MovePattern addRow(Location l, Color mycolor) {
+    public MovePattern addRow() {
         var col = l.col();
         var row = l.row();
         for (int i = col + 1; i < 8; i++)
@@ -39,7 +46,7 @@ public class MovePattern {
         return this;
     }
 
-    public MovePattern addColumn(Location l, Color mycolor) {
+    public MovePattern addColumn() {
         var col = l.col();
         var row = l.row();
         for (int i = row + 1; i < 8; i++)
@@ -50,7 +57,7 @@ public class MovePattern {
         return this;
     }
 
-    public MovePattern addDiagonals(Location l, Color mycolor) {
+    public MovePattern addDiagonals() {
         var col = l.col();
         var row = l.row();
 
@@ -69,7 +76,7 @@ public class MovePattern {
         return this;
     }
 
-    public MovePattern addKnight(Location l, Color mycolor) {
+    public MovePattern addKnight() {
         var col = l.col();
         var row = l.row();
         piece_can_take(row + 2, col + 1, mycolor);
@@ -83,7 +90,7 @@ public class MovePattern {
         return this;
     }
 
-    public MovePattern addKing(Location l, Color mycolor) {
+    public MovePattern addKing() {
         var col = l.col();
         var row = l.row();
         piece_can_take(row + 1, col + 1, mycolor);
@@ -97,8 +104,15 @@ public class MovePattern {
         return this;
     }
 
-//    public MovePattern addRing(int column, int row) {
-//
-//    }
-
+    public MovePattern validate(){
+        ArrayList<Location> locations = new ArrayList(Arrays.asList(this.locations.toArray()));
+        for (int i = 0; i < locations.size(); i++) {
+            var dest = locations.get(i);
+            var next_move = chessboard.clone();
+            next_move._make_move(l, dest);
+            if(chessboard.getKing(this.mycolor).isUnderCheck(next_move, dest))
+                this.locations.remove(dest);
+        }
+        return this;
+    }
 }

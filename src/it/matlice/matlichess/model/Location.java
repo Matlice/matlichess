@@ -50,4 +50,9 @@ public class Location {
     public int hashCode() {
         return Objects.hash(col, row);
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf((char) (col + 0x41)) + String.valueOf(row+1);
+    }
 }

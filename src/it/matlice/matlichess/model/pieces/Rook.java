@@ -12,16 +12,9 @@ public class Rook extends Piece {
     }
 
     @Override
-    public Location[] getAvailableMoves(Chessboard chessboard, Location myPosition) {
-        //todo validate move
-        return new MovePattern(chessboard)
-                .addColumn(myPosition, this.getColor())
-                .addRow(myPosition, this.getColor())
-                .get();
-    }
-
-    @Override
-    public boolean isPlaceAllowed(Chessboard chessboard, Location l, Location myPosition) {
-        return Arrays.stream(getAvailableMoves(chessboard, myPosition)).filter((Location e) -> e == l).toArray().length == 1;
+    protected MovePattern unvalidated_move_pattern(Chessboard chessboard, Location myPosition) {
+        return new MovePattern(chessboard, myPosition, this.getColor())
+                .addColumn()
+                .addRow();
     }
 }

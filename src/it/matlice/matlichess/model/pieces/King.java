@@ -2,23 +2,23 @@ package it.matlice.matlichess.model.pieces;
 
 import it.matlice.matlichess.model.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class King extends Piece {
 
     public King(Color color) {
         super("King", "K", Math.abs(~0), color);
     }
 
-    @Override
-    public Location[] getAvailableMoves(Chessboard chessboard, Location myPosition) {
-        //todo validate move
-        return new MovePattern(chessboard).addKing(myPosition, this.getColor()).get();
+
+    public boolean isUnderCheck(Chessboard chessboard, Location myPosition) {
+        for (var fam : chessboard.getPieces().values())
+            for (var v : fam.entrySet())
+                if (v.getKey().getColor() == this.getColor().opponent() && v.getKey().canCapture(chessboard, myPosition, v.getValue()))
+                    return true;
+        return false;
     }
 
     @Override
-    public boolean isPlaceAllowed(Chessboard chessboard, Location l, Location myPosition) {
-        return Arrays.stream(getAvailableMoves(chessboard, myPosition)).filter((Location e) -> e == l).toArray().length == 1;
+    protected MovePattern unvalidated_move_pattern(Chessboard chessboard, Location myPosition) {
+        return new MovePattern(chessboard, myPosition, this.getColor()).addKing();
     }
 }
