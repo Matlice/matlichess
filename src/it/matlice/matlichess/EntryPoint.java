@@ -14,6 +14,7 @@ import it.matlice.matlichess.model.pieces.Rook;
  */
 public class EntryPoint {
     public static void main(String[] args) {
+
         var k = new King(Color.BLACK);
         var k2 = new King(Color.WHITE);
 
@@ -27,6 +28,7 @@ public class EntryPoint {
         var p3 = new Pawn(Color.WHITE);
 
         var c = new Chessboard();
+
         c.setKing(k, new Location("A1"));
         c.setKing(k2, new Location("F8"));
         c.setPiece(t, new Location("D2"));
@@ -38,8 +40,9 @@ public class EntryPoint {
 
         var asdasd = p1.getAvailableMoves(c, new Location("C2"));
 
-        var a = k.getAvailableMoves(c, new Location("A1"));
-
+        c.move("C8", "C6");
+        System.out.println(c);
+        
         System.out.println(c);
     }
 }
