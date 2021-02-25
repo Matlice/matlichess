@@ -15,11 +15,14 @@ import it.matlice.matlichess.model.pieces.Rook;
 public class EntryPoint {
     public static void main(String[] args) {
 
-        var k = new King(Color.BLACK);
-        var k2 = new King(Color.WHITE);
-
         var t = new Rook(Color.WHITE);
         var t2 = new Rook(Color.WHITE);
+
+        var t3 = new Rook(Color.BLACK);
+        var t4 = new Rook(Color.BLACK);
+
+        var k = new King(Color.BLACK, t3, t4);
+        var k2 = new King(Color.WHITE, t, t2);
 
         var b1 = new Bishop(Color.BLACK);
 
@@ -42,7 +45,7 @@ public class EntryPoint {
 
         c.move("C8", "C6");
         System.out.println(c);
-        
+
         System.out.println(c);
     }
 }
