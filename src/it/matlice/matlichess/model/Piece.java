@@ -62,7 +62,7 @@ public abstract class Piece {
      * @return the short name of the piece
      */
     public String getShortName() {
-        return shortName;
+        return getColor() == Color.WHITE ? shortName.toUpperCase() : shortName.toLowerCase();
     }
 
     /**

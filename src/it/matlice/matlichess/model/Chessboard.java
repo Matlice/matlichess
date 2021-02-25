@@ -183,7 +183,7 @@ public class Chessboard {
         for (int i = 7; i >= 0; i--) {
             s.append("  +---+---+---+---+---+---+---+---+\n");
             for (int j = 0; j < 8; j++) {
-                if(j == 0) s.append(i).append(" ");
+                if(j == 0) s.append(i+1).append(" ");
 
                 if(this.getPieceAt(j, i) == null) s.append("|   ");
                 else s.append("| ").append(this.getPieceAt(j, i).getShortName()).append(" ");
