@@ -15,7 +15,7 @@ public class EntryPoint {
         var tw1 = new Rook(Color.BLACK);
         var tw2 = new Rook(Color.BLACK);
         var tw3 = new Rook(Color.BLACK);
-        var kw = new King(Color.BLACK, tw1, tw2);
+        var kw = new King(Color.BLACK);
 
         var c = new Chessboard();
         c.setKing(kw, "E8");

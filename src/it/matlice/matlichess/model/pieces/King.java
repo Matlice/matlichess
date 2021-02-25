@@ -13,12 +13,9 @@ public class King extends Piece {
     private final Location BLACK_KING_ROOK_LOCATION = new Location("H8");
     private final Location WHITE_QUEEN_ROOK_LOCATION = new Location("A1");
     private final Location WHITE_KING_ROOK_LOCATION = new Location("H1");
-    private Rook queen_rook, king_rook;
 
-    public King(Color color, Rook queen_rook, Rook king_rook) {
+    public King(Color color) {
         super("King", "K", Math.abs(~0), color);
-        this.queen_rook = queen_rook;
-        this.king_rook = king_rook;
     }
 
     /**
@@ -51,8 +48,10 @@ public class King extends Piece {
             case "Queen": {
                 //castling queen side
                 //cant castle if the rook has moved or have been taken
-                if (!(c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_QUEEN_ROOK_LOCATION : BLACK_QUEEN_ROOK_LOCATION) == queen_rook) || queen_rook.hasMoved())
+                var rook = c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_QUEEN_ROOK_LOCATION : BLACK_QUEEN_ROOK_LOCATION);
+                if (!rook.getName().equals("Rook") || rook.hasMoved())
                     return false;
+
                 //there are some pieces between me and the rook?
                 //does the king have to cross attacked locations?
                 if (this.getColor().equals(Color.WHITE)) {
@@ -71,7 +70,8 @@ public class King extends Piece {
             case "King": {
                 //castling king side
                 //cant castle if the rook has moved or have been taken
-                if (!(c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_KING_ROOK_LOCATION : BLACK_KING_ROOK_LOCATION) == king_rook) || king_rook.hasMoved())
+                var rook = c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_KING_ROOK_LOCATION : BLACK_KING_ROOK_LOCATION);
+                if (!rook.getName().equals("Rook") || rook.hasMoved())
                     return false;
                 //there are some pieces between me and the rook?
                 //does the king have to cross attacked locations?
