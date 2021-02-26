@@ -12,8 +12,8 @@ public class NormalMovement {
 
     @org.junit.jupiter.api.Test
     public void rookTest(){
-        var k1 = new King(Color.WHITE);
-        var k2 = new King(Color.BLACK);
+        King k1 = new King(Color.WHITE);
+        King k2 = new King(Color.BLACK);
 
         Rook r1 = new Rook(Color.WHITE);
         Rook r2 = new Rook(Color.WHITE);
@@ -40,8 +40,8 @@ public class NormalMovement {
 
     @org.junit.jupiter.api.Test
     public void bishopTest(){
-        var k1 = new King(Color.WHITE);
-        var k2 = new King(Color.BLACK);
+        King k1 = new King(Color.WHITE);
+        King k2 = new King(Color.BLACK);
 
         Bishop b1 = new Bishop(Color.WHITE);
         Bishop b2 = new Bishop(Color.WHITE);
@@ -72,8 +72,8 @@ public class NormalMovement {
 
     @org.junit.jupiter.api.Test
     public void queenTest(){
-        var k1 = new King(Color.WHITE);
-        var k2 = new King(Color.BLACK);
+        King k1 = new King(Color.WHITE);
+        King k2 = new King(Color.BLACK);
 
         Queen q1 = new Queen(Color.WHITE);
         Queen q2 = new Queen(Color.WHITE);
@@ -98,8 +98,8 @@ public class NormalMovement {
 
     @org.junit.jupiter.api.Test
     public void KnightTest(){
-        var k1 = new King(Color.WHITE);
-        var k2 = new King(Color.BLACK);
+        King k1 = new King(Color.WHITE);
+        King k2 = new King(Color.BLACK);
 
         Knight kn1 = new Knight(Color.WHITE);
         Knight kn2 = new Knight(Color.WHITE);
