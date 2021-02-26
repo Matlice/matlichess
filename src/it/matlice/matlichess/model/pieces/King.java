@@ -48,7 +48,7 @@ public class King extends Piece {
         return isUnderCheck(chessboard, chessboard.getPieces().get("King").get(chessboard.getKing(this.getColor())));
     }
 
-    private boolean canCastle(Chessboard c, String side) {
+    public boolean canCastle(Chessboard c, String side) {
         //if the king has moved we cant castle
         if (this.hasMoved()) return false;
         var king_position = this.getColor().equals(Color.WHITE) ? new Location("E1") : new Location("E8");
