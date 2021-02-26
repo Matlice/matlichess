@@ -3,6 +3,7 @@ package it.matlice.matlichess.model.pieces;
 import it.matlice.matlichess.model.*;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Identifies the King Piece in a chess game
@@ -22,7 +23,7 @@ public class King extends Piece {
      * Given a chessboard and a position, returns if the position is under attack
      *
      * @param chessboard the {@link Chessboard} where are placed the pieces
-     * @param location the location to check
+     * @param location   the location to check
      * @return true if the king is under attack, else false
      */
     public boolean isUnderCheck(Chessboard chessboard, Location location) {
@@ -50,6 +51,7 @@ public class King extends Piece {
 
     /**
      * Check whether the king has the possibility to castle queen's side, doesn't check for particular position that prevents the castling
+     *
      * @param c chessboard
      * @return true if queen side castling is available
      */
@@ -60,6 +62,7 @@ public class King extends Piece {
 
     /**
      * Check whether the king has the possibility to castle king's side, doesn't check for particular position that prevents the castling
+     *
      * @param c chessboard
      * @return true if king side castling is available
      */
@@ -70,7 +73,8 @@ public class King extends Piece {
 
     /**
      * Check whether the castling is doable right now
-     * @param c chessboard
+     *
+     * @param c    chessboard
      * @param side the side to check, "Queen" or "King"
      * @return true if can castle
      */
@@ -129,28 +133,43 @@ public class King extends Piece {
 
     @Override
     public MovePattern unvalidated_move_pattern(Chessboard chessboard, Location myPosition) {
-        var mp = new MovePattern(chessboard, myPosition, this.getColor()).addKing();
-        if(canCastle(chessboard, "Queen")) mp.addSquare(this.getColor().equals(Color.WHITE) ? new Location("C1") : new Location("C8"));
-        if(canCastle(chessboard, "King")) mp.addSquare(this.getColor().equals(Color.WHITE) ? new Location("G1") : new Location("G8"));
-        return mp;
+        return new MovePattern(chessboard, myPosition, this.getColor()).addKing();
+    }
+
+    /**
+     * Describes the Locations reachable by a chess Piece
+     *
+     * @param chessboard the {@link Chessboard} where are placed the pieces
+     * @param myPosition the Position of the Piece
+     * @return the MovePattern of the piece
+     */
+    @Override
+    public Set<Location> getAvailableMoves(Chessboard chessboard, Location myPosition) {
+        var mp = this.unvalidated_move_pattern(chessboard, myPosition);
+        if (canCastle(chessboard, "Queen"))
+            mp.addSquare(this.getColor().equals(Color.WHITE) ? new Location("C1") : new Location("C8"));
+        if (canCastle(chessboard, "King"))
+            mp.addSquare(this.getColor().equals(Color.WHITE) ? new Location("G1") : new Location("G8"));
+        return mp.validate().get();
     }
 
     /**
      * Notifies that the king has made its first move
+     *
      * @param from Where the piece started
-     * @param to Where the piece has been moved to
+     * @param to   Where the piece has been moved to
      * @return returns null in this particular case
      */
     @Override
     public Piece hasBeenMoved(Chessboard c, Location from, Location to) {
-        if(!this.hasMoved()){
-            if(this.getColor().equals(Color.WHITE) && to.equals(new Location("C1")))
+        if (!this.hasMoved()) {
+            if (this.getColor().equals(Color.WHITE) && to.equals(new Location("C1")))
                 c._make_move(new Location("A1"), new Location("D1"));
-            if(this.getColor().equals(Color.WHITE) && to.equals(new Location("G1")))
+            if (this.getColor().equals(Color.WHITE) && to.equals(new Location("G1")))
                 c._make_move(new Location("H1"), new Location("F1"));
-            if(this.getColor().equals(Color.BLACK) && to.equals(new Location("C8")))
+            if (this.getColor().equals(Color.BLACK) && to.equals(new Location("C8")))
                 c._make_move(new Location("A8"), new Location("D8"));
-            if(this.getColor().equals(Color.BLACK) && to.equals(new Location("G8")))
+            if (this.getColor().equals(Color.BLACK) && to.equals(new Location("G8")))
                 c._make_move(new Location("H8"), new Location("F8"));
         }
         return super.hasBeenMoved(c, from, to);
