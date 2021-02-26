@@ -133,16 +133,16 @@ public class MovePattern {
         var col = pieceLocation.col();
         var row = pieceLocation.row();
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 1; i < 8; i++) {
             if (piece_can_take(row + i, col + i, myColor)) break;
         }
-        for (int i = 0; i < 8; i++) {
+        for (int i = 1; i < 8; i++) {
             if (piece_can_take(row + i, col - i, myColor)) break;
         }
-        for (int i = 0; i < 8; i++) {
+        for (int i = 1; i < 8; i++) {
             if (piece_can_take(row - i, col + i, myColor)) break;
         }
-        for (int i = 0; i < 8; i++) {
+        for (int i = 1; i < 8; i++) {
             if (piece_can_take(row - i, col - i, myColor)) break;
         }
         return this;
