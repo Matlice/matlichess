@@ -4,11 +4,9 @@ import it.matlice.matlichess.exceptions.ChessboardLocationException;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.model.pieces.King;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * The game field. It contains information about the location of the pieces on it.
@@ -20,7 +18,7 @@ public class Chessboard {
     private Map<String, Map<Piece, Location>> pieces = new HashMap<>();
     private King[] kings = new King[2];
     private Color turn = Color.WHITE;
-    private Location enPassantTargetSquare = null; // TODO
+    private Location enPassantTargetSquare = null;
 
     // this is the number of halfmoves since the last capture or pawn advance. The reason for this field is that the value is used in the fifty-move rule.[7]
     // TODO
@@ -106,6 +104,10 @@ public class Chessboard {
         chessboard[location.col()][location.row()] = null;
     }
 
+    public void resetHalfmoveClock() {
+        halfmoveClock = 0;
+    }
+
     /**
      * Takes the piece in a {@link Location} and moves it to a new box
      * If the final box is occupied, it removes the old piece and replaces it with the new one
@@ -114,9 +116,14 @@ public class Chessboard {
      * @return the taken {@link Piece} if exists, else null
      */
     public Piece _make_move(Location src, Location destination){
+        enPassantTargetSquare = null;
+        halfmoveClock++; // increment now, capture or pawn taken will reset it
+        if (turn == Color.BLACK) fullmoveNumber++;
+        turn = turn.opponent();
         Piece toCapture = getPieceAt(destination);
+        if (toCapture != null) resetHalfmoveClock();
         removePiece(destination);
-        getPieceAt(src).hasBeenMoved(this, destination);
+        getPieceAt(src).hasBeenMoved(this, src, destination);
         _set_piece_at(destination, getPieceAt(src));
         chessboard[src.col()][src.row()] = null;
         return toCapture;
@@ -140,6 +147,9 @@ public class Chessboard {
         return move(new Location(src), new Location(destination));
     }
 
+    public void setEnPassantTargetSquare(Location enPassantTargetSquare) {
+        this.enPassantTargetSquare = enPassantTargetSquare;
+    }
 
     /**
      * Returns the opponent's King
@@ -243,10 +253,10 @@ public class Chessboard {
 
         // castling
         StringBuilder castling = new StringBuilder();
-        if (this.kings[Color.WHITE.index].isQueenCastlingAvailable(this)) castling.append("Q");
         if (this.kings[Color.WHITE.index].isKingCastlingAvailable(this)) castling.append("K");
-        if (this.kings[Color.BLACK.index].isQueenCastlingAvailable(this)) castling.append("q");
+        if (this.kings[Color.WHITE.index].isQueenCastlingAvailable(this)) castling.append("Q");
         if (this.kings[Color.BLACK.index].isKingCastlingAvailable(this)) castling.append("k");
+        if (this.kings[Color.BLACK.index].isQueenCastlingAvailable(this)) castling.append("q");
 
         fen.append(" ");
         fen.append(castling.toString().isBlank() ? "-" : castling);
@@ -262,7 +272,6 @@ public class Chessboard {
         fen.append(fullmoveNumber);
 
         return fen.toString();
-
     }
 
 }

@@ -1,6 +1,5 @@
 package it.matlice.matlichess.model;
 
-import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -28,9 +27,10 @@ public abstract class Piece {
 
     /**
      * Notifies that a piece has made its first move
+     * @param from
      * @param to Where the piece has been moved to
      */
-    public void hasBeenMoved(Chessboard c, Location to) {
+    public void hasBeenMoved(Chessboard c, Location from, Location to) {
         this.has_moved = true;
     }
 

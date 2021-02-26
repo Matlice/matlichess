@@ -139,7 +139,7 @@ public class King extends Piece {
      * Notifies that a piece has made its first move
      */
     @Override
-    public void hasBeenMoved(Chessboard c, Location to) {
+    public void hasBeenMoved(Chessboard c, Location from, Location to) {
         if(!this.hasMoved()){
             if(this.getColor().equals(Color.WHITE) && to.equals(new Location("C1")))
                 c._make_move(new Location("A1"), new Location("D1"));
@@ -150,6 +150,6 @@ public class King extends Piece {
             if(this.getColor().equals(Color.BLACK) && to.equals(new Location("G8")))
                 c._make_move(new Location("H8"), new Location("F8"));
         }
-        super.hasBeenMoved(c, to);
+        super.hasBeenMoved(c, from, to);
     }
 }
