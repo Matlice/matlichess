@@ -147,7 +147,7 @@ public class Chessboard {
         // this is a little tricky, in fact the function below `.hasBeenMoved( )` needs the old enPassantCapture to
         // verify if it captures a pawn en passant, but it also needs to set the en passant target square for the next move
         // i created a tmp variables that is used for the next turn and is set by setEnPassantTargetSquare but applied to
-        // the original variable only after `applyEnPassantTargetSquare`   ~ Enrico :(
+        // the original variable only after `applyEnPassantTargetSquare`   ~ Enrico
         tmpEnPassantTargetSquare = null;
 
         Piece toCapture = getPieceAt(destination); //if there's no piece taken, it will be null
@@ -243,6 +243,11 @@ public class Chessboard {
         Chessboard cloned = new Chessboard();
         this.forEachPiece(cloned::setPiece);
         cloned.kings = new King[]{this.kings[0], this.kings[1]};
+        cloned.enPassantTargetSquare = this.enPassantTargetSquare;
+        cloned.fullMoveNumber = this.fullMoveNumber;
+        cloned.halfMoveClock = this.halfMoveClock;
+        cloned.turn = this.turn;
+        cloned.tmpEnPassantTargetSquare = this.tmpEnPassantTargetSquare;
         return cloned;
     }
 
