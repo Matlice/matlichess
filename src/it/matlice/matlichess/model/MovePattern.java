@@ -72,6 +72,7 @@ public class MovePattern {
         var row = pieceLocation.row();
 
         // todo add promotion
+        // uhmmm io non la metterei qui
 
         if (myColor == Color.WHITE) {
             if (row == 7) return this; // end of chessboard, should not happen
@@ -91,16 +92,20 @@ public class MovePattern {
             locations.add(new Location(col, row+dir));
         }
 
-        boolean leftPassant = false;
-        boolean rightPassant = false;
+//        boolean leftPassant = false;
+//        boolean rightPassant = false;
 
         if (col > 0){
-            if(new Location(row+dir, col-1).equals(chessboard.getEnPassantTargetSquare())) leftPassant = true;
-            piece_can_take(row+dir, col-1, myColor, leftPassant);
+//            if(new Location(row+dir, col-1).equals(chessboard.getEnPassantTargetSquare())) leftPassant = true;
+//            piece_can_take(row+dir, col-1, myColor, leftPassant);
+            if(chessboard.getPieceAt(new Location(col-1, row+dir)) != null)
+                locations.add(new Location(col-1, row+dir));
         }
         if (col < 7){
-            if(new Location(row+dir, col+1).equals(chessboard.getEnPassantTargetSquare())) rightPassant = true;
-            piece_can_take(row+dir, col+1, myColor, rightPassant);
+//            if(new Location(row+dir, col+1).equals(chessboard.getEnPassantTargetSquare())) rightPassant = true;
+//            piece_can_take(row+dir, col+1, myColor, rightPassant);
+            if(chessboard.getPieceAt(new Location(col+1, row+dir)) != null)
+                locations.add(new Location(col+1, row+dir));
         }
 
         return this;
@@ -202,15 +207,15 @@ public class MovePattern {
      * @return the updated pattern
      */
     public MovePattern validate(){
-        var has_moved = chessboard.getPieceAt(pieceLocation).hasMoved();
+//        var has_moved = chessboard.getPieceAt(pieceLocation).hasMoved();
         ArrayList<Location> locations = new ArrayList<>(this.locations);
         for (Location dest : locations) {
             Chessboard nextMoveBoard = chessboard.clone();
-            chessboard.getPieceAt(pieceLocation)._reset_movement(has_moved);
+//            chessboard.getPieceAt(pieceLocation)._reset_movement(has_moved);
             nextMoveBoard._make_move(pieceLocation, dest);
             if (chessboard.getKing(this.myColor).isUnderCheck(nextMoveBoard))
                 this.locations.remove(dest);
-            chessboard.getPieceAt(pieceLocation)._reset_movement(has_moved);
+//            chessboard.getPieceAt(pieceLocation)._reset_movement(has_moved);
         }
         return this;
     }

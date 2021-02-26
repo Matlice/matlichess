@@ -19,4 +19,11 @@ public class Knight extends Piece {
         return new MovePattern(chessboard, myPosition, this.getColor())
                 .addKnight();
     }
+
+    @Override
+    public Piece clone() {
+        var clone = new Knight(this.getColor());
+        clone.has_moved = this.has_moved;
+        return clone;
+    }
 }

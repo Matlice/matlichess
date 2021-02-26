@@ -57,6 +57,9 @@ public class Location {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+
+        if(o instanceof String) return this.equals(new Location((String) o));
+
         if (o == null || getClass() != o.getClass()) return false;
         Location location = (Location) o;
         return row == location.row &&
@@ -70,6 +73,6 @@ public class Location {
 
     @Override
     public String toString() {
-        return String.valueOf((char) (col + 0x41)) + String.valueOf(row+1);
+        return (char) (col + 0x41) + String.valueOf(row+1);
     }
 }

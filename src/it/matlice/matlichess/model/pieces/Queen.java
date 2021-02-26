@@ -21,4 +21,11 @@ public class Queen extends Piece {
                 .addRow()
                 .addDiagonals();
     }
+
+    @Override
+    public Piece clone() {
+        var clone = new Queen(this.getColor());
+        clone.has_moved = this.has_moved;
+        return clone;
+    }
 }

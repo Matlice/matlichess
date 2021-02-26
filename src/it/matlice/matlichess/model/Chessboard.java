@@ -36,7 +36,7 @@ public class Chessboard {
      */
     private void _set_piece_at(Location loc, Piece p) {
         chessboard[loc.col()][loc.row()] = p;
-        if(!pieces.containsKey(p.getName())) pieces.put(p.getName(), new HashMap<Piece, Location>());
+        if(!pieces.containsKey(p.getName())) pieces.put(p.getName(), new HashMap<>());
         pieces.get(p.getName()).put(p, loc);
     }
 
@@ -154,9 +154,7 @@ public class Chessboard {
         chessboard[src.col()][src.row()] = null;
 
         //manually removes the en Passant Taken Pawn, because the Location of the taken pawn is not equal to the destination
-        if (enPassantCapture != null) removePiece(new Location(enPassantTargetSquare.col(), src.row()));
-
-        enPassantTargetSquare = null;
+//        if (enPassantCapture != null) removePiece(new Location(enPassantTargetSquare.col(), src.row()));
         return toCapture;
     }
 
@@ -187,7 +185,7 @@ public class Chessboard {
 
     /**
      * Sets the square skipped by the pawn that has moved by two squares
-     * @param enPassantTargetSquare
+     * @param enPassantTargetSquare -
      */
     public void setEnPassantTargetSquare(Location enPassantTargetSquare) {
         this.enPassantTargetSquare = enPassantTargetSquare;
@@ -227,8 +225,14 @@ public class Chessboard {
      */
     public Chessboard clone(){
         Chessboard cloned = new Chessboard();
-        this.forEachPiece(cloned::setPiece);
-        cloned.kings = new King[]{this.kings[0], this.kings[1]};
+        final King[] kings = new King[]{null, null};
+        this.forEachPiece((Piece p, Location l) -> {
+            var c = p.clone();
+            cloned.setPiece(c, l);
+            if(c instanceof King)
+                kings[c.getColor().index] = (King) c;
+        });
+        cloned.kings = kings;
         return cloned;
     }
 

@@ -19,4 +19,11 @@ public class Bishop extends Piece {
         return new MovePattern(chessboard, myPosition, this.getColor())
                 .addDiagonals();
     }
+
+    @Override
+    public Piece clone() {
+        var clone = new Bishop(this.getColor());
+        clone.has_moved = this.has_moved;
+        return clone;
+    }
 }

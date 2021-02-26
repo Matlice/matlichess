@@ -1,5 +1,6 @@
 package it.matlice.matlichess.model;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -12,7 +13,7 @@ public abstract class Piece {
     private String shortName;
     private int value;
     private Color color;
-    private boolean has_moved = false;
+    protected boolean has_moved = false;
 
     /**
      * Checks if the piece has already made a move
@@ -33,7 +34,16 @@ public abstract class Piece {
      */
     public Piece hasBeenMoved(Chessboard c, Location from, Location to) {
         this.has_moved = true;
+        c.setEnPassantTargetSquare(null);
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Piece piece = (Piece) o;
+        return value == piece.value && has_moved == piece.has_moved && Objects.equals(name, piece.name) && Objects.equals(shortName, piece.shortName) && color == piece.color;
     }
 
     public Piece(String name, String shortName, int value, Color color) {
@@ -103,5 +113,7 @@ public abstract class Piece {
     public boolean isMoveAllowed(Chessboard chessboard, Location destination, Location myPosition){
         return getAvailableMoves(chessboard, myPosition).contains(destination);
     }
+
+    public abstract Piece clone();
 
 }
