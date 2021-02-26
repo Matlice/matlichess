@@ -48,6 +48,32 @@ public class King extends Piece {
         return isUnderCheck(chessboard, chessboard.getPieces().get("King").get(chessboard.getKing(this.getColor())));
     }
 
+    /**
+     * Check whether the king has the possibility to castle queen's side, doesn't check for particular position that prevents the castling
+     * @param c chessboard
+     * @return true if queen side castling is available
+     */
+    public boolean isQueenCastlingAvailable(Chessboard c) {
+        var rook = c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_QUEEN_ROOK_LOCATION : BLACK_QUEEN_ROOK_LOCATION);
+        return rook.getName().equals("Rook") && !rook.hasMoved();
+    }
+
+    /**
+     * Check whether the king has the possibility to castle king's side, doesn't check for particular position that prevents the castling
+     * @param c chessboard
+     * @return true if king side castling is available
+     */
+    public boolean isKingCastlingAvailable(Chessboard c) {
+        var rook = c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_KING_ROOK_LOCATION : BLACK_KING_ROOK_LOCATION);
+        return rook.getName().equals("Rook") && !rook.hasMoved();
+    }
+
+    /**
+     * Check whether the castling is doable right now
+     * @param c chessboard
+     * @param side the side to check, "Queen" or "King"
+     * @return true if can castle
+     */
     public boolean canCastle(Chessboard c, String side) {
         //if the king has moved we cant castle
         if (this.hasMoved()) return false;
@@ -59,9 +85,7 @@ public class King extends Piece {
             case "Queen": {
                 //castling queen side
                 //cant castle if the rook has moved or have been taken
-                var rook = c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_QUEEN_ROOK_LOCATION : BLACK_QUEEN_ROOK_LOCATION);
-                if (!rook.getName().equals("Rook") || rook.hasMoved())
-                    return false;
+                if (!isQueenCastlingAvailable(c)) return false;
 
                 //there are some pieces between me and the rook?
                 //does the king have to cross attacked locations?
@@ -81,9 +105,8 @@ public class King extends Piece {
             case "King": {
                 //castling king side
                 //cant castle if the rook has moved or have been taken
-                var rook = c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_KING_ROOK_LOCATION : BLACK_KING_ROOK_LOCATION);
-                if (!rook.getName().equals("Rook") || rook.hasMoved())
-                    return false;
+                if (!isKingCastlingAvailable(c)) return false;
+
                 //there are some pieces between me and the rook?
                 //does the king have to cross attacked locations?
                 if (this.getColor().equals(Color.WHITE)) {

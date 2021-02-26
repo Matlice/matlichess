@@ -205,6 +205,11 @@ public class Chessboard {
         return s.toString();
     }
 
+    /**
+     * Returns the Forsyth–Edwards Notation (FEN) used for describing a particular board position of a chess game
+     * The purpose of FEN is to provide all the necessary information to restart a game from a particular position
+     * @return the string representation of the FEN
+     */
     public String toFEN() {
 
         StringBuilder fen = new StringBuilder();
@@ -238,11 +243,10 @@ public class Chessboard {
 
         // castling
         StringBuilder castling = new StringBuilder();
-        // TODO canCastle is not the correct function; we need to check whether the castling is available not doable right now
-        if (this.kings[Color.WHITE.index].canCastle(this, "Queen")) castling.append("Q");
-        if (this.kings[Color.WHITE.index].canCastle(this, "King")) castling.append("K");
-        if (this.kings[Color.BLACK.index].canCastle(this, "Queen")) castling.append("q");
-        if (this.kings[Color.BLACK.index].canCastle(this, "King")) castling.append("k");
+        if (this.kings[Color.WHITE.index].isQueenCastlingAvailable(this)) castling.append("Q");
+        if (this.kings[Color.WHITE.index].isKingCastlingAvailable(this)) castling.append("K");
+        if (this.kings[Color.BLACK.index].isQueenCastlingAvailable(this)) castling.append("q");
+        if (this.kings[Color.BLACK.index].isKingCastlingAvailable(this)) castling.append("k");
 
         fen.append(" ");
         fen.append(castling.toString().isBlank() ? "-" : castling);
