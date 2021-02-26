@@ -65,7 +65,15 @@ public class ToFEN {
         c.move(new Location("C7"), new Location("C5"));
         assertEquals("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2", c.toFEN());
         c.move(new Location("G1"), new Location("F3"));
+        System.out.println(c);
         assertEquals("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2", c.toFEN());
+        c.move(new Location("E4"), new Location("E5"));
+        System.out.println(c);
+        c.move(new Location("D7"), new Location("D5"));
+        System.out.println(c);
+        c.move(new Location("E5"), new Location("D6"));
+        System.out.println(c);
+        System.out.println(c.toFEN());
     }
 
 }

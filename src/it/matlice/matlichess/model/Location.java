@@ -23,6 +23,7 @@ public class Location {
      * @param location String containing the official notation
      */
     public Location(String location) {
+        location = location.toUpperCase();
         if (location.length() != 2) throw new ChessboardLocationException();
         this.col = (location.charAt(0) & 0x5F)-0x41;
         this.row = Integer.parseInt(String.valueOf(location.charAt(1))) - 1;

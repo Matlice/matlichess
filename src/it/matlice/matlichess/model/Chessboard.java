@@ -18,7 +18,9 @@ public class Chessboard {
     private Map<String, Map<Piece, Location>> pieces = new HashMap<>();
     private King[] kings = new King[2];
     private Color turn = Color.WHITE;
+
     private Location enPassantTargetSquare = null;
+    private Location tmpEnPassantTargetSquare = null;
 
     // this is the number of halfMoves since the last capture or pawn advance.
     // The reason for this field is that the value is used in the fifty-move rule.
@@ -140,24 +142,32 @@ public class Chessboard {
     public Piece _make_move(Location src, Location destination){
         halfMoveClock += 1; // increment now, capturing a piece or pushing a pawn will reset it
         if (turn == Color.BLACK) fullMoveNumber += 1; // increments the number of the total moves
-
         turn = turn.opponent();
+
+        // this is a little tricky, in fact the function below `.hasBeenMoved( )` needs the old enPassantCapture to
+        // verify if it captures a pawn en passant, but it also needs to set the en passant target square for the next move
+        // i created a tmp variables that is used for the next turn and is set by setEnPassantTargetSquare but applied to
+        // the original variable only after `applyEnPassantTargetSquare`   ~ Enrico :(
+        tmpEnPassantTargetSquare = null;
+
         Piece toCapture = getPieceAt(destination); //if there's no piece taken, it will be null
         removePiece(destination);
 
         //if there is an en Passant Capture, it will assign the taken pawn to the variable toCapture
         Piece enPassantCapture = getPieceAt(src).hasBeenMoved(this, src, destination);
-        if (enPassantCapture != null) toCapture = enPassantCapture;
+
+        enPassantTargetSquare = null;
+        applyEnPassantTargetSquare();
 
         if (toCapture != null) resetHalfMoveClock();
         _set_piece_at(destination, getPieceAt(src));
+
         chessboard[src.col()][src.row()] = null;
 
         //manually removes the en Passant Taken Pawn, because the Location of the taken pawn is not equal to the destination
-        if (enPassantCapture != null) removePiece(new Location(enPassantTargetSquare.col(), src.row()));
+        if (enPassantCapture != null) removePiece(new Location(destination.col(), src.row()));
 
-        enPassantTargetSquare = null;
-        return toCapture;
+        return toCapture != null ? toCapture : enPassantCapture;
     }
 
     /**
@@ -190,7 +200,11 @@ public class Chessboard {
      * @param enPassantTargetSquare
      */
     public void setEnPassantTargetSquare(Location enPassantTargetSquare) {
-        this.enPassantTargetSquare = enPassantTargetSquare;
+        this.tmpEnPassantTargetSquare = enPassantTargetSquare;
+    }
+
+    private void applyEnPassantTargetSquare() {
+        enPassantTargetSquare = tmpEnPassantTargetSquare;
     }
 
     /**

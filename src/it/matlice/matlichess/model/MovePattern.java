@@ -25,13 +25,13 @@ public class MovePattern {
      * Utility class function used to add {@link Location}s to the private variable, according to the instruction given by the patterns
      * When the program validates if a Chess box is reachable, it calls this method to save the locations.
      * Returns a boolean to continue or stop the iteration.
-     * @param row the row index of the location to check
      * @param col the column index of the location to check
+     * @param row the row index of the location to check
      * @param color the player's color
      * @param addIfEmpty add the destination location if it's empty (false for pawns)
      * @return true if it's needed to stop the iteration, false to continue
      */
-    private boolean piece_can_take(int row, int col, Color color, boolean addIfEmpty) {
+    private boolean piece_can_take(int col, int row, Color color, boolean addIfEmpty) {
         if (row > 7 || row < 0 || col > 7 || col < 0) return true;
         if (chessboard.getPieceAt(col, row) != null) {
             if (chessboard.getPieceAt(col, row).getColor().equals(color.opponent()))
@@ -52,7 +52,7 @@ public class MovePattern {
      * @return true if it's needed to stop the iteration, false to continue
      */
     private boolean piece_can_take(int row, int col, Color color) {
-        return piece_can_take(row, col, color, true);
+        return piece_can_take(col, row, color, true);
     }
 
     /**
@@ -95,12 +95,12 @@ public class MovePattern {
         boolean rightPassant = false;
 
         if (col > 0){
-            if(new Location(row+dir, col-1).equals(chessboard.getEnPassantTargetSquare())) leftPassant = true;
-            piece_can_take(row+dir, col-1, myColor, leftPassant);
+            if(new Location(col-1, row+dir).equals(chessboard.getEnPassantTargetSquare())) leftPassant = true;
+            piece_can_take(col-1, row+dir, myColor, leftPassant);
         }
         if (col < 7){
-            if(new Location(row+dir, col+1).equals(chessboard.getEnPassantTargetSquare())) rightPassant = true;
-            piece_can_take(row+dir, col+1, myColor, rightPassant);
+            if(new Location(col+1, row+dir).equals(chessboard.getEnPassantTargetSquare())) rightPassant = true;
+            piece_can_take(col+1, row+dir, myColor, rightPassant);
         }
 
         return this;
