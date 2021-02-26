@@ -136,10 +136,13 @@ public class King extends Piece {
     }
 
     /**
-     * Notifies that a piece has made its first move
+     * Notifies that the king has made its first move
+     * @param from Where the piece started
+     * @param to Where the piece has been moved to
+     * @return returns null in this particular case
      */
     @Override
-    public void hasBeenMoved(Chessboard c, Location from, Location to) {
+    public Piece hasBeenMoved(Chessboard c, Location from, Location to) {
         if(!this.hasMoved()){
             if(this.getColor().equals(Color.WHITE) && to.equals(new Location("C1")))
                 c._make_move(new Location("A1"), new Location("D1"));
@@ -150,6 +153,6 @@ public class King extends Piece {
             if(this.getColor().equals(Color.BLACK) && to.equals(new Location("G8")))
                 c._make_move(new Location("H8"), new Location("F8"));
         }
-        super.hasBeenMoved(c, from, to);
+        return super.hasBeenMoved(c, from, to);
     }
 }

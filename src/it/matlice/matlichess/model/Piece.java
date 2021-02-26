@@ -27,11 +27,13 @@ public abstract class Piece {
 
     /**
      * Notifies that a piece has made its first move
-     * @param from
+     * @param from Where the piece started
      * @param to Where the piece has been moved to
+     * @return it will be used to allow the en Passant Move, returning the pawn that has just moved by two squares. for any other use, returns null
      */
-    public void hasBeenMoved(Chessboard c, Location from, Location to) {
+    public Piece hasBeenMoved(Chessboard c, Location from, Location to) {
         this.has_moved = true;
+        return null;
     }
 
     public Piece(String name, String shortName, int value, Color color) {

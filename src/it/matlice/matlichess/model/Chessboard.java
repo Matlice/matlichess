@@ -20,13 +20,14 @@ public class Chessboard {
     private Color turn = Color.WHITE;
     private Location enPassantTargetSquare = null;
 
-    // this is the number of halfmoves since the last capture or pawn advance. The reason for this field is that the value is used in the fifty-move rule.[7]
-    // TODO
-    private int halfmoveClock = 0;
+    // this is the number of halfMoves since the last capture or pawn advance.
+    // The reason for this field is that the value is used in the fifty-move rule.
+    // TODO condizioni di patta
+    private int halfMoveClock = 0;
 
     // the number of the full move. It starts at 1, and is incremented after Black's move.
-    // TODO
-    private int fullmoveNumber = 1;
+    // It is used in the creation of the FEN Notation
+    private int fullMoveNumber = 1;
 
     /**
      * Puts a {@link Piece} on a certain box in the chessboard.
@@ -49,6 +50,11 @@ public class Chessboard {
         _set_piece_at(loc, piece);
     }
 
+    /**
+     * Puts a {@link Piece} on a certain box in the chessboard
+     * @param piece the chess {@link Piece} to put
+     * @param loc a string that indicates the coordinate of the chess box
+     */
     public void setPiece(Piece piece, String loc) {
         this.setPiece(piece, new Location(loc));
     }
@@ -63,6 +69,11 @@ public class Chessboard {
         this.kings[k.getColor().index] = k;
     }
 
+    /**
+     * Puts the {@link King} on a certain box in the chessboard
+     * @param k the {@link King} to put
+     * @param loc a string that indicates the coordinate of the chess box
+     */
     public void setKing(King k, String loc) {
         this.setKing(k, new Location(loc));
     }
@@ -87,6 +98,14 @@ public class Chessboard {
     }
 
     /**
+     * Getter for the variable. If a pawn has moved by two squares in the last move, the variable will contain the skipped square, else null
+     * @return the enPassant Target Square
+     */
+    public Location getEnPassantTargetSquare() {
+        return enPassantTargetSquare;
+    }
+
+    /**
      * Removes a Piece from the chessboard reference map
      * @param toRemove the {@link Piece} to remove
      */
@@ -104,8 +123,11 @@ public class Chessboard {
         chessboard[location.col()][location.row()] = null;
     }
 
-    public void resetHalfmoveClock() {
-        halfmoveClock = 0;
+    /**
+     * Resets the number of consecutive moves without taking a piece or pawn pushes
+     */
+    public void resetHalfMoveClock() {
+        halfMoveClock = 0;
     }
 
     /**
@@ -116,16 +138,25 @@ public class Chessboard {
      * @return the taken {@link Piece} if exists, else null
      */
     public Piece _make_move(Location src, Location destination){
-        enPassantTargetSquare = null;
-        halfmoveClock++; // increment now, capture or pawn taken will reset it
-        if (turn == Color.BLACK) fullmoveNumber++;
+        halfMoveClock += 1; // increment now, capturing a piece or pushing a pawn will reset it
+        if (turn == Color.BLACK) fullMoveNumber += 1; // increments the number of the total moves
+
         turn = turn.opponent();
-        Piece toCapture = getPieceAt(destination);
-        if (toCapture != null) resetHalfmoveClock();
+        Piece toCapture = getPieceAt(destination); //if there's no piece taken, it will be null
         removePiece(destination);
-        getPieceAt(src).hasBeenMoved(this, src, destination);
+
+        //if there is an en Passant Capture, it will assign the taken pawn to the variable toCapture
+        Piece enPassantCapture = getPieceAt(src).hasBeenMoved(this, src, destination);
+        if (enPassantCapture != null) toCapture = enPassantCapture;
+
+        if (toCapture != null) resetHalfMoveClock();
         _set_piece_at(destination, getPieceAt(src));
         chessboard[src.col()][src.row()] = null;
+
+        //manually removes the en Passant Taken Pawn, because the Location of the taken pawn is not equal to the destination
+        if (enPassantCapture != null) removePiece(new Location(enPassantTargetSquare.col(), src.row()));
+
+        enPassantTargetSquare = null;
         return toCapture;
     }
 
@@ -143,10 +174,21 @@ public class Chessboard {
         return _make_move(src, destination);
     }
 
+    /**
+     * Checks if a piece is allowed to move to a certain box, then takes the piece in a {@link Location} and moves it to the new box.
+     * If the final box is occupied, it removes the old piece and replaces it with the new one
+     * @param src String containing the official notation of the Location
+     * @param destination the final {@link Location}
+     * @return the taken {@link Piece} if exists, else null
+     */
     public Piece move(String src, String destination) {
         return move(new Location(src), new Location(destination));
     }
 
+    /**
+     * Sets the square skipped by the pawn that has moved by two squares
+     * @param enPassantTargetSquare
+     */
     public void setEnPassantTargetSquare(Location enPassantTargetSquare) {
         this.enPassantTargetSquare = enPassantTargetSquare;
     }
@@ -221,14 +263,12 @@ public class Chessboard {
      * @return the string representation of the FEN
      */
     public String toFEN() {
-
         StringBuilder fen = new StringBuilder();
 
         // base position
         for(int r=7; r>=0; r--) {
             int emptyCounter = 0;
             for (int c=0; c<8; c++) {
-
                 Piece piece = chessboard[c][r];
                 if (piece != null) {
                     if (emptyCounter != 0) {
@@ -236,14 +276,9 @@ public class Chessboard {
                         emptyCounter = 0;
                     }
                     fen.append(piece.getShortName());
-                } else {
-                    emptyCounter++;
-                }
-
+                } else emptyCounter++;
             }
-            if (emptyCounter != 0) {
-                fen.append(emptyCounter);
-            }
+            if (emptyCounter != 0) fen.append(emptyCounter);
             if (r != 0) fen.append("/");
         }
 
@@ -267,9 +302,9 @@ public class Chessboard {
 
         // move number
         fen.append(" ");
-        fen.append(halfmoveClock);
+        fen.append(halfMoveClock);
         fen.append(" ");
-        fen.append(fullmoveNumber);
+        fen.append(fullMoveNumber);
 
         return fen.toString();
     }

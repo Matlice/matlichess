@@ -1,7 +1,6 @@
 package it.matlice.matlichess.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -64,6 +63,10 @@ public class MovePattern {
         return locations;
     }
 
+    /**
+     * Pattern to add the reachable locations by a pawn, including the first move skipping two squares and the adjacent diagonals when it can take a piece
+     * @return the updated pattern
+     */
     public MovePattern addPawn() {
         var col = pieceLocation.col();
         var row = pieceLocation.row();
@@ -82,14 +85,23 @@ public class MovePattern {
                     locations.add(new Location(col, row-2));
         }
 
-        var dir = (myColor == Color.WHITE) ? 1 : -1;
+        int dir = (myColor == Color.WHITE) ? 1 : -1;
 
         if (chessboard.getPieceAt(col, row+dir) == null) {
             locations.add(new Location(col, row+dir));
         }
 
-        if (col < 7) piece_can_take(row+dir, col+1, myColor, false);
-        if (col > 0) piece_can_take(row+dir, col-1, myColor, false);
+        boolean leftPassant = false;
+        boolean rightPassant = false;
+
+        if (col > 0){
+            if(new Location(row+dir, col-1).equals(chessboard.getEnPassantTargetSquare())) leftPassant = true;
+            piece_can_take(row+dir, col-1, myColor, leftPassant);
+        }
+        if (col < 7){
+            if(new Location(row+dir, col+1).equals(chessboard.getEnPassantTargetSquare())) rightPassant = true;
+            piece_can_take(row+dir, col+1, myColor, rightPassant);
+        }
 
         return this;
     }
@@ -203,6 +215,10 @@ public class MovePattern {
         return this;
     }
 
+    /**
+     * Adds a certain square to the pattern
+     * @return the updated pattern
+     */
     public MovePattern addSquare(Location l){
         this.locations.add(l);
         return this;

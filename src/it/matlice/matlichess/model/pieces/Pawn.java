@@ -7,8 +7,6 @@ import it.matlice.matlichess.model.*;
  */
 public class Pawn extends Piece {
 
-    // TODO add enpassant as a move for pawn
-
     public Pawn(Color color){
         super("Pawn", "P", 1, color);
     }
@@ -19,15 +17,27 @@ public class Pawn extends Piece {
                 .addPawn();
     }
 
+    /**
+     * Notifies that the pawn has made its first move
+     * @param from Where the piece started
+     * @param to Where the piece has been moved to
+     * @return if the pawn is taking a piece with en Passant Move, it returns the taken Pawn. Else returns null
+     */
     @Override
-    public void hasBeenMoved(Chessboard c, Location from, Location to) {
-        c.resetHalfmoveClock();
+    public Piece hasBeenMoved(Chessboard c, Location from, Location to) {
+        super.hasBeenMoved(c, from, to);
+        c.resetHalfMoveClock();
+        if(to.equals(c.getEnPassantTargetSquare())) {
+            if (getColor().equals(Color.WHITE)) return c.getPieceAt(new Location(to.col(), to.row() - 1));
+            return c.getPieceAt(new Location(to.col(), to.row() + 1));
+        }
+
         if (this.getColor().equals(Color.WHITE) && from.row() == 1 && to.row() == 3) {
             c.setEnPassantTargetSquare(new Location(to.col(), to.row()-1));
         }
         if (this.getColor().equals(Color.BLACK) && from.row() == 6 && to.row() == 4) {
             c.setEnPassantTargetSquare(new Location(to.col(), to.row()+1));
         }
-        super.hasBeenMoved(c, from, to);
+        return null;
     }
 }

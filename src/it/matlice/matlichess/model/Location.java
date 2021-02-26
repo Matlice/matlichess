@@ -30,14 +30,26 @@ public class Location {
         if (this.col < 0 || this.col > 7) throw new ChessboardLocationException();
     }
 
+    /**
+     * Getter for coordinates, row first, then column
+     * @return the coordinates
+     */
     public int[] coordinates(){
         return new int[] {this.row, this.col};
     }
 
+    /**
+     * Getter for the column
+     * @return the column
+     */
     public int col() {
         return col;
     }
 
+    /**
+     * Getter for the row
+     * @return the row
+     */
     public int row() {
         return row;
     }

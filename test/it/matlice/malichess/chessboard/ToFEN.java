@@ -1,12 +1,9 @@
 package it.matlice.malichess.chessboard;
 
-import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.model.Color;
 import it.matlice.matlichess.model.Location;
 import it.matlice.matlichess.model.pieces.*;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,11 +60,11 @@ public class ToFEN {
     @org.junit.jupiter.api.Test
     public void firstMovesFEN(){
         setupStartingPosition();
-        c._make_move(new Location("E2"), new Location("E4"));
+        c.move(new Location("E2"), new Location("E4"));
         assertEquals("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", c.toFEN());
-        c._make_move(new Location("C7"), new Location("C5"));
+        c.move(new Location("C7"), new Location("C5"));
         assertEquals("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2", c.toFEN());
-        c._make_move(new Location("G1"), new Location("F3"));
+        c.move(new Location("G1"), new Location("F3"));
         assertEquals("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2", c.toFEN());
     }
 
