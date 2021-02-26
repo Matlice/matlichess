@@ -19,6 +19,16 @@ public class Chessboard {
     private Piece[][] chessboard = new Piece[8][8];
     private Map<String, Map<Piece, Location>> pieces = new HashMap<>();
     private King[] kings = new King[2];
+    private Color turn = Color.WHITE;
+    private Location enPassantTargetSquare = null; // TODO
+
+    // this is the number of halfmoves since the last capture or pawn advance. The reason for this field is that the value is used in the fifty-move rule.[7]
+    // TODO
+    private int halfmoveClock = 0;
+
+    // the number of the full move. It starts at 1, and is incremented after Black's move.
+    // TODO
+    private int fullmoveNumber = 1;
 
     /**
      * Puts a {@link Piece} on a certain box in the chessboard.
@@ -120,6 +130,7 @@ public class Chessboard {
      * @return the taken {@link Piece} if exists, else null
      */
     public Piece move(Location src, Location destination) {
+        // TODO check if its correct player turn
         assert kings[0] != null && kings[1] != null;
         if (!getPieceAt(src).isMoveAllowed(this, destination, src)) throw new InvalidMoveException();
         return _make_move(src, destination);
@@ -193,4 +204,65 @@ public class Chessboard {
         s.append("  +---+---+---+---+---+---+---+---+\n    A   B   C   D   E   F   G   H");
         return s.toString();
     }
+
+    /**
+     * Returns the Forsyth–Edwards Notation (FEN) used for describing a particular board position of a chess game
+     * The purpose of FEN is to provide all the necessary information to restart a game from a particular position
+     * @return the string representation of the FEN
+     */
+    public String toFEN() {
+
+        StringBuilder fen = new StringBuilder();
+
+        // base position
+        for(int r=7; r>=0; r--) {
+            int emptyCounter = 0;
+            for (int c=0; c<8; c++) {
+
+                Piece piece = chessboard[c][r];
+                if (piece != null) {
+                    if (emptyCounter != 0) {
+                        fen.append(emptyCounter);
+                        emptyCounter = 0;
+                    }
+                    fen.append(piece.getShortName());
+                } else {
+                    emptyCounter++;
+                }
+
+            }
+            if (emptyCounter != 0) {
+                fen.append(emptyCounter);
+            }
+            if (r != 0) fen.append("/");
+        }
+
+        // turn
+        fen.append(" ");
+        fen.append(turn.equals(Color.WHITE) ? "w" : "b");
+
+        // castling
+        StringBuilder castling = new StringBuilder();
+        if (this.kings[Color.WHITE.index].isQueenCastlingAvailable(this)) castling.append("Q");
+        if (this.kings[Color.WHITE.index].isKingCastlingAvailable(this)) castling.append("K");
+        if (this.kings[Color.BLACK.index].isQueenCastlingAvailable(this)) castling.append("q");
+        if (this.kings[Color.BLACK.index].isKingCastlingAvailable(this)) castling.append("k");
+
+        fen.append(" ");
+        fen.append(castling.toString().isBlank() ? "-" : castling);
+
+        // en passant
+        fen.append(" ");
+        fen.append(enPassantTargetSquare != null ? enPassantTargetSquare.toString().toLowerCase() : "-");
+
+        // move number
+        fen.append(" ");
+        fen.append(halfmoveClock);
+        fen.append(" ");
+        fen.append(fullmoveNumber);
+
+        return fen.toString();
+
+    }
+
 }

@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class Pawn extends Piece {
 
     public Pawn(Color color){
-        super("Pawn", "p", 1, color);
+        super("Pawn", "P", 1, color);
     }
 
     @Override
