@@ -3,6 +3,7 @@ package it.matlice.matlichess.model;
 import it.matlice.matlichess.exceptions.ChessboardLocationException;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.model.pieces.King;
+import it.matlice.matlichess.model.pieces.Pawn;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -311,6 +312,12 @@ public class Chessboard {
         fen.append(fullMoveNumber);
 
         return fen.toString();
+    }
+
+    public void resetEnPassantSquare(){
+        this.setEnPassantTargetSquare(null);
+        if(this.pieces.containsKey("Pawn"))
+            this.pieces.get("Pawn").forEach((p, l) -> ((Pawn)p).resetEnPassant());
     }
 
 }

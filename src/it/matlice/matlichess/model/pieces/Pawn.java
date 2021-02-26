@@ -34,6 +34,7 @@ public class Pawn extends Piece {
     @Override
     public Piece hasBeenMoved(Chessboard c, Location from, Location to) {
         c.resetHalfMoveClock();
+        c.resetEnPassantSquare(); //reset en passant square for all pieces
         if (
                 !this.has_moved &&
                 from.equals(this.getColor() == Color.WHITE ? new Location(from.col(), 1) : new Location(from.col(), 6)) &&
@@ -61,7 +62,7 @@ public class Pawn extends Piece {
             c.removePiece(l);
         }
         this.canEnPassant = false;
-        c.setEnPassantTargetSquare(null);
+        c.resetEnPassantSquare();
         return capture;
     }
 
@@ -76,5 +77,9 @@ public class Pawn extends Piece {
     @Override
     public boolean equals(Object o) {
         return super.equals(o) && (((Pawn) o).canEnPassant == this.canEnPassant);
+    }
+
+    public void resetEnPassant(){
+        this.canEnPassant = false;
     }
 }

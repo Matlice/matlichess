@@ -34,7 +34,7 @@ public abstract class Piece {
      */
     public Piece hasBeenMoved(Chessboard c, Location from, Location to) {
         this.has_moved = true;
-        c.setEnPassantTargetSquare(null);
+        c.resetEnPassantSquare();
         return null;
     }
 
