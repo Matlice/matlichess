@@ -33,29 +33,41 @@ public class UnderCheckControl {
         c.move(new Location("C6"), new Location("D5"));
         assertFalse(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
 
+        c.changeTurn();
         c.move(new Location("C4"), new Location("B5"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
+        c.changeTurn();
         c.move(new Location("B5"), new Location("C4"));
 
+        c.changeTurn();
         c.move(new Location("G4"), new Location("F6"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
+        c.changeTurn();
         c.move(new Location("F6"), new Location("G4"));
 
+        c.changeTurn();
         c.move(new Location("H2"), new Location("H8"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
+        c.changeTurn();
         c.move(new Location("H8"), new Location("H2"));
 
+        c.changeTurn();
         c.move(new Location("H2"), new Location("E2"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
+        c.changeTurn();
         c.move(new Location("E2"), new Location("H2"));
 
+        c.changeTurn();
         c.move(new Location("D5"), new Location("A8"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
+        c.changeTurn();
         c.move(new Location("A8"), new Location("D5"));
 
         Pawn p = new Pawn(Color.WHITE);
+        c.changeTurn();
         c.setPiece(p, new Location("F7"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
+        c.changeTurn();
         assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("E8"), new Location("F7")));
     }
 
@@ -81,9 +93,12 @@ public class UnderCheckControl {
         assertFalse(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
         c.move(new Location("C6"), new Location("D4"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
+        c.changeTurn();
         c.move(new Location("D4"), new Location("C6"));
+        c.changeTurn();
         c.move(new Location("E4"), new Location("H1"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
+        c.changeTurn();
         c.move(new Location("H1"), new Location("E4"));
         assertFalse(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
     }
@@ -106,8 +121,10 @@ public class UnderCheckControl {
         c.setPiece(r, new Location("E7"));
 
         assertFalse(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
+        c.changeTurn();
         assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("E7"), new Location("A7")));
         assertDoesNotThrow(() -> c.clone().move(new Location("E7"), new Location("E3")));
+        c.changeTurn();
         c.move(new Location("C4"), new Location("B5"));
         assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("E7"), new Location("E3")));
         assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("E8"), new Location("D7")));

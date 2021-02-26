@@ -45,8 +45,6 @@ public class PawnMoves {
         c.move("B4", "B5");
         c.move("A7", "A5");
 
-        System.out.println(c);
-
         assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("B5"), new Location("C6")));
         assertDoesNotThrow(() -> c.clone().move("B5", "A6"));
         assertDoesNotThrow(() -> c.clone().move("B5", "B6"));

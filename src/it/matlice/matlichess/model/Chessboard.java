@@ -2,6 +2,7 @@ package it.matlice.matlichess.model;
 
 import it.matlice.matlichess.exceptions.ChessboardLocationException;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
+import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.pieces.King;
 
 import java.util.HashMap;
@@ -133,6 +134,13 @@ public class Chessboard {
     }
 
     /**
+     * Change the turn
+     */
+    public void changeTurn(){
+        turn = turn.opponent();
+    }
+
+    /**
      * Takes the piece in a {@link Location} and moves it to a new box
      * If the final box is occupied, it removes the old piece and replaces it with the new one
      * @param src the source {@link Location}
@@ -140,9 +148,11 @@ public class Chessboard {
      * @return the taken {@link Piece} if exists, else null
      */
     public Piece _make_move(Location src, Location destination){
+        if(!getPieceAt(src).getColor().equals(turn)) throw new InvalidTurnException();
+
         halfMoveClock += 1; // increment now, capturing a piece or pushing a pawn will reset it
         if (turn == Color.BLACK) fullMoveNumber += 1; // increments the number of the total moves
-        turn = turn.opponent();
+        changeTurn();
 
         // this is a little tricky, in fact the function below `.hasBeenMoved( )` needs the old enPassantCapture to
         // verify if it captures a pawn en passant, but it also needs to set the en passant target square for the next move

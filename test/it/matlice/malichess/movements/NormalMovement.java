@@ -29,6 +29,7 @@ public class NormalMovement {
         c.setPiece(r5, new Location("A1"));
         c.setPiece(r6, new Location("D4"));
 
+        c.changeTurn();
         assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("A1"), new Location("H1")));
         assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("A1"), new Location("E1")));
         assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("D4"), new Location("A4")));
@@ -62,8 +63,10 @@ public class NormalMovement {
         assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("H1"), new Location("F1")));
         assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("C2"), new Location("H7")));
 
-        assertEquals(b3, c.clone().move(new Location("H1"), new Location("D5")));
+        c.changeTurn();
         assertEquals(b1, c.clone().move(new Location("D5"), new Location("H1")));
+        c.changeTurn();
+        assertEquals(b3, c.clone().move(new Location("H1"), new Location("D5")));
         assertEquals(p1, c.clone().move(new Location("C2"), new Location("F5")));
 
         c.move(new Location("C2"), new Location("E4"));
@@ -90,9 +93,10 @@ public class NormalMovement {
         assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("D5"), new Location("F5")));
         assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("D5"), new Location("A2")));
         assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("D5"), new Location("C3")));
-        assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("B3"), new Location("G8")));
-
         assertEquals(q3, c.clone().move(new Location("D5"), new Location("B3")));
+
+        c.changeTurn();
+        assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("B3"), new Location("G8")));
         assertEquals(q1, c.clone().move(new Location("B3"), new Location("D5")));
     }
 
@@ -126,6 +130,7 @@ public class NormalMovement {
         assertDoesNotThrow(() -> c.clone().move(new Location("D4"), new Location("E2")));
 
         assertEquals(kn3, c.clone().move(new Location("D4"), new Location("B3")));
+        c.changeTurn();
         assertEquals(kn1, c.clone().move(new Location("B3"), new Location("D4")));
     }
 
