@@ -4,6 +4,7 @@ import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.model.Color;
 import it.matlice.matlichess.model.Location;
+import it.matlice.matlichess.model.Move;
 import it.matlice.matlichess.model.pieces.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,45 +31,45 @@ public class UnderCheckControl {
         c.setPiece(kn, new Location("G4"));
 
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
-        c.move(new Location("C6"), new Location("D5"));
+        c.move(new Location("C6"), new Move("D5"));
         assertFalse(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
 
         c.changeTurn();
-        c.move(new Location("C4"), new Location("B5"));
+        c.move(new Location("C4"), new Move("B5"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
         c.changeTurn();
-        c.move(new Location("B5"), new Location("C4"));
+        c.move(new Location("B5"), new Move("C4"));
 
         c.changeTurn();
-        c.move(new Location("G4"), new Location("F6"));
+        c.move(new Location("G4"), new Move("F6"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
         c.changeTurn();
-        c.move(new Location("F6"), new Location("G4"));
+        c.move(new Location("F6"), new Move("G4"));
 
         c.changeTurn();
-        c.move(new Location("H2"), new Location("H8"));
+        c.move(new Location("H2"), new Move("H8"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
         c.changeTurn();
-        c.move(new Location("H8"), new Location("H2"));
+        c.move(new Location("H8"), new Move("H2"));
 
         c.changeTurn();
-        c.move(new Location("H2"), new Location("E2"));
+        c.move(new Location("H2"), new Move("E2"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
         c.changeTurn();
-        c.move(new Location("E2"), new Location("H2"));
+        c.move(new Location("E2"), new Move("H2"));
 
         c.changeTurn();
-        c.move(new Location("D5"), new Location("A8"));
+        c.move(new Location("D5"), new Move("A8"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
         c.changeTurn();
-        c.move(new Location("A8"), new Location("D5"));
+        c.move(new Location("A8"), new Move("D5"));
 
         Pawn p = new Pawn(Color.WHITE);
         c.changeTurn();
         c.setPiece(p, new Location("F7"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
         c.changeTurn();
-        assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("E8"), new Location("F7")));
+        assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("E8"), new Move("F7")));
     }
 
     @org.junit.jupiter.api.Test
@@ -91,15 +92,15 @@ public class UnderCheckControl {
         c.setPiece(kn, new Location("C6"));
 
         assertFalse(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
-        c.move(new Location("C6"), new Location("D4"));
+        c.move(new Location("C6"), new Move("D4"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
         c.changeTurn();
-        c.move(new Location("D4"), new Location("C6"));
+        c.move(new Location("D4"), new Move("C6"));
         c.changeTurn();
-        c.move(new Location("E4"), new Location("H1"));
+        c.move(new Location("E4"), new Move("H1"));
         assertTrue(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
         c.changeTurn();
-        c.move(new Location("H1"), new Location("E4"));
+        c.move(new Location("H1"), new Move("E4"));
         assertFalse(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
     }
 
@@ -122,13 +123,14 @@ public class UnderCheckControl {
 
         assertFalse(c.getOpponentKing(Color.WHITE).isUnderCheck(c));
         c.changeTurn();
-        assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("E7"), new Location("A7")));
-        assertDoesNotThrow(() -> c.clone().move(new Location("E7"), new Location("E3")));
+        System.out.println(c);
+        assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("E7"), new Move("A7")));
+        assertDoesNotThrow(() -> c.clone().move(new Location("E7"), new Move("E3")));
         c.changeTurn();
-        c.move(new Location("C4"), new Location("B5"));
-        assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("E7"), new Location("E3")));
-        assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("E8"), new Location("D7")));
-        assertDoesNotThrow(() -> c.clone().move(new Location("E8"), new Location("F8")));
+        c.move(new Location("C4"), new Move("B5"));
+        assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("E7"), new Move("E3")));
+        assertThrows(InvalidMoveException.class, () -> c.clone().move(new Location("E8"), new Move("D7")));
+        assertDoesNotThrow(() -> c.clone().move(new Location("E8"), new Move("F8")));
 
     }
 

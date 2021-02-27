@@ -33,7 +33,7 @@ public class King extends Piece {
                 // value contains an opponent Piece and his Location
                 if (value.getKey().getColor().equals(this.getColor().opponent()))
                     // unvalidated_move_pattern is used because is not necessary to move the opponent piece to check
-                    if (value.getKey().unvalidated_move_pattern(chessboard, value.getValue()).get().contains(location))
+                    if (value.getKey().unvalidated_move_pattern(chessboard, value.getValue()).get().contains(new Move(location)))
                         return true;
             }
         return false;
@@ -144,12 +144,12 @@ public class King extends Piece {
      * @return the MovePattern of the piece
      */
     @Override
-    public Set<Location> getAvailableMoves(Chessboard chessboard, Location myPosition) {
+    public Set<Move> getAvailableMoves(Chessboard chessboard, Location myPosition) {
         var mp = this.unvalidated_move_pattern(chessboard, myPosition);
         if (canCastle(chessboard, "Queen"))
-            mp.addSquare(this.getColor().equals(Color.WHITE) ? new Location("C1") : new Location("C8"));
+            mp.addSquare(this.getColor().equals(Color.WHITE) ? new Move("C1") : new Move("C8"));
         if (canCastle(chessboard, "King"))
-            mp.addSquare(this.getColor().equals(Color.WHITE) ? new Location("G1") : new Location("G8"));
+            mp.addSquare(this.getColor().equals(Color.WHITE) ? new Move("G1") : new Move("G8"));
         return mp.validate().get();
     }
 
@@ -164,13 +164,13 @@ public class King extends Piece {
     public Piece hasBeenMoved(Chessboard c, Location from, Location to) {
         if (!this.hasMoved()) {
             if (this.getColor().equals(Color.WHITE) && to.equals(new Location("C1")))
-                c._make_move(new Location("A1"), new Location("D1"));
+                c._make_move(new Location("A1"), new Move("D1"));
             if (this.getColor().equals(Color.WHITE) && to.equals(new Location("G1")))
-                c._make_move(new Location("H1"), new Location("F1"));
+                c._make_move(new Location("H1"), new Move("F1"));
             if (this.getColor().equals(Color.BLACK) && to.equals(new Location("C8")))
-                c._make_move(new Location("A8"), new Location("D8"));
+                c._make_move(new Location("A8"), new Move("D8"));
             if (this.getColor().equals(Color.BLACK) && to.equals(new Location("G8")))
-                c._make_move(new Location("H8"), new Location("F8"));
+                c._make_move(new Location("H8"), new Move("F8"));
         }
         return super.hasBeenMoved(c, from, to);
     }

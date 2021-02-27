@@ -147,7 +147,7 @@ public class Chessboard {
      * @param destination the final {@link Location}
      * @return the taken {@link Piece} if exists, else null
      */
-    public Piece _make_move(Location src, Location destination){
+    public Piece _make_move(Location src, Move destination){
         if(!getPieceAt(src).getColor().equals(turn)) throw new InvalidTurnException();
 
         halfMoveClock += 1; // increment now, capturing a piece or pushing a pawn will reset it
@@ -160,22 +160,22 @@ public class Chessboard {
         // the original variable only after `applyEnPassantTargetSquare`   ~ Enrico
         tmpEnPassantTargetSquare = null;
 
-        Piece toCapture = getPieceAt(destination); //if there's no piece taken, it will be null
-        removePiece(destination);
+        Piece toCapture = getPieceAt(destination.getLocation()); //if there's no piece taken, it will be null
+        removePiece(destination.getLocation());
 
         //if there is an en Passant Capture, it will assign the taken pawn to the variable toCapture
-        Piece enPassantCapture = getPieceAt(src).hasBeenMoved(this, src, destination);
+        Piece enPassantCapture = getPieceAt(src).hasBeenMoved(this, src, destination.getLocation());
 
         enPassantTargetSquare = null;
         applyEnPassantTargetSquare();
 
         if (toCapture != null) resetHalfMoveClock();
-        _set_piece_at(destination, getPieceAt(src));
+        _set_piece_at(destination.getLocation(), getPieceAt(src));
 
         chessboard[src.col()][src.row()] = null;
 
         //manually removes the en Passant Taken Pawn, because the Location of the taken pawn is not equal to the destination
-        if (enPassantCapture != null) removePiece(new Location(destination.col(), src.row()));
+        if (enPassantCapture != null) removePiece(new Location(destination.getLocation().col(), src.row()));
 
         return toCapture != null ? toCapture : enPassantCapture;
     }
@@ -187,7 +187,7 @@ public class Chessboard {
      * @param destination the final {@link Location}
      * @return the taken {@link Piece} if exists, else null
      */
-    public Piece move(Location src, Location destination) {
+    public Piece move(Location src, Move destination) {
         // TODO check if its correct player turn
         assert kings[0] != null && kings[1] != null;
         if (!getPieceAt(src).isMoveAllowed(this, destination, src)) throw new InvalidMoveException();
@@ -202,7 +202,7 @@ public class Chessboard {
      * @return the taken {@link Piece} if exists, else null
      */
     public Piece move(String src, String destination) {
-        return move(new Location(src), new Location(destination));
+        return move(new Location(src), new Move(destination));
     }
 
     /**

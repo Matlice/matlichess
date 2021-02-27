@@ -89,7 +89,7 @@ public abstract class Piece {
      * @param myPosition the Position of the Piece
      * @return the MovePattern of the piece
      */
-    public Set<Location> getAvailableMoves(Chessboard chessboard, Location myPosition){
+    public Set<Move> getAvailableMoves(Chessboard chessboard, Location myPosition){
         return this.unvalidated_move_pattern(chessboard, myPosition).validate().get();
     }
 
@@ -100,7 +100,7 @@ public abstract class Piece {
      * @param myPosition the Position of the Piece
      * @return if the piece can move to a certain Location
      */
-    public boolean isMoveAllowed(Chessboard chessboard, Location destination, Location myPosition){
+    public boolean isMoveAllowed(Chessboard chessboard, Move destination, Location myPosition){
         return getAvailableMoves(chessboard, myPosition).contains(destination);
     }
 

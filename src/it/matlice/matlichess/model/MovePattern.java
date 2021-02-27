@@ -10,7 +10,7 @@ import java.util.Set;
  */
 public class MovePattern {
 
-    private Set<Location> locations = new HashSet<>();
+    private Set<Move> locations = new HashSet<>();
     private Chessboard chessboard;
     private Location pieceLocation;
     private Color myColor;
@@ -35,10 +35,10 @@ public class MovePattern {
         if (row > 7 || row < 0 || col > 7 || col < 0) return true;
         if (chessboard.getPieceAt(col, row) != null) {
             if (chessboard.getPieceAt(col, row).getColor().equals(color.opponent()))
-                locations.add(new Location(col, row));
+                locations.add(new Move(col, row));
             return true;
         }
-        if (addIfEmpty) locations.add(new Location(col, row));
+        if (addIfEmpty) locations.add(new Move(col, row));
         return false;
     }
 
@@ -59,7 +59,7 @@ public class MovePattern {
      * Returns the saved locations
      * @return the saved locations
      */
-    public Set<Location> get() {
+    public Set<Move> get() {
         return locations;
     }
 
@@ -77,18 +77,18 @@ public class MovePattern {
             if (row == 7) return this; // end of chessboard, should not happen
             else if (row == 1) // if still in original row, then it can go up two squares
                 if (chessboard.getPieceAt(col, row+1) == null && chessboard.getPieceAt(col, row+2) == null)
-                    locations.add(new Location(col, row+2));
+                    locations.add(new Move(col, row+2));
         } else /* if (myColor == Color.BLACK) */ {
             if (row == 0) return this;
             else if (row == 6)
                 if (chessboard.getPieceAt(col, row-1) == null && chessboard.getPieceAt(col, row-2) == null)
-                    locations.add(new Location(col, row-2));
+                    locations.add(new Move(col, row-2));
         }
 
         int dir = (myColor == Color.WHITE) ? 1 : -1;
 
         if (chessboard.getPieceAt(col, row+dir) == null) {
-            locations.add(new Location(col, row+dir));
+            locations.add(new Move(col, row+dir));
         }
 
         boolean leftPassant = false;
@@ -203,8 +203,8 @@ public class MovePattern {
      */
     public MovePattern validate(){
         var has_moved = chessboard.getPieceAt(pieceLocation).hasMoved();
-        ArrayList<Location> locations = new ArrayList<>(this.locations);
-        for (Location dest : locations) {
+        ArrayList<Move> locations = new ArrayList<>(this.locations);
+        for (Move dest : locations) {
             Chessboard nextMoveBoard = chessboard.clone();
             chessboard.getPieceAt(pieceLocation)._reset_movement(has_moved);
             nextMoveBoard._make_move(pieceLocation, dest);
@@ -219,7 +219,7 @@ public class MovePattern {
      * Adds a certain square to the pattern
      * @return the updated pattern
      */
-    public MovePattern addSquare(Location l){
+    public MovePattern addSquare(Move l){
         this.locations.add(l);
         return this;
     }
