@@ -27,7 +27,6 @@ public class MovePattern {
      * @param col        the column index of the location to check
      * @param row        the row index of the location to check
      * @param color      the player's color
-     * @param addIfEmpty add the destination location if it's empty (false for pawns)
      * @return true if it's needed to stop the iteration, false to continue
      */
     private boolean piece_can_take(int col, int row, Color color) {
@@ -122,10 +121,10 @@ public class MovePattern {
         var col = pieceLocation.col();
         var row = pieceLocation.row();
         for (int i = col + 1; i < 8; i++)
-            if (piece_can_take(row, i, myColor)) break;
+            if (piece_can_take(i, row, myColor)) break;
 
         for (int i = col - 1; i >= 0; i--) {
-            if (piece_can_take(row, i, myColor)) break;
+            if (piece_can_take(i, row, myColor)) break;
         }
         return this;
     }
@@ -139,9 +138,9 @@ public class MovePattern {
         var col = pieceLocation.col();
         var row = pieceLocation.row();
         for (int i = row + 1; i < 8; i++)
-            if (piece_can_take(i, col, myColor)) break;
+            if (piece_can_take(col, i, myColor)) break;
         for (int i = row - 1; i >= 0; i--)
-            if (piece_can_take(i, col, myColor)) break;
+            if (piece_can_take(col, i, myColor)) break;
 
         return this;
     }
@@ -156,16 +155,16 @@ public class MovePattern {
         var row = pieceLocation.row();
 
         for (int i = 1; i < 8; i++) {
-            if (piece_can_take(row + i, col + i, myColor)) break;
+            if (piece_can_take(col + i, row + i, myColor)) break;
         }
         for (int i = 1; i < 8; i++) {
-            if (piece_can_take(row + i, col - i, myColor)) break;
+            if (piece_can_take(col - i, row + i, myColor)) break;
         }
         for (int i = 1; i < 8; i++) {
-            if (piece_can_take(row - i, col + i, myColor)) break;
+            if (piece_can_take(col + i, row - i, myColor)) break;
         }
         for (int i = 1; i < 8; i++) {
-            if (piece_can_take(row - i, col - i, myColor)) break;
+            if (piece_can_take(col - i, row - i, myColor)) break;
         }
         return this;
     }
@@ -178,14 +177,14 @@ public class MovePattern {
     public MovePattern addKnight() {
         var col = pieceLocation.col();
         var row = pieceLocation.row();
-        piece_can_take(row + 2, col + 1, myColor);
-        piece_can_take(row + 2, col - 1, myColor);
-        piece_can_take(row + 1, col + 2, myColor);
-        piece_can_take(row + 1, col - 2, myColor);
-        piece_can_take(row - 2, col + 1, myColor);
-        piece_can_take(row - 2, col - 1, myColor);
-        piece_can_take(row - 1, col + 2, myColor);
-        piece_can_take(row - 1, col - 2, myColor);
+        piece_can_take(col + 1, row + 2, myColor);
+        piece_can_take(col - 1, row + 2, myColor);
+        piece_can_take(col + 2, row + 1, myColor);
+        piece_can_take(col - 2, row + 1, myColor);
+        piece_can_take(col + 1, row - 2, myColor);
+        piece_can_take(col - 1, row - 2, myColor);
+        piece_can_take(col + 2, row - 1, myColor);
+        piece_can_take(col - 2, row - 1, myColor);
         return this;
     }
 
@@ -197,14 +196,14 @@ public class MovePattern {
     public MovePattern addKing() {
         var col = pieceLocation.col();
         var row = pieceLocation.row();
-        piece_can_take(row + 1, col + 1, myColor);
-        piece_can_take(row + 1, col, myColor);
-        piece_can_take(row + 1, col - 1, myColor);
-        piece_can_take(row, col + 1, myColor);
-        piece_can_take(row, col - 1, myColor);
-        piece_can_take(row - 1, col + 1, myColor);
-        piece_can_take(row - 1, col, myColor);
-        piece_can_take(row - 1, col - 1, myColor);
+        piece_can_take(col + 1, row + 1, myColor);
+        piece_can_take(col, row + 1, myColor);
+        piece_can_take(col - 1, row + 1, myColor);
+        piece_can_take(col + 1, row, myColor);
+        piece_can_take(col - 1, row, myColor);
+        piece_can_take(col + 1, row - 1, myColor);
+        piece_can_take(col, row - 1, myColor);
+        piece_can_take(col - 1, row - 1, myColor);
 
         // castling
         King king = (King) chessboard.getPieceAt(pieceLocation);
