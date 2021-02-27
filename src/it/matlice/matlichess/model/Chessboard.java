@@ -7,7 +7,10 @@ import it.matlice.matlichess.model.pieces.King;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * The game field. It contains information about the location of the pieces on it.
@@ -147,7 +150,7 @@ public class Chessboard {
      * @param destination the final {@link Location}
      * @return the taken {@link Piece} if exists, else null
      */
-    public Piece _make_move(Location src, Location destination, MoveAction moveAction){
+    public Piece _make_move(Location src, Location destination, Supplier<Piece> moveAction){
         if(!getPieceAt(src).getColor().equals(turn)) throw new InvalidTurnException();
 
         halfMoveClock += 1; // increment now, capturing a piece or pushing a pawn will reset it
@@ -158,7 +161,7 @@ public class Chessboard {
         Piece toCapture = getPieceAt(destination); //if there's no piece taken, it will be null
         if (toCapture != null) removePiece(destination);
 
-        Piece possibleCapture = moveAction.action();
+        Piece possibleCapture = moveAction.get();
         if (possibleCapture != null) toCapture = possibleCapture;
 
         getPieceAt(src).hasBeenMoved(this, src, destination);
@@ -181,7 +184,7 @@ public class Chessboard {
     public Piece move(Location src, Location destination) {
         // TODO check if its correct player turn
         assert kings[0] != null && kings[1] != null;
-        MoveAction action = getPieceAt(src).getAction(this, destination, src);
+        Supplier<Piece> action = getPieceAt(src).getAction(this, destination, src);
         return _make_move(src, destination, action);
     }
 

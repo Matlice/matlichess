@@ -3,6 +3,7 @@ package it.matlice.matlichess.model;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * Abstract class to identify a general chess piece. It contains attributes which are the same for all the pieces
@@ -111,7 +112,7 @@ public abstract class Piece {
      * @param destination the move location to go to
      * @param myPosition
      */
-    public MoveAction getAction(Chessboard chessboard, Location destination, Location myPosition) {
+    public Supplier<Piece> getAction(Chessboard chessboard, Location destination, Location myPosition) {
         MoveList moves = getAvailableMoves(chessboard, myPosition);
         if (!moves.containsKey(destination)) throw new InvalidMoveException();
         return moves.get(destination);
