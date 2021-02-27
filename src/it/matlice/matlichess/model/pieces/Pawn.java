@@ -7,7 +7,7 @@ import it.matlice.matlichess.model.*;
  */
 public class Pawn extends Piece {
 
-    public Pawn(Color color){
+    public Pawn(Color color) {
         super("Pawn", "P", 1, color);
     }
 
@@ -19,8 +19,9 @@ public class Pawn extends Piece {
 
     /**
      * Notifies that the pawn has made its first move
+     *
      * @param from Where the piece started
-     * @param to Where the piece has been moved to
+     * @param to   Where the piece has been moved to
      */
     @Override
     public void hasBeenMoved(Chessboard c, Location from, Location to) {

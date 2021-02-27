@@ -6,17 +6,19 @@ public enum Color {
 
     public final int index;
     public final String name;
-    private Color(String name, int index){
+
+    Color(String name, int index) {
         this.index = index;
         this.name = name;
     }
 
     /**
      * Returns the opponent color
+     *
      * @return opponent color
      */
-    public Color opponent(){
-        if(this.index == 0) return BLACK;
+    public Color opponent() {
+        if (this.index == 0) return BLACK;
         return WHITE;
     }
 }

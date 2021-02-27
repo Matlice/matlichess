@@ -2,15 +2,12 @@ package it.matlice.matlichess.model.pieces;
 
 import it.matlice.matlichess.model.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 /**
  * Identifies the Rook Piece in a chess game
  */
 public class Rook extends Piece {
 
-    public Rook(Color color){
+    public Rook(Color color) {
         super("Rook", "R", 5, color);
     }
 

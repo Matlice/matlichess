@@ -11,11 +11,11 @@ import java.util.function.Supplier;
  */
 public abstract class Piece {
 
-    private String name;
-    private String shortName;
-    private int value;
-    private Color color;
     protected boolean has_moved = false;
+    private final String name;
+    private final String shortName;
+    private final int value;
+    private final Color color;
 
     public Piece(String name, String shortName, int value, Color color) {
         this.name = name;
@@ -26,19 +26,22 @@ public abstract class Piece {
 
     /**
      * Checks if the piece has already made a move
+     *
      * @return a boolean to describe if the piece has moved
      */
     public boolean hasMoved() {
         return has_moved;
     }
+
     public void _reset_movement(boolean v) {
         has_moved = v;
     }
 
     /**
      * Notifies that a piece has made its first move
+     *
      * @param from Where the piece started
-     * @param to Where the piece has been moved to
+     * @param to   Where the piece has been moved to
      */
     public void hasBeenMoved(Chessboard c, Location from, Location to) {
         this.has_moved = true;
@@ -46,6 +49,7 @@ public abstract class Piece {
 
     /**
      * Getter for the name of the piece
+     *
      * @return the name of the piece
      */
     public String getName() {
@@ -54,6 +58,7 @@ public abstract class Piece {
 
     /**
      * Getter for the color of the piece
+     *
      * @return the color of the piece
      */
     public Color getColor() {
@@ -62,6 +67,7 @@ public abstract class Piece {
 
     /**
      * Getter for the short name of the piece
+     *
      * @return the short name of the piece
      */
     public String getShortName() {
@@ -70,6 +76,7 @@ public abstract class Piece {
 
     /**
      * Getter for the value of the piece
+     *
      * @return the value of the piece
      */
     public int getValue() {
@@ -78,6 +85,7 @@ public abstract class Piece {
 
     /**
      * Describes the Locations reachable by a chess Piece without checking if the king is under attack
+     *
      * @param chessboard the {@link Chessboard} where are placed the pieces
      * @param myPosition the Position of the Piece
      * @return the MovePattern of the piece without checking if the king is under attack
@@ -86,29 +94,32 @@ public abstract class Piece {
 
     /**
      * Describes the Locations reachable by a chess Piece
+     *
      * @param chessboard the {@link Chessboard} where are placed the pieces
      * @param myPosition the Position of the Piece
      * @return the MovePattern of the piece
      */
-    public MoveList getAvailableMoves(Chessboard chessboard, Location myPosition){
+    public MoveList getAvailableMoves(Chessboard chessboard, Location myPosition) {
         return this.unvalidated_move_pattern(chessboard, myPosition).validate().get();
     }
 
     /**
      * Returns if the piece can move to a certain Location
-     * @param chessboard the {@link Chessboard} where are placed the pieces
+     *
+     * @param chessboard  the {@link Chessboard} where are placed the pieces
      * @param destination the final Position
-     * @param myPosition the Position of the Piece
+     * @param myPosition  the Position of the Piece
      * @return if the piece can move to a certain Location
      */
-    public boolean isMoveAllowed(Chessboard chessboard, Location destination, Location myPosition){
-        return getAvailableMoves(chessboard, myPosition).keySet().contains(destination);
+    public boolean isMoveAllowed(Chessboard chessboard, Location destination, Location myPosition) {
+        return getAvailableMoves(chessboard, myPosition).containsKey(destination);
     }
 
     /**
      * If you pass a generic move as destination (with only location set), this function returns the actual move to do,
      * with the action set if needed
-     * @param chessboard Chessboard
+     *
+     * @param chessboard  Chessboard
      * @param destination the move location to go to
      * @param myPosition
      */

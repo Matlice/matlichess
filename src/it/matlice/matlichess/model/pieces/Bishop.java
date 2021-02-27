@@ -2,15 +2,12 @@ package it.matlice.matlichess.model.pieces;
 
 import it.matlice.matlichess.model.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 /**
  * Identifies the Bishop Piece in a chess game
  */
 public class Bishop extends Piece {
 
-    public Bishop(Color color){
+    public Bishop(Color color) {
         super("Bishop", "B", 3, color);
     }
 
