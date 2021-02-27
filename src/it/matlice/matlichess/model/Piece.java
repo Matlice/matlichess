@@ -2,8 +2,6 @@ package it.matlice.matlichess.model;
 
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 
-import java.util.Set;
-
 /**
  * Abstract class to identify a general chess piece. It contains attributes which are the same for all the pieces
  * Every concrete piece which inherits this class will implements its unique way to move
@@ -31,11 +29,9 @@ public abstract class Piece {
      * Notifies that a piece has made its first move
      * @param from Where the piece started
      * @param to Where the piece has been moved to
-     * @return it will be used to allow the en Passant Move, returning the pawn that has just moved by two squares. for any other use, returns null
      */
-    public Piece hasBeenMoved(Chessboard c, Location from, Location to) {
+    public void hasBeenMoved(Chessboard c, Location from, Location to) {
         this.has_moved = true;
-        return null;
     }
 
     public Piece(String name, String shortName, int value, Color color) {
@@ -115,7 +111,7 @@ public abstract class Piece {
      */
     public MoveAction getAction(Chessboard chessboard, Location destination, Location myPosition) {
         MoveList moves = getAvailableMoves(chessboard, myPosition);
-        if (!moves.keySet().contains(destination)) throw new InvalidMoveException();
+        if (!moves.containsKey(destination)) throw new InvalidMoveException();
         return moves.get(destination);
     }
 

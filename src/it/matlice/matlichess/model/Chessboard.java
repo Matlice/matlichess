@@ -147,37 +147,28 @@ public class Chessboard {
      * @param destination the final {@link Location}
      * @return the taken {@link Piece} if exists, else null
      */
-    public Piece _make_move(Location src, Location destination){
+    public Piece _make_move(Location src, Location destination, MoveAction moveAction){
         if(!getPieceAt(src).getColor().equals(turn)) throw new InvalidTurnException();
 
         halfMoveClock += 1; // increment now, capturing a piece or pushing a pawn will reset it
         if (turn == Color.BLACK) fullMoveNumber += 1; // increments the number of the total moves
         changeTurn();
-
-        // this is a little tricky, in fact the function below `.hasBeenMoved( )` needs the old enPassantCapture to
-        // verify if it captures a pawn en passant, but it also needs to set the en passant target square for the next move
-        // i created a tmp variables that is used for the next turn and is set by setEnPassantTargetSquare but applied to
-        // the original variable only after `applyEnPassantTargetSquare`   ~ Enrico
-        tmpEnPassantTargetSquare = null;
+        enPassantTargetSquare = null;
 
         Piece toCapture = getPieceAt(destination); //if there's no piece taken, it will be null
-        removePiece(destination);
+        if (toCapture != null) removePiece(destination);
 
-        //if there is an en Passant Capture, it will assign the taken pawn to the variable toCapture
-        Piece enPassantCapture = getPieceAt(src).hasBeenMoved(this, src, destination);
+        Piece possibleCapture = moveAction.action();
+        if (possibleCapture != null) toCapture = possibleCapture;
 
-        enPassantTargetSquare = null;
-        applyEnPassantTargetSquare();
+        getPieceAt(src).hasBeenMoved(this, src, destination);
 
         if (toCapture != null) resetHalfMoveClock();
-        _set_piece_at(destination, getPieceAt(src));
 
+        _set_piece_at(destination, getPieceAt(src));
         chessboard[src.col()][src.row()] = null;
 
-        //manually removes the en Passant Taken Pawn, because the Location of the taken pawn is not equal to the destination
-        if (enPassantCapture != null) removePiece(new Location(destination.col(), src.row()));
-
-        return toCapture != null ? toCapture : enPassantCapture;
+        return toCapture;
     }
 
     /**
@@ -190,8 +181,9 @@ public class Chessboard {
     public Piece move(Location src, Location destination) {
         // TODO check if its correct player turn
         assert kings[0] != null && kings[1] != null;
-        if (!getPieceAt(src).isMoveAllowed(this, destination, src)) throw new InvalidMoveException();
-        return _make_move(src, destination);
+        // if (!getPieceAt(src).isMoveAllowed(this, destination, src)) throw new InvalidMoveException();
+        MoveAction action = getPieceAt(src).getAction(this, destination, src);
+        return _make_move(src, destination, action);
     }
 
     /**
@@ -210,12 +202,9 @@ public class Chessboard {
      * @param enPassantTargetSquare
      */
     public void setEnPassantTargetSquare(Location enPassantTargetSquare) {
-        this.tmpEnPassantTargetSquare = enPassantTargetSquare;
+        this.enPassantTargetSquare = enPassantTargetSquare;
     }
 
-    private void applyEnPassantTargetSquare() {
-        enPassantTargetSquare = tmpEnPassantTargetSquare;
-    }
 
     /**
      * Returns the opponent's King

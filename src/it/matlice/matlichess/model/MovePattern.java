@@ -1,5 +1,7 @@
 package it.matlice.matlichess.model;
 
+import it.matlice.matlichess.model.pieces.King;
+
 import java.util.*;
 
 /**
@@ -75,12 +77,18 @@ public class MovePattern {
             if (row == 7) return this; // end of chessboard, should not happen
             else if (row == 1) // if still in original row, then it can go up two squares
                 if (chessboard.getPieceAt(col, row+1) == null && chessboard.getPieceAt(col, row+2) == null)
-                    locations.put(col, row+2);
+                    locations.put(col, row+2, () -> {
+                        chessboard.setEnPassantTargetSquare(new Location(col, row+1));
+                        return null;
+                    });
         } else /* if (myColor == Color.BLACK) */ {
             if (row == 0) return this;
             else if (row == 6)
                 if (chessboard.getPieceAt(col, row-1) == null && chessboard.getPieceAt(col, row-2) == null)
-                    locations.put(col, row-2);
+                    locations.put(col, row-2, () -> {
+                        chessboard.setEnPassantTargetSquare(new Location(col, row-1));
+                        return null;
+                    });
         }
 
         int dir = (myColor == Color.WHITE) ? 1 : -1;
@@ -200,6 +208,27 @@ public class MovePattern {
         piece_can_take(row - 1, col + 1, myColor);
         piece_can_take(row - 1, col, myColor);
         piece_can_take(row - 1, col - 1, myColor);
+
+        // castling
+        King king = (King) chessboard.getPieceAt(pieceLocation);
+        if (king != null) {
+
+            int castlingRow = myColor.equals(Color.WHITE) ? 0 : 7;
+
+            if (king.canCastle(chessboard, "Queen"))
+                this.locations.put(2, castlingRow, () -> {
+                    // moving the tower after castling
+                    chessboard._make_move(new Location(0, castlingRow), new Location(3, castlingRow), () -> null);
+                    return null;
+                });
+            if (king.canCastle(chessboard, "King"))
+                this.locations.put(6, castlingRow, () -> {
+                    // moving the tower after castling
+                    chessboard._make_move(new Location(7, castlingRow), new Location(5, castlingRow), () -> null);
+                    return null;
+                });
+        }
+
         return this;
     }
 
@@ -217,7 +246,7 @@ public class MovePattern {
         for (Location dest : locations.keySet()) {
             Chessboard nextMoveBoard = chessboard.clone();
             chessboard.getPieceAt(pieceLocation)._reset_movement(has_moved);
-            nextMoveBoard._make_move(pieceLocation, dest);
+            nextMoveBoard._make_move(pieceLocation, dest, () -> null);
             if (chessboard.getKing(this.myColor).isUnderCheck(nextMoveBoard))
                 validatedLocations.remove(dest);
             chessboard.getPieceAt(pieceLocation)._reset_movement(has_moved);
@@ -231,8 +260,8 @@ public class MovePattern {
      * Adds a certain square to the pattern
      * @return the updated pattern
      */
-    public MovePattern addSquare(Location l){
-        this.locations.put(l);
+    public MovePattern addSquare(Location l, MoveAction action){
+        this.locations.put(l, action);
         return this;
     }
 }

@@ -3,7 +3,6 @@ package it.matlice.matlichess.model.pieces;
 import it.matlice.matlichess.model.*;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Identifies the King Piece in a chess game
@@ -134,45 +133,8 @@ public class King extends Piece {
 
     @Override
     public MovePattern unvalidated_move_pattern(Chessboard chessboard, Location myPosition) {
-        return new MovePattern(chessboard, myPosition, this.getColor()).addKing();
+        return new MovePattern(chessboard, myPosition, this.getColor())
+                .addKing();
     }
 
-    /**
-     * Describes the Locations reachable by a chess Piece
-     *
-     * @param chessboard the {@link Chessboard} where are placed the pieces
-     * @param myPosition the Position of the Piece
-     * @return the MovePattern of the piece
-     */
-    @Override
-    public MoveList getAvailableMoves(Chessboard chessboard, Location myPosition) {
-        var mp = this.unvalidated_move_pattern(chessboard, myPosition);
-        if (canCastle(chessboard, "Queen"))
-            mp.addSquare(this.getColor().equals(Color.WHITE) ? new Location("C1") : new Location("C8"));
-        if (canCastle(chessboard, "King"))
-            mp.addSquare(this.getColor().equals(Color.WHITE) ? new Location("G1") : new Location("G8"));
-        return mp.validate().get();
-    }
-
-    /**
-     * Notifies that the king has made its first move
-     *
-     * @param from Where the piece started
-     * @param to   Where the piece has been moved to
-     * @return returns null in this particular case
-     */
-    @Override
-    public Piece hasBeenMoved(Chessboard c, Location from, Location to) {
-        if (!this.hasMoved()) {
-            if (this.getColor().equals(Color.WHITE) && to.equals(new Location("C1")))
-                c._make_move(new Location("A1"), new Location("D1"));
-            if (this.getColor().equals(Color.WHITE) && to.equals(new Location("G1")))
-                c._make_move(new Location("H1"), new Location("F1"));
-            if (this.getColor().equals(Color.BLACK) && to.equals(new Location("C8")))
-                c._make_move(new Location("A8"), new Location("D8"));
-            if (this.getColor().equals(Color.BLACK) && to.equals(new Location("G8")))
-                c._make_move(new Location("H8"), new Location("F8"));
-        }
-        return super.hasBeenMoved(c, from, to);
-    }
 }
