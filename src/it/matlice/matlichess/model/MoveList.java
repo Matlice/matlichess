@@ -1,26 +1,27 @@
 package it.matlice.matlichess.model;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
-public class MoveList extends HashMap<Location, MoveAction> {
+public class MoveList extends HashMap<Location, Supplier<Piece>> {
 
-    public MoveAction put(String key, MoveAction action) {
+    public Supplier<Piece> put(String key, Supplier<Piece> action) {
         return super.put(new Location(key), action);
     }
 
-    public MoveAction put(int col, int row, MoveAction action) {
+    public Supplier<Piece> put(int col, int row, Supplier<Piece> action) {
         return super.put(new Location(col, row), action);
     }
 
-    public MoveAction put(Location key) {
+    public Supplier<Piece> put(Location key) {
         return super.put(key, () -> null);
     }
 
-    public MoveAction put(String key) {
+    public Supplier<Piece> put(String key) {
         return super.put(new Location(key), () -> null);
     }
 
-    public MoveAction put(int col, int row) {
+    public Supplier<Piece> put(int col, int row) {
         return super.put(new Location(col, row), () -> null);
     }
 

@@ -2,15 +2,12 @@ package it.matlice.matlichess.model.pieces;
 
 import it.matlice.matlichess.model.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 /**
  * Identifies the Queen Piece in a chess game
  */
 public class Queen extends Piece {
 
-    public Queen(Color color){
+    public Queen(Color color) {
         super("Queen", "Q", 9, color);
     }
 

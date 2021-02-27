@@ -7,7 +7,7 @@ import it.matlice.matlichess.model.*;
  */
 public class Pawn extends Piece {
 
-    public Pawn(Color color){
+    public Pawn(Color color) {
         super("Pawn", "P", 1, color);
     }
 

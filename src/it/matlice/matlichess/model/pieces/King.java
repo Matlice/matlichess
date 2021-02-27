@@ -32,7 +32,7 @@ public class King extends Piece {
                 // value contains an opponent Piece and his Location
                 if (value.getKey().getColor().equals(this.getColor().opponent()))
                     // unvalidated_move_pattern is used because is not necessary to move the opponent piece to check
-                    if (value.getKey().unvalidated_move_pattern(chessboard, value.getValue()).get().keySet().contains(location))
+                    if (value.getKey().unvalidated_move_pattern(chessboard, value.getValue()).get().containsKey(location))
                         return true;
             }
         }
@@ -98,15 +98,12 @@ public class King extends Piece {
                 if (this.getColor().equals(Color.WHITE)) {
                     if (c.getPieceAt(new Location("D1")) != null || c.getPieceAt(new Location("C1")) != null || c.getPieceAt(new Location("B1")) != null)
                         return false;
-                    if (this.isUnderCheck(c, new Location("D1")) || this.isUnderCheck(c, new Location("C1")))
-                        return false;
+                    return !this.isUnderCheck(c, new Location("D1")) && !this.isUnderCheck(c, new Location("C1"));
                 } else {
                     if (c.getPieceAt(new Location("D8")) != null || c.getPieceAt(new Location("C8")) != null || c.getPieceAt(new Location("B8")) != null)
                         return false;
-                    if (this.isUnderCheck(c, new Location("D8")) || this.isUnderCheck(c, new Location("C8")))
-                        return false;
+                    return !this.isUnderCheck(c, new Location("D8")) && !this.isUnderCheck(c, new Location("C8"));
                 }
-                return true;
             }
             case "King": {
                 //castling king side
@@ -118,15 +115,12 @@ public class King extends Piece {
                 if (this.getColor().equals(Color.WHITE)) {
                     if (c.getPieceAt(new Location("F1")) != null || c.getPieceAt(new Location("G1")) != null)
                         return false;
-                    if (this.isUnderCheck(c, new Location("F1")) || this.isUnderCheck(c, new Location("G1")))
-                        return false;
+                    return !this.isUnderCheck(c, new Location("F1")) && !this.isUnderCheck(c, new Location("G1"));
                 } else {
                     if (c.getPieceAt(new Location("F8")) != null || c.getPieceAt(new Location("G8")) != null)
                         return false;
-                    if (this.isUnderCheck(c, new Location("F8")) || this.isUnderCheck(c, new Location("G8")))
-                        return false;
+                    return !this.isUnderCheck(c, new Location("F8")) && !this.isUnderCheck(c, new Location("G8"));
                 }
-                return true;
             }
             default:
                 return false;

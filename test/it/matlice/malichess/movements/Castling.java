@@ -1,5 +1,6 @@
 package it.matlice.malichess.movements;
 
+import it.matlice.malichess.ChessboardTest;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.model.Color;
@@ -15,7 +16,7 @@ public class Castling {
     @Test
     public void basicCastling() {
 
-        Chessboard c = new Chessboard();
+        ChessboardTest c = new ChessboardTest();
 
         King k1 = new King(Color.WHITE);
         King k2 = new King(Color.BLACK);

@@ -1,5 +1,6 @@
 package it.matlice.malichess.movements;
 
+import it.matlice.malichess.ChessboardTest;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.model.Color;
@@ -20,7 +21,7 @@ public class NormalMovement {
         Rook r5 = new Rook(Color.BLACK);
         Rook r6 = new Rook(Color.BLACK);
 
-        Chessboard c = new Chessboard();
+        ChessboardTest c = new ChessboardTest();
         c.setKing(k1, new Location("C7"));
         c.setKing(k2, new Location("G7"));
 
@@ -49,7 +50,7 @@ public class NormalMovement {
         Bishop b3 = new Bishop(Color.BLACK);
         Pawn p1 = new Pawn(Color.BLACK);
 
-        Chessboard c = new Chessboard();
+        ChessboardTest c = new ChessboardTest();
         c.setKing(k1, new Location("C7"));
         c.setKing(k2, new Location("G7"));
 
@@ -82,7 +83,7 @@ public class NormalMovement {
         Queen q2 = new Queen(Color.WHITE);
         Queen q3 = new Queen(Color.BLACK);
 
-        Chessboard c = new Chessboard();
+        ChessboardTest c = new ChessboardTest();
         c.setKing(k1, new Location("C7"));
         c.setKing(k2, new Location("G7"));
 
@@ -109,7 +110,7 @@ public class NormalMovement {
         Knight kn2 = new Knight(Color.WHITE);
         Knight kn3 = new Knight(Color.BLACK);
 
-        Chessboard c = new Chessboard();
+        ChessboardTest c = new ChessboardTest();
         c.setKing(k1, new Location("C7"));
         c.setKing(k2, new Location("G7"));
 

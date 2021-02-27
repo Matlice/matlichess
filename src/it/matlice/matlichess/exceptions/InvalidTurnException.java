@@ -1,4 +1,4 @@
 package it.matlice.matlichess.exceptions;
 
-public class InvalidTurnException extends RuntimeException{
+public class InvalidTurnException extends RuntimeException {
 }
