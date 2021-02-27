@@ -119,8 +119,9 @@ public class MovePattern {
         } else if(moveTarget.equals(chessboard.getEnPassantTargetSquare())) {
             // left en passant
             locations.put(moveTarget, () -> {
+                Piece p = chessboard.getPieceAt(enPassantTarget);
                 chessboard.removePiece(enPassantTarget);
-                return null;
+                return p;
             } );
         }
     }
@@ -223,13 +224,19 @@ public class MovePattern {
             if (king.canCastle(chessboard, "Queen"))
                 this.locations.put(2, castlingRow, () -> {
                     // moving the tower after castling
-                    chessboard._set_piece_at(new Location(3, castlingRow), chessboard.getPieceAt(new Location(0, castlingRow)));
+                    Piece castlingRook = chessboard.getPieceAt(new Location(0, castlingRow));
+                    castlingRook.hasBeenMoved(chessboard);
+                    chessboard._set_piece_at(new Location(3, castlingRow), castlingRook);
+                    chessboard.removePiece(new Location(0, castlingRow));
                     return null;
                 });
             if (king.canCastle(chessboard, "King"))
                 this.locations.put(6, castlingRow, () -> {
                     // moving the tower after castling
-                    chessboard._set_piece_at(new Location(5, castlingRow), chessboard.getPieceAt(new Location(7, castlingRow)));
+                    Piece castlingRook = chessboard.getPieceAt(new Location(7, castlingRow));
+                    castlingRook.hasBeenMoved(chessboard);
+                    chessboard._set_piece_at(new Location(5, castlingRow), castlingRook);
+                    chessboard.removePiece(new Location(7, castlingRow));
                     return null;
                 });
         }

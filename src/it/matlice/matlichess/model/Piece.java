@@ -36,10 +36,8 @@ public abstract class Piece {
 
     /**
      * Notifies that a piece has made its first move
-     * @param from Where the piece started
-     * @param to Where the piece has been moved to
      */
-    public void hasBeenMoved(Chessboard c, Location from, Location to) {
+    public void hasBeenMoved(Chessboard c) {
         this.has_moved = true;
     }
 

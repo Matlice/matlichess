@@ -1,7 +1,6 @@
 package it.matlice.matlichess.model;
 
 import it.matlice.matlichess.exceptions.ChessboardLocationException;
-import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.pieces.King;
 
@@ -161,7 +160,7 @@ public class Chessboard {
         Piece possibleCapture = moveAction.action();
         if (possibleCapture != null) toCapture = possibleCapture;
 
-        getPieceAt(src).hasBeenMoved(this, src, destination);
+        getPieceAt(src).hasBeenMoved(this);
 
         if (toCapture != null) resetHalfMoveClock();
 

@@ -19,13 +19,11 @@ public class Pawn extends Piece {
 
     /**
      * Notifies that the pawn has made its first move
-     * @param from Where the piece started
-     * @param to Where the piece has been moved to
      */
     @Override
-    public void hasBeenMoved(Chessboard c, Location from, Location to) {
+    public void hasBeenMoved(Chessboard c) {
         c.resetHalfMoveClock();
-        super.hasBeenMoved(c, from, to);
+        super.hasBeenMoved(c);
     }
 
     @Override

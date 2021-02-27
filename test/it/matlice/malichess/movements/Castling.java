@@ -33,8 +33,6 @@ public class Castling {
         c.setPiece(r5, new Location("A8"));
         c.setPiece(r6, new Location("H8"));
 
-        System.out.println(c);
-
         assertDoesNotThrow(() -> c.clone().move("E1", "C1"));
         assertDoesNotThrow(() -> c.clone().move("E1", "G1"));
 
@@ -46,8 +44,6 @@ public class Castling {
         Bishop b9 = new Bishop(Color.BLACK);
 
         c.setPiece(b9, new Location("D3"));
-
-        System.out.println(c);
 
         c.changeTurn();
         assertDoesNotThrow(() -> c.clone().move("E1", "C1"));
@@ -62,6 +58,25 @@ public class Castling {
         c.changeTurn();
         assertDoesNotThrow(() -> c.clone().move("E8", "C8"));
         assertDoesNotThrow(() -> c.clone().move("E8", "G8"));
+
+
+        c.move("E8", "D8");
+        c.move("h1", "g1");
+        c.move("D8", "E8");
+        c.move("g1", "h1");
+
+        assertThrows(InvalidMoveException.class, () -> c.clone().move("E8", "C8"));
+        assertThrows(InvalidMoveException.class, () -> c.clone().move("E8", "G8"));
+
+        c.move("d3", "e4");
+
+        assertThrows(InvalidMoveException.class, () -> c.clone().move("E1", "G1"));
+        c.move("h1", "g1");
+        c.move("c6", "e6");
+
+        assertDoesNotThrow(() -> c.move("e1", "c1"));
+        System.out.println(c);
+
 
     }
 
