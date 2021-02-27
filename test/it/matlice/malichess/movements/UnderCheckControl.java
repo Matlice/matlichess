@@ -1,5 +1,6 @@
 package it.matlice.malichess.movements;
 
+import it.matlice.malichess.ChessboardTest;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.model.Color;
@@ -20,7 +21,7 @@ public class UnderCheckControl {
         Queen q = new Queen(Color.WHITE);
         Knight kn = new Knight(Color.WHITE);
 
-        Chessboard c = new Chessboard();
+        ChessboardTest c = new ChessboardTest();
         c.setKing(k1, new Location("E1"));
         c.setKing(k2, new Location("E8"));
 
@@ -81,7 +82,7 @@ public class UnderCheckControl {
         Queen q = new Queen(Color.WHITE);
         Knight kn = new Knight(Color.WHITE);
 
-        Chessboard c = new Chessboard();
+        ChessboardTest c = new ChessboardTest();
         c.setKing(k1, new Location("E1"));
         c.setKing(k2, new Location("E8"));
 
@@ -112,7 +113,7 @@ public class UnderCheckControl {
         Queen q = new Queen(Color.WHITE);
         Rook r = new Rook(Color.BLACK);
 
-        Chessboard c = new Chessboard();
+        ChessboardTest c = new ChessboardTest();
         c.setKing(k1, new Location("E1"));
         c.setKing(k2, new Location("E8"));
 

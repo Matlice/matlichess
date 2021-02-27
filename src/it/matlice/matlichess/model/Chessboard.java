@@ -155,7 +155,7 @@ public class Chessboard {
     /**
      * Change the turn
      */
-    public void changeTurn() {
+    protected void changeTurn() {
         turn = turn.opponent();
     }
 

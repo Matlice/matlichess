@@ -1,5 +1,6 @@
 package it.matlice.malichess.movements;
 
+import it.matlice.malichess.ChessboardTest;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.model.Color;
@@ -26,7 +27,7 @@ public class PawnMoves {
         Pawn p8 = new Pawn(Color.BLACK);
         Pawn p9 = new Pawn(Color.BLACK);
 
-        Chessboard c = new Chessboard();
+        ChessboardTest c = new ChessboardTest();
         c.setKing(k1, new Location("E1"));
         c.setKing(k2, new Location("E8"));
 

@@ -1,5 +1,6 @@
 package it.matlice.malichess.chessboard;
 
+import it.matlice.malichess.ChessboardTest;
 import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.model.Color;
 import it.matlice.matlichess.model.Location;
@@ -9,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ToFEN {
 
-    static Chessboard c = new Chessboard();
+    static ChessboardTest c = new ChessboardTest();
 
     public static void setupStartingPosition() {
-        c = new Chessboard();
+        c = new ChessboardTest();
 
         c.setPiece(new Rook(Color.WHITE), "A1");
         c.setPiece(new Knight(Color.WHITE), "B1");
