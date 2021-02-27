@@ -91,7 +91,7 @@ public abstract class Piece {
      * @param myPosition the Position of the Piece
      * @return the MovePattern of the piece
      */
-    public Set<Move> getAvailableMoves(Chessboard chessboard, Location myPosition){
+    public MoveList getAvailableMoves(Chessboard chessboard, Location myPosition){
         return this.unvalidated_move_pattern(chessboard, myPosition).validate().get();
     }
 
@@ -102,8 +102,8 @@ public abstract class Piece {
      * @param myPosition the Position of the Piece
      * @return if the piece can move to a certain Location
      */
-    public boolean isMoveAllowed(Chessboard chessboard, Move destination, Location myPosition){
-        return getAvailableMoves(chessboard, myPosition).contains(destination);
+    public boolean isMoveAllowed(Chessboard chessboard, Location destination, Location myPosition){
+        return getAvailableMoves(chessboard, myPosition).keySet().contains(destination);
     }
 
     /**
@@ -113,10 +113,10 @@ public abstract class Piece {
      * @param destination the move location to go to
      * @param myPosition
      */
-    public Move getMove(Chessboard chessboard, Move destination, Location myPosition) {
-        Set<Move> moves = getAvailableMoves(chessboard, myPosition); // change to map
-        if (!moves.contains(destination)) throw new InvalidMoveException();
-        // return moves.get(move);
+    public MoveAction getAction(Chessboard chessboard, Location destination, Location myPosition) {
+        MoveList moves = getAvailableMoves(chessboard, myPosition);
+        if (!moves.keySet().contains(destination)) throw new InvalidMoveException();
+        return moves.get(destination);
     }
 
 }
