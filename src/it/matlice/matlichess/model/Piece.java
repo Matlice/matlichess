@@ -1,5 +1,7 @@
 package it.matlice.matlichess.model;
 
+import it.matlice.matlichess.exceptions.InvalidMoveException;
+
 import java.util.Set;
 
 /**
@@ -102,6 +104,19 @@ public abstract class Piece {
      */
     public boolean isMoveAllowed(Chessboard chessboard, Move destination, Location myPosition){
         return getAvailableMoves(chessboard, myPosition).contains(destination);
+    }
+
+    /**
+     * If you pass a generic move as destination (with only location set), this function returns the actual move to do,
+     * with the action set if needed
+     * @param chessboard Chessboard
+     * @param destination the move location to go to
+     * @param myPosition
+     */
+    public Move getMove(Chessboard chessboard, Move destination, Location myPosition) {
+        Set<Move> moves = getAvailableMoves(chessboard, myPosition); // change to map
+        if (!moves.contains(destination)) throw new InvalidMoveException();
+        // return moves.get(move);
     }
 
 }

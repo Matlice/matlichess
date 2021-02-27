@@ -21,15 +21,15 @@ public class Move {
     }
 
     public Move(Location location) {
-        this(location, () -> {});
+        this(location, () -> null);
     }
 
     public Move(String location) {
-        this(location, () -> {});
+        this(location, () -> null);
     }
 
     public Move(int col, int row) {
-        this(col, row, () -> {});
+        this(col, row, () -> null);
     }
 
     public Location getLocation() {

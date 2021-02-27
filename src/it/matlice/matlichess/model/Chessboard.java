@@ -190,7 +190,7 @@ public class Chessboard {
     public Piece move(Location src, Move destination) {
         // TODO check if its correct player turn
         assert kings[0] != null && kings[1] != null;
-        if (!getPieceAt(src).isMoveAllowed(this, destination, src)) throw new InvalidMoveException();
+        if (!getPieceAt(src).isMoveAllowed(this, destination, src))
         return _make_move(src, destination);
     }
 
@@ -198,7 +198,7 @@ public class Chessboard {
      * Checks if a piece is allowed to move to a certain box, then takes the piece in a {@link Location} and moves it to the new box.
      * If the final box is occupied, it removes the old piece and replaces it with the new one
      * @param src String containing the official notation of the Location
-     * @param destination the final {@link Location}
+     * @param destination the final {@link Location} as string ("A4")
      * @return the taken {@link Piece} if exists, else null
      */
     public Piece move(String src, String destination) {

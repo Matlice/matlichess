@@ -91,19 +91,28 @@ public class MovePattern {
             locations.add(new Move(col, row+dir));
         }
 
-        boolean leftPassant = false;
-        boolean rightPassant = false;
+        Location target = new Location(col-1, row+dir);
+        Location passantTarget = new Location(col-1, row);
+        if (col > 0) _pawnCapture(chessboard, myColor, target, passantTarget);
 
-        if (col > 0){
-            if(new Location(col-1, row+dir).equals(chessboard.getEnPassantTargetSquare())) leftPassant = true;
-            piece_can_take(col-1, row+dir, myColor, leftPassant);
-        }
-        if (col < 7){
-            if(new Location(col+1, row+dir).equals(chessboard.getEnPassantTargetSquare())) rightPassant = true;
-            piece_can_take(col+1, row+dir, myColor, rightPassant);
-        }
+        target = new Location(col+1, row+dir);
+        passantTarget = new Location(col+1, row);
+        if (col < 7) _pawnCapture(chessboard, myColor, target, passantTarget);
 
         return this;
+    }
+
+    private void _pawnCapture(Chessboard chessboard, Color myColor, Location moveTarget, Location enPassantTarget) {
+        if (chessboard.getPieceAt(moveTarget) != null) {
+            if (chessboard.getPieceAt(moveTarget).getColor().equals(myColor.opponent()))
+                locations.add(new Move(moveTarget));
+        } else if(moveTarget.equals(chessboard.getEnPassantTargetSquare())) {
+            // left en passant
+            locations.add(new Move(moveTarget, () -> {
+                chessboard.removePiece(enPassantTarget);
+                return null;
+            } ));
+        }
     }
 
     /**
