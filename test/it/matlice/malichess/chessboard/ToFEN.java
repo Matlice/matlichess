@@ -3,7 +3,6 @@ package it.matlice.malichess.chessboard;
 import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.model.Color;
 import it.matlice.matlichess.model.Location;
-import it.matlice.matlichess.model.Move;
 import it.matlice.matlichess.model.pieces.*;
 
 import static org.junit.jupiter.api.Assertions.*;

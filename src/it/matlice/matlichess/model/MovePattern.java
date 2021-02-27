@@ -38,7 +38,7 @@ public class MovePattern {
                 locations.put(col, row);
             return true;
         }
-        if (addIfEmpty) locations.put(col, row);
+        locations.put(col, row);
         return false;
     }
 
@@ -53,18 +53,12 @@ public class MovePattern {
      */
     private boolean piece_can_take(int row, int col, Color color) {
         return piece_can_take(col, row, color, true);
+        // TODO remove this, no more used, ifEmpty is always true
     }
 
     /**
-     * Returns the saved locations
-     * @return the saved locations
-     */
-    public MoveList get() {
-        return locations;
-    }
-
-    /**
-     * Pattern to add the reachable locations by a pawn, including the first move skipping two squares and the adjacent diagonals when it can take a piece
+     * Pattern to add the reachable locations by a pawn, including the first move skipping two squares and
+     * the adjacent diagonals when it can take a piece, and en passant when it can
      * @return the updated pattern
      */
     public MovePattern addPawn() {
@@ -73,6 +67,7 @@ public class MovePattern {
 
         // todo add promotion
 
+        // forward movements
         if (myColor == Color.WHITE) {
             if (row == 7) return this; // end of chessboard, should not happen
             else if (row == 1) // if still in original row, then it can go up two squares
@@ -97,6 +92,7 @@ public class MovePattern {
             locations.put(col, row+dir);
         }
 
+        // diagonal capture and en passant
         Location target = new Location(col-1, row+dir);
         Location passantTarget = new Location(col-1, row);
         if (col > 0) _pawnCapture(chessboard, myColor, target, passantTarget);
@@ -108,8 +104,16 @@ public class MovePattern {
         return this;
     }
 
+    /**
+     * Evaluates whether a pawn can capture a piece diagonally, or capture a pawn en passant
+     * @param chessboard chessboard
+     * @param myColor color
+     * @param moveTarget the target location the pawn can capture and move to
+     * @param enPassantTarget the location of the other pawn that can be captured en passant
+     */
     private void _pawnCapture(Chessboard chessboard, Color myColor, Location moveTarget, Location enPassantTarget) {
         if (chessboard.getPieceAt(moveTarget) != null) {
+            // normal diagonal capture
             if (chessboard.getPieceAt(moveTarget).getColor().equals(myColor.opponent()))
                 locations.put(moveTarget);
         } else if(moveTarget.equals(chessboard.getEnPassantTargetSquare())) {
@@ -213,18 +217,19 @@ public class MovePattern {
         King king = (King) chessboard.getPieceAt(pieceLocation);
         if (king != null) {
 
+            // since the castling moves are symmetrical, the only thing that changes is the row
             int castlingRow = myColor.equals(Color.WHITE) ? 0 : 7;
 
             if (king.canCastle(chessboard, "Queen"))
                 this.locations.put(2, castlingRow, () -> {
                     // moving the tower after castling
-                    chessboard._make_move(new Location(0, castlingRow), new Location(3, castlingRow), () -> null);
+                    chessboard._set_piece_at(new Location(3, castlingRow), chessboard.getPieceAt(new Location(0, castlingRow)));
                     return null;
                 });
             if (king.canCastle(chessboard, "King"))
                 this.locations.put(6, castlingRow, () -> {
                     // moving the tower after castling
-                    chessboard._make_move(new Location(7, castlingRow), new Location(5, castlingRow), () -> null);
+                    chessboard._set_piece_at(new Location(5, castlingRow), chessboard.getPieceAt(new Location(7, castlingRow)));
                     return null;
                 });
         }
@@ -257,11 +262,11 @@ public class MovePattern {
     }
 
     /**
-     * Adds a certain square to the pattern
-     * @return the updated pattern
+     * Returns the saved locations
+     * @return the saved locations
      */
-    public MovePattern addSquare(Location l, MoveAction action){
-        this.locations.put(l, action);
-        return this;
+    public MoveList get() {
+        return locations;
     }
+
 }

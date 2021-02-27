@@ -2,6 +2,8 @@ package it.matlice.matlichess.model;
 
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 
+import java.util.Objects;
+
 /**
  * Abstract class to identify a general chess piece. It contains attributes which are the same for all the pieces
  * Every concrete piece which inherits this class will implements its unique way to move
@@ -12,7 +14,14 @@ public abstract class Piece {
     private String shortName;
     private int value;
     private Color color;
-    private boolean has_moved = false;
+    protected boolean has_moved = false;
+
+    public Piece(String name, String shortName, int value, Color color) {
+        this.name = name;
+        this.shortName = shortName;
+        this.value = value;
+        this.color = color;
+    }
 
     /**
      * Checks if the piece has already made a move
@@ -32,13 +41,6 @@ public abstract class Piece {
      */
     public void hasBeenMoved(Chessboard c, Location from, Location to) {
         this.has_moved = true;
-    }
-
-    public Piece(String name, String shortName, int value, Color color) {
-        this.name = name;
-        this.shortName = shortName;
-        this.value = value;
-        this.color = color;
     }
 
     /**
@@ -113,6 +115,16 @@ public abstract class Piece {
         MoveList moves = getAvailableMoves(chessboard, myPosition);
         if (!moves.containsKey(destination)) throw new InvalidMoveException();
         return moves.get(destination);
+    }
+
+    public abstract Piece clone();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Piece piece = (Piece) o;
+        return value == piece.value && has_moved == piece.has_moved && Objects.equals(name, piece.name) && Objects.equals(shortName, piece.shortName) && color == piece.color;
     }
 
 }

@@ -20,4 +20,12 @@ public class Rook extends Piece {
                 .addColumn()
                 .addRow();
     }
+
+    @Override
+    public Piece clone() {
+        var clone = new Rook(this.getColor());
+        clone.has_moved = this.has_moved;
+        return clone;
+    }
+
 }

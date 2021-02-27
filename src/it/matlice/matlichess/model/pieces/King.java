@@ -137,4 +137,11 @@ public class King extends Piece {
                 .addKing();
     }
 
+    @Override
+    public Piece clone() {
+        var clone = new King(this.getColor());
+        clone.has_moved = this.has_moved;
+        return clone;
+    }
+
 }

@@ -37,7 +37,7 @@ public class Chessboard {
      * @param loc the {@link Location} of the box
      * @param p the chess {@link Piece} to put
      */
-    private void _set_piece_at(Location loc, Piece p) {
+    public void _set_piece_at(Location loc, Piece p) {
         chessboard[loc.col()][loc.row()] = p;
         if(!pieces.containsKey(p.getName())) pieces.put(p.getName(), new HashMap<Piece, Location>());
         pieces.get(p.getName()).put(p, loc);
@@ -181,7 +181,6 @@ public class Chessboard {
     public Piece move(Location src, Location destination) {
         // TODO check if its correct player turn
         assert kings[0] != null && kings[1] != null;
-        // if (!getPieceAt(src).isMoveAllowed(this, destination, src)) throw new InvalidMoveException();
         MoveAction action = getPieceAt(src).getAction(this, destination, src);
         return _make_move(src, destination, action);
     }
@@ -240,8 +239,19 @@ public class Chessboard {
      */
     public Chessboard clone(){
         Chessboard cloned = new Chessboard();
-        this.forEachPiece(cloned::setPiece);
+
+
+        final King[] kings = new King[]{null, null};
         cloned.kings = new King[]{this.kings[0], this.kings[1]};
+        this.forEachPiece((Piece p, Location l) -> {
+            var c = p.clone();
+            cloned.setPiece(c, l);
+            if(c instanceof King)
+                kings[c.getColor().index] = (King) c;
+        });
+        cloned.kings = kings;
+
+
         cloned.enPassantTargetSquare = this.enPassantTargetSquare;
         cloned.fullMoveNumber = this.fullMoveNumber;
         cloned.halfMoveClock = this.halfMoveClock;

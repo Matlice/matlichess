@@ -27,4 +27,12 @@ public class Pawn extends Piece {
         c.resetHalfMoveClock();
         super.hasBeenMoved(c, from, to);
     }
+
+    @Override
+    public Piece clone() {
+        var clone = new Pawn(this.getColor());
+        clone.has_moved = this.has_moved;
+        return clone;
+    }
+
 }

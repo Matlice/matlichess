@@ -4,7 +4,6 @@ import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.model.Color;
 import it.matlice.matlichess.model.Location;
-import it.matlice.matlichess.model.Move;
 import it.matlice.matlichess.model.pieces.King;
 import it.matlice.matlichess.model.pieces.Pawn;
 
@@ -54,7 +53,7 @@ public class PawnMoves {
         c.move("C5", "C4");
         c.move("D2", "D4");
         assertDoesNotThrow(() -> c.clone().move("C4", "D3"));
-        
+
         c.move("C4", "D3");
         c.move("E2", "D3");
 

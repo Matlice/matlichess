@@ -11,6 +11,10 @@ public enum Color {
         this.name = name;
     }
 
+    /**
+     * Returns the opponent color
+     * @return opponent color
+     */
     public Color opponent(){
         if(this.index == 0) return BLACK;
         return WHITE;
