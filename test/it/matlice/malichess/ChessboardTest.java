@@ -21,9 +21,6 @@ public class ChessboardTest extends Chessboard {
     }
 
     public ChessboardTest(Chessboard c) {
-            var me = ChessboardTest.class;
-            var ch = Chessboard.class;
-
         _copy_private_field(this, c, "chessboard");
         _copy_private_field(this, c, "pieces");
         _copy_private_field(this, c, "kings");
