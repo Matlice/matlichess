@@ -2,7 +2,7 @@ package it.matlice.matlichess.model;
 
 import it.matlice.matlichess.exceptions.ChessboardLocationException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
-import it.matlice.matlichess.model.pieces.King;
+import it.matlice.matlichess.model.pieces.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,6 @@ public class Chessboard {
     private Color turn = Color.WHITE;
 
     private Location enPassantTargetSquare = null;
-    private Location tmpEnPassantTargetSquare = null;
 
     // this is the number of halfMoves since the last capture or pawn advance.
     // The reason for this field is that the value is used in the fifty-move rule.
@@ -40,7 +39,7 @@ public class Chessboard {
      */
     public void _set_piece_at(Location loc, Piece p) {
         chessboard[loc.col()][loc.row()] = p;
-        if (!pieces.containsKey(p.getName())) pieces.put(p.getName(), new HashMap<Piece, Location>());
+        if (!pieces.containsKey(p.getName())) pieces.put(p.getName(), new HashMap<>());
         pieces.get(p.getName()).put(p, loc);
     }
 
@@ -119,7 +118,7 @@ public class Chessboard {
     /**
      * Sets the square skipped by the pawn that has moved by two squares
      *
-     * @param enPassantTargetSquare
+     * @param enPassantTargetSquare square skipped by the pawn that has moved by two squares
      */
     public void setEnPassantTargetSquare(Location enPassantTargetSquare) {
         this.enPassantTargetSquare = enPassantTargetSquare;
@@ -257,7 +256,6 @@ public class Chessboard {
     public Chessboard clone() {
         Chessboard cloned = new Chessboard();
 
-
         final King[] kings = new King[]{null, null};
         cloned.kings = new King[]{this.kings[0], this.kings[1]};
         this.forEachPiece((Piece p, Location l) -> {
@@ -273,7 +271,6 @@ public class Chessboard {
         cloned.fullMoveNumber = this.fullMoveNumber;
         cloned.halfMoveClock = this.halfMoveClock;
         cloned.turn = this.turn;
-        cloned.tmpEnPassantTargetSquare = this.tmpEnPassantTargetSquare;
         return cloned;
     }
 
@@ -354,6 +351,52 @@ public class Chessboard {
         fen.append(fullMoveNumber);
 
         return fen.toString();
+    }
+
+    /**
+     * Returns a traditional start game chessboard
+     * @return Traditional Chessboard
+     */
+    public static Chessboard getDefault(){
+        Chessboard c = new Chessboard();
+
+        c.setPiece(new Rook(Color.WHITE), "A1");
+        c.setPiece(new Knight(Color.WHITE), "B1");
+        c.setPiece(new Bishop(Color.WHITE), "C1");
+        c.setPiece(new Queen(Color.WHITE), "D1");
+        c.setKing(new King(Color.WHITE), "E1");
+        c.setPiece(new Bishop(Color.WHITE), "F1");
+        c.setPiece(new Knight(Color.WHITE), "G1");
+        c.setPiece(new Rook(Color.WHITE), "H1");
+
+        c.setPiece(new Pawn(Color.WHITE), "A2");
+        c.setPiece(new Pawn(Color.WHITE), "B2");
+        c.setPiece(new Pawn(Color.WHITE), "C2");
+        c.setPiece(new Pawn(Color.WHITE), "D2");
+        c.setPiece(new Pawn(Color.WHITE), "E2");
+        c.setPiece(new Pawn(Color.WHITE), "F2");
+        c.setPiece(new Pawn(Color.WHITE), "G2");
+        c.setPiece(new Pawn(Color.WHITE), "H2");
+
+        c.setPiece(new Rook(Color.BLACK), "A8");
+        c.setPiece(new Knight(Color.BLACK), "B8");
+        c.setPiece(new Bishop(Color.BLACK), "C8");
+        c.setPiece(new Queen(Color.BLACK), "D8");
+        c.setKing(new King(Color.BLACK), "E8");
+        c.setPiece(new Bishop(Color.BLACK), "F8");
+        c.setPiece(new Knight(Color.BLACK), "G8");
+        c.setPiece(new Rook(Color.BLACK), "H8");
+
+        c.setPiece(new Pawn(Color.BLACK), "A7");
+        c.setPiece(new Pawn(Color.BLACK), "B7");
+        c.setPiece(new Pawn(Color.BLACK), "C7");
+        c.setPiece(new Pawn(Color.BLACK), "D7");
+        c.setPiece(new Pawn(Color.BLACK), "E7");
+        c.setPiece(new Pawn(Color.BLACK), "F7");
+        c.setPiece(new Pawn(Color.BLACK), "G7");
+        c.setPiece(new Pawn(Color.BLACK), "H7");
+
+        return c;
     }
 
 }
