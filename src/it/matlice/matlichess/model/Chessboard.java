@@ -20,7 +20,6 @@ public class Chessboard {
     private Color turn = Color.WHITE;
 
     private Location enPassantTargetSquare = null;
-    private Location tmpEnPassantTargetSquare = null;
 
     // this is the number of halfMoves since the last capture or pawn advance.
     // The reason for this field is that the value is used in the fifty-move rule.
@@ -272,7 +271,6 @@ public class Chessboard {
         cloned.fullMoveNumber = this.fullMoveNumber;
         cloned.halfMoveClock = this.halfMoveClock;
         cloned.turn = this.turn;
-        cloned.tmpEnPassantTargetSquare = this.tmpEnPassantTargetSquare;
         return cloned;
     }
 

@@ -1,22 +1,38 @@
 package it.matlice.malichess;
 
-import it.matlice.matlichess.model.Chessboard;
-import it.matlice.matlichess.model.Color;
-import it.matlice.matlichess.model.Location;
-import it.matlice.matlichess.model.Piece;
-import it.matlice.matlichess.model.King;
+import it.matlice.matlichess.model.*;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class ChessboardTest extends Chessboard {
 
-    public ChessboardTest(){}
-
-    public ChessboardTest(Chessboard c){
-
+    public ChessboardTest() {
     }
-    
+
+    private static void _copy_private_field(ChessboardTest me, Chessboard you, String f){
+        try{
+            var field = Chessboard.class.getDeclaredField(f);
+            field.setAccessible(true);
+            field.set(me, field.get(you));
+        } catch (NoSuchFieldException | IllegalAccessException e ){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ChessboardTest(Chessboard c) {
+            var me = ChessboardTest.class;
+            var ch = Chessboard.class;
+
+        _copy_private_field(this, c, "chessboard");
+        _copy_private_field(this, c, "pieces");
+        _copy_private_field(this, c, "kings");
+        _copy_private_field(this, c, "turn");
+        _copy_private_field(this, c, "enPassantTargetSquare");
+        _copy_private_field(this, c, "halfMoveClock");
+        _copy_private_field(this, c, "fullMoveNumber");
+    }
+
     @Override
     public void _set_piece_at(Location loc, Piece p) {
         super._set_piece_at(loc, p);
@@ -115,5 +131,15 @@ public class ChessboardTest extends Chessboard {
     @Override
     public String toFEN() {
         return super.toFEN();
+    }
+
+    /**
+     * Returns a copy of the chessboard
+     *
+     * @return copy of the {@link Chessboard}
+     */
+    @Override
+    public ChessboardTest clone() {
+        return new ChessboardTest(super.clone());
     }
 }
