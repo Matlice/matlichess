@@ -1,25 +1,25 @@
-package it.matlice.matlichess.model.pieces;
-
-import it.matlice.matlichess.model.*;
+package it.matlice.matlichess.model;
 
 /**
- * Identifies the Bishop Piece in a chess game
+ * Identifies the Queen Piece in a chess game
  */
-public class Bishop extends Piece {
+public class Queen extends Piece {
 
-    public Bishop(Color color) {
-        super("Bishop", "B", 3, color);
+    public Queen(Color color) {
+        super("Queen", "Q", 9, color);
     }
 
     @Override
     public MovePattern unvalidated_move_pattern(Chessboard chessboard, Location myPosition) {
         return new MovePattern(chessboard, myPosition, this.getColor())
+                .addColumn()
+                .addRow()
                 .addDiagonals();
     }
 
     @Override
     public Piece clone() {
-        var clone = new Bishop(this.getColor());
+        var clone = new Queen(this.getColor());
         clone.has_moved = this.has_moved;
         return clone;
     }

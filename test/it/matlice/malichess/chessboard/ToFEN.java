@@ -1,10 +1,7 @@
 package it.matlice.malichess.chessboard;
 
 import it.matlice.malichess.ChessboardTest;
-import it.matlice.matlichess.model.Chessboard;
-import it.matlice.matlichess.model.Color;
-import it.matlice.matlichess.model.Location;
-import it.matlice.matlichess.model.pieces.*;
+import it.matlice.matlichess.model.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 

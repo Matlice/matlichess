@@ -2,7 +2,6 @@ package it.matlice.matlichess.model;
 
 import it.matlice.matlichess.exceptions.ChessboardLocationException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
-import it.matlice.matlichess.model.pieces.King;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +37,7 @@ public class Chessboard {
      * @param loc the {@link Location} of the box
      * @param p   the chess {@link Piece} to put
      */
-    public void _set_piece_at(Location loc, Piece p) {
+    protected void _set_piece_at(Location loc, Piece p) {
         chessboard[loc.col()][loc.row()] = p;
         if (!pieces.containsKey(p.getName())) pieces.put(p.getName(), new HashMap<Piece, Location>());
         pieces.get(p.getName()).put(p, loc);
@@ -50,7 +49,7 @@ public class Chessboard {
      * @param piece the chess {@link Piece} to put
      * @param loc   the {@link Location} of the box
      */
-    public void setPiece(Piece piece, Location loc) {
+    protected void setPiece(Piece piece, Location loc) {
         if (getPieceAt(loc) != null) throw new ChessboardLocationException();
         _set_piece_at(loc, piece);
     }
@@ -61,7 +60,7 @@ public class Chessboard {
      * @param piece the chess {@link Piece} to put
      * @param loc   a string that indicates the coordinate of the chess box
      */
-    public void setPiece(Piece piece, String loc) {
+    protected void setPiece(Piece piece, String loc) {
         this.setPiece(piece, new Location(loc));
     }
 
@@ -71,7 +70,7 @@ public class Chessboard {
      * @param k   the {@link King} to put
      * @param loc the {@link Location} of the box
      */
-    public void setKing(King k, Location loc) {
+    protected void setKing(King k, Location loc) {
         this.setPiece(k, loc);
         this.kings[k.getColor().index] = k;
     }
@@ -82,7 +81,7 @@ public class Chessboard {
      * @param k   the {@link King} to put
      * @param loc a string that indicates the coordinate of the chess box
      */
-    public void setKing(King k, String loc) {
+    protected void setKing(King k, String loc) {
         this.setKing(k, new Location(loc));
     }
 
@@ -92,7 +91,7 @@ public class Chessboard {
      * @param loc the {@link Location} of the box
      * @return the {@link Piece} if the box contains one, else null
      */
-    public Piece getPieceAt(Location loc) {
+     public Piece getPieceAt(Location loc) {
         return chessboard[loc.col()][loc.row()];
     }
 
@@ -103,7 +102,7 @@ public class Chessboard {
      * @param row the row index of the box
      * @return the {@link Piece} if the box contains one, else null
      */
-    public Piece getPieceAt(int col, int row) {
+    protected Piece getPieceAt(int col, int row) {
         return chessboard[col][row];
     }
 
@@ -112,7 +111,7 @@ public class Chessboard {
      *
      * @return the enPassant Target Square
      */
-    public Location getEnPassantTargetSquare() {
+    protected Location getEnPassantTargetSquare() {
         return enPassantTargetSquare;
     }
 
@@ -121,7 +120,7 @@ public class Chessboard {
      *
      * @param enPassantTargetSquare
      */
-    public void setEnPassantTargetSquare(Location enPassantTargetSquare) {
+    protected void setEnPassantTargetSquare(Location enPassantTargetSquare) {
         this.enPassantTargetSquare = enPassantTargetSquare;
     }
 
@@ -140,7 +139,7 @@ public class Chessboard {
      *
      * @param location the {@link Location} of the Piece to remove
      */
-    public void removePiece(Location location) {
+    protected void removePiece(Location location) {
         _removePiece(getPieceAt(location));
         chessboard[location.col()][location.row()] = null;
     }
@@ -148,7 +147,7 @@ public class Chessboard {
     /**
      * Resets the number of consecutive moves without taking a piece or pawn pushes
      */
-    public void resetHalfMoveClock() {
+    protected void resetHalfMoveClock() {
         halfMoveClock = 0;
     }
 
@@ -167,7 +166,7 @@ public class Chessboard {
      * @param destination the final {@link Location}
      * @return the taken {@link Piece} if exists, else null
      */
-    public Piece _make_move(Location src, Location destination, Supplier<Piece> moveAction) {
+    protected Piece _make_move(Location src, Location destination, Supplier<Piece> moveAction) {
         if (!getPieceAt(src).getColor().equals(turn)) throw new InvalidTurnException();
 
         halfMoveClock += 1; // increment now, capturing a piece or pushing a pawn will reset it
@@ -199,7 +198,7 @@ public class Chessboard {
      * @param destination the final {@link Location}
      * @return the taken {@link Piece} if exists, else null
      */
-    public Piece move(Location src, Location destination) {
+    protected Piece move(Location src, Location destination) {
         // TODO check if its correct player turn
         assert kings[0] != null && kings[1] != null;
         Supplier<Piece> action = getPieceAt(src).getAction(this, destination, src);
@@ -214,7 +213,7 @@ public class Chessboard {
      * @param destination the final {@link Location} as string ("A4")
      * @return the taken {@link Piece} if exists, else null
      */
-    public Piece move(String src, String destination) {
+    protected Piece move(String src, String destination) {
         return move(new Location(src), new Location(destination));
     }
 
@@ -224,7 +223,7 @@ public class Chessboard {
      * @param c the {@link Color} of the player
      * @return The opponent's {@link King}
      */
-    public King getOpponentKing(Color c) {
+    protected King getOpponentKing(Color c) {
         return this.kings[c.opponent().index];
     }
 
@@ -234,7 +233,7 @@ public class Chessboard {
      * @param c the {@link Color} of the player
      * @return The player's {@link King}
      */
-    public King getKing(Color c) {
+    protected King getKing(Color c) {
         return this.kings[c.index];
     }
 
@@ -309,7 +308,7 @@ public class Chessboard {
      *
      * @return the string representation of the FEN
      */
-    public String toFEN() {
+    protected String toFEN() {
         StringBuilder fen = new StringBuilder();
 
         // base position

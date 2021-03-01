@@ -1,6 +1,4 @@
-package it.matlice.matlichess.model.pieces;
-
-import it.matlice.matlichess.model.*;
+package it.matlice.matlichess.model;
 
 import java.util.Map;
 

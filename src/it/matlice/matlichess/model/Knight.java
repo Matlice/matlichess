@@ -1,6 +1,4 @@
-package it.matlice.matlichess.model.pieces;
-
-import it.matlice.matlichess.model.*;
+package it.matlice.matlichess.model;
 
 /**
  * Identifies the Knight Piece in a chess game

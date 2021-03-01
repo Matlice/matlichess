@@ -1,7 +1,5 @@
 package it.matlice.matlichess.model;
 
-import it.matlice.matlichess.model.pieces.King;
-
 /**
  * Set of patterns used by the pieces to move along the chessboard
  * It also provides utility methods for the control of the came, like checking if the king is under attack

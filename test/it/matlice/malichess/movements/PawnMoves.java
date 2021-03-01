@@ -2,11 +2,10 @@ package it.matlice.malichess.movements;
 
 import it.matlice.malichess.ChessboardTest;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
-import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.model.Color;
 import it.matlice.matlichess.model.Location;
-import it.matlice.matlichess.model.pieces.King;
-import it.matlice.matlichess.model.pieces.Pawn;
+import it.matlice.matlichess.model.King;
+import it.matlice.matlichess.model.Pawn;
 
 import static org.junit.jupiter.api.Assertions.*;
 

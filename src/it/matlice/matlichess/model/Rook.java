@@ -1,6 +1,4 @@
-package it.matlice.matlichess.model.pieces;
-
-import it.matlice.matlichess.model.*;
+package it.matlice.matlichess.model;
 
 /**
  * Identifies the Rook Piece in a chess game
