@@ -10,14 +10,6 @@ import java.awt.*;
 public class EntryPoint {
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            try {
-
-                Game game = new Game();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        Game.getInstance().display();
     }
 }
