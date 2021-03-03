@@ -4,6 +4,7 @@ import it.matlice.matlichess.exceptions.ChessboardLocationException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.pieces.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -30,6 +31,8 @@ public class Chessboard {
     // the number of the full move. It starts at 1, and is incremented after Black's move.
     // It is used in the creation of the FEN Notation
     private int fullMoveNumber = 1;
+
+    private Class<? extends Piece>[] promotions = new Class[]{Queen.class, Queen.class};
 
     /**
      * Puts a {@link Piece} on a certain box in the chessboard.
@@ -199,7 +202,6 @@ public class Chessboard {
      * @return the taken {@link Piece} if exists, else null
      */
     public Piece move(Location src, Location destination) {
-        // TODO check if its correct player turn
         assert kings[0] != null && kings[1] != null;
         Supplier<Piece> action = getPieceAt(src).getAction(this, destination, src);
         return _make_move(src, destination, action);
@@ -215,6 +217,28 @@ public class Chessboard {
      */
     public Piece move(String src, String destination) {
         return move(new Location(src), new Location(destination));
+    }
+
+    /**
+     * Set the promotion type for the player
+     * @param color
+     * @param klass
+     */
+    public void setPromotion(Color color, Class<? extends Piece> klass) {
+        promotions[color.index] = klass;
+    }
+
+    /**
+     * Promotes a pawn to a target piece type
+     * @param location
+     */
+    public void promote(Location location, Color color) {
+        removePiece(location); // remove the pawn
+        try {
+            setPiece( (Piece) promotions[color.index].getConstructors()[0].newInstance(color), location);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

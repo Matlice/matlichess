@@ -6,6 +6,7 @@ import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.model.Color;
 import it.matlice.matlichess.model.Location;
 import it.matlice.matlichess.model.pieces.*;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -102,7 +103,7 @@ public class NormalMovement {
     }
 
     @org.junit.jupiter.api.Test
-    public void KnightTest(){
+    public void knightTest(){
         King k1 = new King(Color.WHITE);
         King k2 = new King(Color.BLACK);
 
@@ -133,6 +134,36 @@ public class NormalMovement {
         assertEquals(kn3, c.clone().move(new Location("D4"), new Location("B3")));
         c.changeTurn();
         assertEquals(kn1, c.clone().move(new Location("B3"), new Location("D4")));
+    }
+
+    @Test
+    public void pawnTest() {
+
+        ChessboardTest c = new ChessboardTest();
+
+        c.setKing(new King(Color.WHITE), "E1");
+        c.setKing(new King(Color.BLACK), "E7");
+
+        c.setPiece(new Pawn(Color.BLACK), "G7");
+        c.setPiece(new Pawn(Color.BLACK), "C7");
+
+        c.changeTurn();
+        c.move("G7", "G6");
+
+        c.changeTurn();
+        c.move("C7", "C5");
+
+        assertNull(c.getPieceAt(new Location("G7")));
+        assertNotNull(c.getPieceAt(new Location("G6")));
+        assertEquals(c.getPieceAt(new Location("G6")).getName(), "Pawn");
+        assertEquals(c.getPieceAt(new Location("G6")).getColor(), Color.BLACK);
+
+        assertNull(c.getPieceAt(new Location("C7")));
+        assertNotNull(c.getPieceAt(new Location("C5")));
+        assertEquals(c.getPieceAt(new Location("C5")).getName(), "Pawn");
+        assertEquals(c.getPieceAt(new Location("C5")).getColor(), Color.BLACK);
+        assertEquals(c.getEnPassantTargetSquare(), new Location("C6"));
+
     }
 
 }
