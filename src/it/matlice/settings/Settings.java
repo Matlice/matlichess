@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 public class Settings {
 
     public static final int CHESSBOARD_SIZE = 720;
-    public static final BiConsumer<Graphics2D, Dimension> CHESSBOARD_BG = new ImageLoader("./res/chessboard_horsey.jpg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE));
+    public static final int MARKER_DIAMETER = 45;
+    public static final BiConsumer<Graphics2D, Dimension> CHESSBOARD_BG = new ImageLoader("./res/blue_marble.jpg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE));
 
 }

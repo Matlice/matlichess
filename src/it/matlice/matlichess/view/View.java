@@ -15,7 +15,8 @@ public class View {
     public void initialize(){
         new Thread(() -> {
             JFrame frame = new JFrame();
-            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            frame.setBounds(100, 100, 800, 800);
+            frame.setExtendedState(JFrame.NORMAL);
             frame.setTitle("MatliChess");
             frame.setVisible(true);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
