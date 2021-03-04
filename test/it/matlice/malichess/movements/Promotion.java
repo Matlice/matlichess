@@ -241,4 +241,25 @@ public class Promotion {
 
     }
 
+    @Test
+    public void captureToPromotion() {
+
+        ChessboardTest c = new ChessboardTest();
+
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setKing(new King(PieceColor.BLACK), "E7");
+
+        c.setPiece(new Pawn(PieceColor.WHITE), "D7");
+        c.setPiece(new Rook(PieceColor.BLACK), "E8");
+
+        c.setPromotion(PieceColor.WHITE, Bishop.class);
+        c.move("D7", "E8");
+
+        assertNull(c.getPieceAt(new Location("D7")));
+        assertNotNull(c.getPieceAt(new Location("E8")));
+        assertEquals(c.getPieceAt(new Location("E8")).getName(), "Bishop");
+        assertEquals(c.getPieceAt(new Location("E8")).getColor(), PieceColor.WHITE);
+
+    }
+
 }
