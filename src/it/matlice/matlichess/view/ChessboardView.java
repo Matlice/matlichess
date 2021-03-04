@@ -20,9 +20,13 @@ public class ChessboardView extends JPanel implements MouseListener {
     private Location move_from;
     private Location selected;
 
+    private PieceType[][] pieces = new PieceType[8][8];
+
     public ChessboardView(){
+        this.setPreferredSize( new Dimension(Settings.CHESSBOARD_SIZE, Settings.CHESSBOARD_SIZE));
         this.addMouseListener(this);
     }
+
     private CommunicationSemaphore<Location> wait_move = new CommunicationSemaphore<>(1);
 
     public void draw(Graphics2D g2){
@@ -40,6 +44,20 @@ public class ChessboardView extends JPanel implements MouseListener {
         Graphics2D g2 = (Graphics2D) g;
 
         draw(g2);
+
+        // vv todo remove vv
+        for (int i=0; i<8; i++) {
+            for (int j=0; j<8; j++) {
+                if (pieces[j][7-i] != null)
+                    System.out.print(pieces[j][7-i].toString() + "  \t");
+                else
+                    System.out.print("---  \t");
+            }
+            System.out.println();
+        }
+
+        System.out.println("\n\n\n");
+        // ^^ todo remove ^^
 
         g2.setColor(new Color(0, 172, 151, 77));
         if (selected != null) {
@@ -71,6 +89,8 @@ public class ChessboardView extends JPanel implements MouseListener {
             this.mouse[this.mouse_index] = pointerToLocation(e);
             mouse_index++;
         }
+
+        if (this.mouse[0] == null) return;
 
         if (!this.mouse[0].equals(this.mouse[1])) {
             // if first press and first release are different, it's a drag-and-drop move
@@ -126,6 +146,16 @@ public class ChessboardView extends JPanel implements MouseListener {
         return Arrays.asList(this.move_from, obtained);
     }
 
-    public void makeMove(Location frm, Location to){
+//    public void makeMove(int from_col, int from_row, int to_col, int to_row) {
+//        this.pieces[to_col][to_row] = this.pieces[from_col][from_row];
+//        this.pieces[from_col][from_row] = null;
+//
+//        this.repaint();
+//    }
+
+    public void setPosition(PieceType[][] pieces) {
+        this.pieces = pieces;
+
+        this.repaint();
     }
 }
