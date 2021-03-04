@@ -2,6 +2,8 @@ package it.matlice.matlichess.model;
 
 import it.matlice.matlichess.model.pieces.King;
 
+import java.util.function.Supplier;
+
 /**
  * Set of patterns used by the pieces to move along the chessboard
  * It also provides utility methods for the control of the came, like checking if the king is under attack
@@ -50,9 +52,7 @@ public class MovePattern {
         var col = pieceLocation.col();
         var row = pieceLocation.row();
 
-        // todo add promotion
-
-        // forward movements
+                // forward movements
         if (myColor == Color.WHITE) {
             if (row == 7) return this; // end of chessboard, should not happen
             else if (row == 1) // if still in original row, then it can go up two squares
@@ -74,7 +74,16 @@ public class MovePattern {
         int dir = (myColor == Color.WHITE) ? 1 : -1;
 
         if (chessboard.getPieceAt(col, row + dir) == null) {
-            locations.put(col, row + dir);
+            Supplier<Piece> action;
+            if (row + dir == 0 || row + dir == 7) {
+                action = () -> {
+                    chessboard.promote(new Location(col, row), myColor);
+                    return null;
+                };
+            } else {
+                action = () -> null;
+            }
+            locations.put(col, row + dir, action);
         }
 
         // diagonal capture and en passant
