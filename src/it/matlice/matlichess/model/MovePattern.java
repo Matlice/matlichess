@@ -47,6 +47,7 @@ public class MovePattern {
     /**
      * Pattern to add the reachable locations by a pawn, including the first move skipping two squares and
      * the adjacent diagonals when it can take a piece, and en passant when it can
+     * Here also is managed the promotion of the pawn
      *
      * @return the updated pattern
      */

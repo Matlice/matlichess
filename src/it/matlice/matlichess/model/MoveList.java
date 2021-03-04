@@ -5,6 +5,11 @@ import it.matlice.matlichess.Location;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
+/**
+ * Class to manage the possible Locations that a piece can reach
+ * You can add with a lambda function an action that will be solved if the piece moves in that square.
+ * An example could be the enPassant Move, where you need to remove a piece that is placed in a different Location
+ */
 public class MoveList extends HashMap<Location, Supplier<Piece>> {
 
     public Supplier<Piece> put(String key, Supplier<Piece> action) {

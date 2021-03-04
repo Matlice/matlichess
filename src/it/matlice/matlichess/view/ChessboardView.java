@@ -193,10 +193,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
      * @param e the event to be processed
      */
     @Override
-    public void mouseMoved(MouseEvent e) {
-
-    }
-
+    public void mouseMoved(MouseEvent e) { }
 
     private boolean isMyPiece(Location l) {
         for (PieceView p : pieces) {

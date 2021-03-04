@@ -1,7 +1,7 @@
 package it.matlice.matlichess.model;
 
-import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.Location;
+import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.exceptions.ChessboardLocationException;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
@@ -16,6 +16,7 @@ import java.util.function.Supplier;
 /**
  * The game field. It contains information about the location of the pieces on it.
  * Here the pieces will move to proceed on the game
+ * This class is the representative of the model in the MCV architecture
  */
 public class Chessboard {
 
@@ -114,6 +115,7 @@ public class Chessboard {
 
     /**
      * Return the whole chessboard matrix
+     *
      * @return chessboard matrix
      */
     public Piece[][] getChessboardMatrix() {
@@ -222,21 +224,23 @@ public class Chessboard {
 
     /**
      * Set the promotion type for the player
-     * @param color
-     * @param klass
+     *
+     * @param color The color of the piece to promote
+     * @param klass The type of the piece setted to promote to
      */
     public void setPromotion(PieceColor color, Class<? extends Piece> klass) {
         promotions[color.index] = klass;
     }
 
     /**
-     * Promotes a pawn to a target piece type
-     * @param location
+     * Removes the piece and replaces it with a new piece
+     * @param location Location of the piece
+     * @param color Color of the piece
      */
     public void promote(Location location, PieceColor color) {
         removePiece(location); // remove the pawn
         try {
-            setPiece( (Piece) promotions[color.index].getConstructors()[0].newInstance(color), location);
+            setPiece((Piece) promotions[color.index].getConstructors()[0].newInstance(color), location);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -392,9 +396,10 @@ public class Chessboard {
 
     /**
      * Returns a traditional start game chessboard
+     *
      * @return Traditional Chessboard
      */
-    public static Chessboard getDefault(){
+    public static Chessboard getDefault() {
         Chessboard c = new Chessboard();
 
         c.setPiece(new Rook(PieceColor.WHITE), "A1");
@@ -436,6 +441,10 @@ public class Chessboard {
         return c;
     }
 
+    /**
+     * getter for the turn
+     * @return which player has to move
+     */
     public PieceColor getTurn() {
         return turn;
     }
