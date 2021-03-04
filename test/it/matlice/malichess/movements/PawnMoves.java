@@ -2,9 +2,8 @@ package it.matlice.malichess.movements;
 
 import it.matlice.malichess.ChessboardTest;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
-import it.matlice.matlichess.model.Chessboard;
-import it.matlice.matlichess.model.Color;
-import it.matlice.matlichess.model.Location;
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.pieces.King;
 import it.matlice.matlichess.model.pieces.Pawn;
 
@@ -14,18 +13,18 @@ public class PawnMoves {
 
     @org.junit.jupiter.api.Test
     public void enPassantTest(){
-        King k1 = new King(Color.WHITE);
-        King k2 = new King(Color.BLACK);
+        King k1 = new King(PieceColor.WHITE);
+        King k2 = new King(PieceColor.BLACK);
 
-        Pawn p1 = new Pawn(Color.WHITE);
-        Pawn p2 = new Pawn(Color.WHITE);
-        Pawn p3 = new Pawn(Color.WHITE);
-        Pawn p4 = new Pawn(Color.WHITE);
-        Pawn p5 = new Pawn(Color.BLACK);
-        Pawn p6 = new Pawn(Color.BLACK);
-        Pawn p7 = new Pawn(Color.BLACK);
-        Pawn p8 = new Pawn(Color.BLACK);
-        Pawn p9 = new Pawn(Color.BLACK);
+        Pawn p1 = new Pawn(PieceColor.WHITE);
+        Pawn p2 = new Pawn(PieceColor.WHITE);
+        Pawn p3 = new Pawn(PieceColor.WHITE);
+        Pawn p4 = new Pawn(PieceColor.WHITE);
+        Pawn p5 = new Pawn(PieceColor.BLACK);
+        Pawn p6 = new Pawn(PieceColor.BLACK);
+        Pawn p7 = new Pawn(PieceColor.BLACK);
+        Pawn p8 = new Pawn(PieceColor.BLACK);
+        Pawn p9 = new Pawn(PieceColor.BLACK);
 
         ChessboardTest c = new ChessboardTest();
         c.setKing(k1, new Location("E1"));

@@ -1,5 +1,7 @@
 package it.matlice.matlichess.model;
 
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.pieces.King;
 
 import java.util.function.Supplier;
@@ -13,12 +15,12 @@ public class MovePattern {
     private MoveList locations = new MoveList();
     private final Chessboard chessboard;
     private final Location pieceLocation;
-    private final Color myColor;
+    private final PieceColor myPieceColor;
 
-    public MovePattern(Chessboard c, Location l, Color myColor) {
+    public MovePattern(Chessboard c, Location l, PieceColor myPieceColor) {
         this.chessboard = c;
         this.pieceLocation = l;
-        this.myColor = myColor;
+        this.myPieceColor = myPieceColor;
     }
 
     /**
@@ -26,15 +28,15 @@ public class MovePattern {
      * When the program validates if a Chess box is reachable, it calls this method to save the locations.
      * Returns a boolean to continue or stop the iteration.
      *
-     * @param col   the column index of the location to check
-     * @param row   the row index of the location to check
-     * @param color the player's color
+     * @param col        the column index of the location to check
+     * @param row        the row index of the location to check
+     * @param pieceColor      the player's color
      * @return true if it's needed to stop the iteration, false to continue
      */
-    private boolean piece_can_take(int col, int row, Color color) {
+    private boolean piece_can_take(int col, int row, PieceColor pieceColor) {
         if (row > 7 || row < 0 || col > 7 || col < 0) return true;
         if (chessboard.getPieceAt(col, row) != null) {
-            if (chessboard.getPieceAt(col, row).getColor().equals(color.opponent()))
+            if (chessboard.getPieceAt(col, row).getColor().equals(pieceColor.opponent()))
                 locations.put(col, row);
             return true;
         }
@@ -53,7 +55,7 @@ public class MovePattern {
         var row = pieceLocation.row();
 
         // forward movements
-        if (myColor == Color.WHITE) {
+        if (myPieceColor == PieceColor.WHITE) {
             if (row == 7) return this; // end of chessboard, should not happen
             else if (row == 1) // if still in original row, then it can go up two squares
                 if (chessboard.getPieceAt(col, row + 1) == null && chessboard.getPieceAt(col, row + 2) == null)
@@ -71,13 +73,13 @@ public class MovePattern {
                     });
         }
 
-        int dir = (myColor == Color.WHITE) ? 1 : -1;
+        int dir = (myPieceColor == PieceColor.WHITE) ? 1 : -1;
 
         if (chessboard.getPieceAt(col, row + dir) == null) {
             Supplier<Piece> action;
             if (row + dir == 0 || row + dir == 7) {
                 action = () -> {
-                    chessboard.promote(new Location(col, row), myColor);
+                    chessboard.promote(new Location(col, row), myPieceColor);
                     return null;
                 };
             } else {
@@ -89,31 +91,31 @@ public class MovePattern {
         // diagonal capture and en passant
         Location target = new Location(col - 1, row + dir);
         Location passantTarget = new Location(col - 1, row);
-        if (col > 0) _pawnCapture(chessboard, myColor, target, passantTarget, pieceLocation);
+        if (col > 0) _pawnCapture(chessboard, myPieceColor, target, passantTarget, pieceLocation);
 
         target = new Location(col + 1, row + dir);
         passantTarget = new Location(col + 1, row);
-        if (col < 7) _pawnCapture(chessboard, myColor, target, passantTarget, pieceLocation);
+        if (col < 7) _pawnCapture(chessboard, myPieceColor, target, passantTarget, pieceLocation);
 
         return this;
     }
 
     /**
      * Evaluates whether a pawn can capture a piece diagonally, or capture a pawn en passant
-     *  @param chessboard      chessboard
-     * @param myColor         color
+     * @param chessboard      chessboard
+     * @param myPieceColor         color
      * @param moveTarget      the target location the pawn can capture and move to
      * @param enPassantTarget the location of the other pawn that can be captured en passant
      * @param actualPosition
      */
-    private void _pawnCapture(Chessboard chessboard, Color myColor, Location moveTarget, Location enPassantTarget, Location actualPosition) {
+    private void _pawnCapture(Chessboard chessboard, PieceColor myPieceColor, Location moveTarget, Location enPassantTarget, Location actualPosition) {
         if (chessboard.getPieceAt(moveTarget) != null) {
             // normal diagonal capture
-            if (chessboard.getPieceAt(moveTarget).getColor().equals(myColor.opponent())) {
+            if (chessboard.getPieceAt(moveTarget).getColor().equals(myPieceColor.opponent())) {
                 Supplier<Piece> action;
                 if (moveTarget.row() == 0 || moveTarget.row() == 7) {
                     action = () -> {
-                        chessboard.promote(actualPosition, myColor);
+                        chessboard.promote(actualPosition, myPieceColor);
                         return null;
                     };
                 } else {
@@ -141,10 +143,10 @@ public class MovePattern {
         var col = pieceLocation.col();
         var row = pieceLocation.row();
         for (int i = col + 1; i < 8; i++)
-            if (piece_can_take(i, row, myColor)) break;
+            if (piece_can_take(i, row, myPieceColor)) break;
 
         for (int i = col - 1; i >= 0; i--) {
-            if (piece_can_take(i, row, myColor)) break;
+            if (piece_can_take(i, row, myPieceColor)) break;
         }
         return this;
     }
@@ -158,9 +160,9 @@ public class MovePattern {
         var col = pieceLocation.col();
         var row = pieceLocation.row();
         for (int i = row + 1; i < 8; i++)
-            if (piece_can_take(col, i, myColor)) break;
+            if (piece_can_take(col, i, myPieceColor)) break;
         for (int i = row - 1; i >= 0; i--)
-            if (piece_can_take(col, i, myColor)) break;
+            if (piece_can_take(col, i, myPieceColor)) break;
 
         return this;
     }
@@ -175,16 +177,16 @@ public class MovePattern {
         var row = pieceLocation.row();
 
         for (int i = 1; i < 8; i++) {
-            if (piece_can_take(col + i, row + i, myColor)) break;
+            if (piece_can_take(col + i, row + i, myPieceColor)) break;
         }
         for (int i = 1; i < 8; i++) {
-            if (piece_can_take(col - i, row + i, myColor)) break;
+            if (piece_can_take(col - i, row + i, myPieceColor)) break;
         }
         for (int i = 1; i < 8; i++) {
-            if (piece_can_take(col + i, row - i, myColor)) break;
+            if (piece_can_take(col + i, row - i, myPieceColor)) break;
         }
         for (int i = 1; i < 8; i++) {
-            if (piece_can_take(col - i, row - i, myColor)) break;
+            if (piece_can_take(col - i, row - i, myPieceColor)) break;
         }
         return this;
     }
@@ -197,14 +199,14 @@ public class MovePattern {
     public MovePattern addKnight() {
         var col = pieceLocation.col();
         var row = pieceLocation.row();
-        piece_can_take(col + 1, row + 2, myColor);
-        piece_can_take(col - 1, row + 2, myColor);
-        piece_can_take(col + 2, row + 1, myColor);
-        piece_can_take(col - 2, row + 1, myColor);
-        piece_can_take(col + 1, row - 2, myColor);
-        piece_can_take(col - 1, row - 2, myColor);
-        piece_can_take(col + 2, row - 1, myColor);
-        piece_can_take(col - 2, row - 1, myColor);
+        piece_can_take(col + 1, row + 2, myPieceColor);
+        piece_can_take(col - 1, row + 2, myPieceColor);
+        piece_can_take(col + 2, row + 1, myPieceColor);
+        piece_can_take(col - 2, row + 1, myPieceColor);
+        piece_can_take(col + 1, row - 2, myPieceColor);
+        piece_can_take(col - 1, row - 2, myPieceColor);
+        piece_can_take(col + 2, row - 1, myPieceColor);
+        piece_can_take(col - 2, row - 1, myPieceColor);
         return this;
     }
 
@@ -216,21 +218,21 @@ public class MovePattern {
     public MovePattern addKing() {
         var col = pieceLocation.col();
         var row = pieceLocation.row();
-        piece_can_take(col + 1, row + 1, myColor);
-        piece_can_take(col, row + 1, myColor);
-        piece_can_take(col - 1, row + 1, myColor);
-        piece_can_take(col + 1, row, myColor);
-        piece_can_take(col - 1, row, myColor);
-        piece_can_take(col + 1, row - 1, myColor);
-        piece_can_take(col, row - 1, myColor);
-        piece_can_take(col - 1, row - 1, myColor);
+        piece_can_take(col + 1, row + 1, myPieceColor);
+        piece_can_take(col, row + 1, myPieceColor);
+        piece_can_take(col - 1, row + 1, myPieceColor);
+        piece_can_take(col + 1, row, myPieceColor);
+        piece_can_take(col - 1, row, myPieceColor);
+        piece_can_take(col + 1, row - 1, myPieceColor);
+        piece_can_take(col, row - 1, myPieceColor);
+        piece_can_take(col - 1, row - 1, myPieceColor);
 
         // castling
         King king = (King) chessboard.getPieceAt(pieceLocation);
         if (king != null) {
 
             // since the castling moves are symmetrical, the only thing that changes is the row
-            int castlingRow = myColor.equals(Color.WHITE) ? 0 : 7;
+            int castlingRow = myPieceColor.equals(PieceColor.WHITE) ? 0 : 7;
 
             if (king.canCastle(chessboard, "Queen"))
                 this.locations.put(2, castlingRow, () -> {
@@ -271,7 +273,7 @@ public class MovePattern {
             Chessboard nextMoveBoard = chessboard.clone();
             chessboard.getPieceAt(pieceLocation)._reset_movement(has_moved);
             nextMoveBoard._make_move(pieceLocation, dest, () -> null);
-            if (chessboard.getKing(this.myColor).isUnderCheck(nextMoveBoard))
+            if (chessboard.getKing(this.myPieceColor).isUnderCheck(nextMoveBoard))
                 validatedLocations.remove(dest);
             chessboard.getPieceAt(pieceLocation)._reset_movement(has_moved);
         }

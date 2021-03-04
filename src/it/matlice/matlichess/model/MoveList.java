@@ -1,5 +1,7 @@
 package it.matlice.matlichess.model;
 
+import it.matlice.matlichess.Location;
+
 import java.util.HashMap;
 import java.util.function.Supplier;
 

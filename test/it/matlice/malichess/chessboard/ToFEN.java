@@ -1,9 +1,8 @@
 package it.matlice.malichess.chessboard;
 
 import it.matlice.malichess.ChessboardTest;
-import it.matlice.matlichess.model.Chessboard;
-import it.matlice.matlichess.model.Color;
-import it.matlice.matlichess.model.Location;
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.pieces.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,41 +14,41 @@ public class ToFEN {
     public static void setupStartingPosition() {
         c = new ChessboardTest();
 
-        c.setPiece(new Rook(Color.WHITE), "A1");
-        c.setPiece(new Knight(Color.WHITE), "B1");
-        c.setPiece(new Bishop(Color.WHITE), "C1");
-        c.setPiece(new Queen(Color.WHITE), "D1");
-        c.setKing(new King(Color.WHITE), "E1");
-        c.setPiece(new Bishop(Color.WHITE), "F1");
-        c.setPiece(new Knight(Color.WHITE), "G1");
-        c.setPiece(new Rook(Color.WHITE), "H1");
+        c.setPiece(new Rook(PieceColor.WHITE), "A1");
+        c.setPiece(new Knight(PieceColor.WHITE), "B1");
+        c.setPiece(new Bishop(PieceColor.WHITE), "C1");
+        c.setPiece(new Queen(PieceColor.WHITE), "D1");
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setPiece(new Bishop(PieceColor.WHITE), "F1");
+        c.setPiece(new Knight(PieceColor.WHITE), "G1");
+        c.setPiece(new Rook(PieceColor.WHITE), "H1");
 
-        c.setPiece(new Pawn(Color.WHITE), "A2");
-        c.setPiece(new Pawn(Color.WHITE), "B2");
-        c.setPiece(new Pawn(Color.WHITE), "C2");
-        c.setPiece(new Pawn(Color.WHITE), "D2");
-        c.setPiece(new Pawn(Color.WHITE), "E2");
-        c.setPiece(new Pawn(Color.WHITE), "F2");
-        c.setPiece(new Pawn(Color.WHITE), "G2");
-        c.setPiece(new Pawn(Color.WHITE), "H2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "A2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "B2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "C2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "D2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "E2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "F2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "G2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "H2");
 
-        c.setPiece(new Rook(Color.BLACK), "A8");
-        c.setPiece(new Knight(Color.BLACK), "B8");
-        c.setPiece(new Bishop(Color.BLACK), "C8");
-        c.setPiece(new Queen(Color.BLACK), "D8");
-        c.setKing(new King(Color.BLACK), "E8");
-        c.setPiece(new Bishop(Color.BLACK), "F8");
-        c.setPiece(new Knight(Color.BLACK), "G8");
-        c.setPiece(new Rook(Color.BLACK), "H8");
+        c.setPiece(new Rook(PieceColor.BLACK), "A8");
+        c.setPiece(new Knight(PieceColor.BLACK), "B8");
+        c.setPiece(new Bishop(PieceColor.BLACK), "C8");
+        c.setPiece(new Queen(PieceColor.BLACK), "D8");
+        c.setKing(new King(PieceColor.BLACK), "E8");
+        c.setPiece(new Bishop(PieceColor.BLACK), "F8");
+        c.setPiece(new Knight(PieceColor.BLACK), "G8");
+        c.setPiece(new Rook(PieceColor.BLACK), "H8");
 
-        c.setPiece(new Pawn(Color.BLACK), "A7");
-        c.setPiece(new Pawn(Color.BLACK), "B7");
-        c.setPiece(new Pawn(Color.BLACK), "C7");
-        c.setPiece(new Pawn(Color.BLACK), "D7");
-        c.setPiece(new Pawn(Color.BLACK), "E7");
-        c.setPiece(new Pawn(Color.BLACK), "F7");
-        c.setPiece(new Pawn(Color.BLACK), "G7");
-        c.setPiece(new Pawn(Color.BLACK), "H7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "A7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "B7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "C7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "D7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "E7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "F7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "G7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "H7");
     }
 
     @org.junit.jupiter.api.Test

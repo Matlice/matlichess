@@ -2,9 +2,8 @@ package it.matlice.malichess.movements;
 
 import it.matlice.malichess.ChessboardTest;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
-import it.matlice.matlichess.model.Chessboard;
-import it.matlice.matlichess.model.Color;
-import it.matlice.matlichess.model.Location;
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.pieces.Bishop;
 import it.matlice.matlichess.model.pieces.King;
 import it.matlice.matlichess.model.pieces.Rook;
@@ -18,13 +17,13 @@ public class Castling {
 
         ChessboardTest c = new ChessboardTest();
 
-        King k1 = new King(Color.WHITE);
-        King k2 = new King(Color.BLACK);
+        King k1 = new King(PieceColor.WHITE);
+        King k2 = new King(PieceColor.BLACK);
 
-        Rook r1 = new Rook(Color.WHITE);
-        Rook r2 = new Rook(Color.WHITE);
-        Rook r5 = new Rook(Color.BLACK);
-        Rook r6 = new Rook(Color.BLACK);
+        Rook r1 = new Rook(PieceColor.WHITE);
+        Rook r2 = new Rook(PieceColor.WHITE);
+        Rook r5 = new Rook(PieceColor.BLACK);
+        Rook r6 = new Rook(PieceColor.BLACK);
 
         c.setKing(k1, new Location("E1"));
         c.setKing(k2, new Location("E8"));
@@ -42,7 +41,7 @@ public class Castling {
         assertDoesNotThrow(() -> c.clone().move("E8", "G8"));
 
 
-        Bishop b9 = new Bishop(Color.BLACK);
+        Bishop b9 = new Bishop(PieceColor.BLACK);
 
         c.setPiece(b9, new Location("D3"));
 
@@ -50,7 +49,7 @@ public class Castling {
         assertDoesNotThrow(() -> c.clone().move("E1", "C1"));
         assertThrows(InvalidMoveException.class, () -> c.clone().move("E1", "G1"));
 
-        Rook r8 = new Rook(Color.BLACK);
+        Rook r8 = new Rook(PieceColor.BLACK);
         c.setPiece(r8, new Location("C6"));
 
         assertThrows(InvalidMoveException.class, () -> c.clone().move("E1", "C1"));

@@ -1,5 +1,7 @@
 package it.matlice.matlichess.model.pieces;
 
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.*;
 
 import java.util.Map;
@@ -14,8 +16,8 @@ public class King extends Piece {
     private final Location WHITE_QUEEN_ROOK_LOCATION = new Location("A1");
     private final Location WHITE_KING_ROOK_LOCATION = new Location("H1");
 
-    public King(Color color) {
-        super("King", "K", Math.abs(~0), color);
+    public King(PieceColor pieceColor) {
+        super("King", "K", Math.abs(~0), pieceColor);
     }
 
     /**
@@ -56,7 +58,7 @@ public class King extends Piece {
      * @return true if queen side castling is available
      */
     public boolean isQueenCastlingAvailable(Chessboard c) {
-        var rook = c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_QUEEN_ROOK_LOCATION : BLACK_QUEEN_ROOK_LOCATION);
+        var rook = c.getPieceAt(this.getColor().equals(PieceColor.WHITE) ? WHITE_QUEEN_ROOK_LOCATION : BLACK_QUEEN_ROOK_LOCATION);
         if(rook == null) return false;
         return rook.getName().equals("Rook") && !rook.hasMoved();
     }
@@ -68,7 +70,7 @@ public class King extends Piece {
      * @return true if king side castling is available
      */
     public boolean isKingCastlingAvailable(Chessboard c) {
-        Piece rook = c.getPieceAt(this.getColor().equals(Color.WHITE) ? WHITE_KING_ROOK_LOCATION : BLACK_KING_ROOK_LOCATION);
+        Piece rook = c.getPieceAt(this.getColor().equals(PieceColor.WHITE) ? WHITE_KING_ROOK_LOCATION : BLACK_KING_ROOK_LOCATION);
         if(rook == null) return false;
         return rook.getName().equals("Rook") && !rook.hasMoved();
     }
@@ -83,7 +85,7 @@ public class King extends Piece {
     public boolean canCastle(Chessboard c, String side) {
         //if the king has moved we cant castle
         if (this.hasMoved()) return false;
-        var king_position = this.getColor().equals(Color.WHITE) ? new Location("E1") : new Location("E8");
+        var king_position = this.getColor().equals(PieceColor.WHITE) ? new Location("E1") : new Location("E8");
         //if the king is under check it can not castle
         if (this.isUnderCheck(c, king_position)) return false;
 
@@ -95,7 +97,7 @@ public class King extends Piece {
 
                 //there are some pieces between me and the rook?
                 //does the king have to cross attacked locations?
-                if (this.getColor().equals(Color.WHITE)) {
+                if (this.getColor().equals(PieceColor.WHITE)) {
                     if (c.getPieceAt(new Location("D1")) != null || c.getPieceAt(new Location("C1")) != null || c.getPieceAt(new Location("B1")) != null)
                         return false;
                     return !this.isUnderCheck(c, new Location("D1")) && !this.isUnderCheck(c, new Location("C1"));
@@ -112,7 +114,7 @@ public class King extends Piece {
 
                 //there are some pieces between me and the rook?
                 //does the king have to cross attacked locations?
-                if (this.getColor().equals(Color.WHITE)) {
+                if (this.getColor().equals(PieceColor.WHITE)) {
                     if (c.getPieceAt(new Location("F1")) != null || c.getPieceAt(new Location("G1")) != null)
                         return false;
                     return !this.isUnderCheck(c, new Location("F1")) && !this.isUnderCheck(c, new Location("G1"));

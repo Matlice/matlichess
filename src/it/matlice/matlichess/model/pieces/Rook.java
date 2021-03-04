@@ -1,5 +1,7 @@
 package it.matlice.matlichess.model.pieces;
 
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.*;
 
 /**
@@ -7,8 +9,8 @@ import it.matlice.matlichess.model.*;
  */
 public class Rook extends Piece {
 
-    public Rook(Color color) {
-        super("Rook", "R", 5, color);
+    public Rook(PieceColor pieceColor) {
+        super("Rook", "R", 5, pieceColor);
     }
 
     @Override

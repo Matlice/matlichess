@@ -1,5 +1,7 @@
 package it.matlice.matlichess.model.pieces;
 
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.*;
 
 /**
@@ -7,8 +9,8 @@ import it.matlice.matlichess.model.*;
  */
 public class Queen extends Piece {
 
-    public Queen(Color color) {
-        super("Queen", "Q", 9, color);
+    public Queen(PieceColor pieceColor) {
+        super("Queen", "Q", 9, pieceColor);
     }
 
     @Override

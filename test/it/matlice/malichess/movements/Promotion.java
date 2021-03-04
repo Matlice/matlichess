@@ -1,8 +1,8 @@
 package it.matlice.malichess.movements;
 
 import it.matlice.malichess.ChessboardTest;
-import it.matlice.matlichess.model.Color;
-import it.matlice.matlichess.model.Location;
+import it.matlice.matlichess.Location;
+import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.model.pieces.*;
 import org.junit.jupiter.api.Test;
 
@@ -15,16 +15,16 @@ public class Promotion {
 
         ChessboardTest c = new ChessboardTest();
 
-        c.setKing(new King(Color.WHITE), "E1");
-        c.setKing(new King(Color.BLACK), "E7");
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setKing(new King(PieceColor.BLACK), "E7");
 
-        c.setPiece(new Pawn(Color.WHITE), "A7");
+        c.setPiece(new Pawn(PieceColor.WHITE), "A7");
         c.move("A7", "A8");
 
         assertNull(c.getPieceAt(new Location("A7")));
         assertNotNull(c.getPieceAt(new Location("A8")));
         assertEquals(c.getPieceAt(new Location("A8")).getName(), "Queen");
-        assertEquals(c.getPieceAt(new Location("A8")).getColor(), Color.WHITE);
+        assertEquals(c.getPieceAt(new Location("A8")).getColor(), PieceColor.WHITE);
 
     }
 
@@ -33,18 +33,18 @@ public class Promotion {
 
         ChessboardTest c = new ChessboardTest();
 
-        c.setKing(new King(Color.WHITE), "E1");
-        c.setKing(new King(Color.BLACK), "E7");
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setKing(new King(PieceColor.BLACK), "E7");
 
-        c.setPiece(new Pawn(Color.WHITE), "D7");
+        c.setPiece(new Pawn(PieceColor.WHITE), "D7");
 
-        c.setPromotion(Color.WHITE, Knight.class);
+        c.setPromotion(PieceColor.WHITE, Knight.class);
         c.move("D7", "D8");
 
         assertNull(c.getPieceAt(new Location("D7")));
         assertNotNull(c.getPieceAt(new Location("D8")));
         assertEquals(c.getPieceAt(new Location("D8")).getName(), "Knight");
-        assertEquals(c.getPieceAt(new Location("D8")).getColor(), Color.WHITE);
+        assertEquals(c.getPieceAt(new Location("D8")).getColor(), PieceColor.WHITE);
 
     }
 
@@ -53,18 +53,18 @@ public class Promotion {
 
         ChessboardTest c = new ChessboardTest();
 
-        c.setKing(new King(Color.WHITE), "E1");
-        c.setKing(new King(Color.BLACK), "E7");
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setKing(new King(PieceColor.BLACK), "E7");
 
-        c.setPiece(new Pawn(Color.WHITE), "F7");
+        c.setPiece(new Pawn(PieceColor.WHITE), "F7");
 
-        c.setPromotion(Color.WHITE, Bishop.class);
+        c.setPromotion(PieceColor.WHITE, Bishop.class);
         c.move("F7", "F8");
 
         assertNull(c.getPieceAt(new Location("F7")));
         assertNotNull(c.getPieceAt(new Location("F8")));
         assertEquals(c.getPieceAt(new Location("F8")).getName(), "Bishop");
-        assertEquals(c.getPieceAt(new Location("F8")).getColor(), Color.WHITE);
+        assertEquals(c.getPieceAt(new Location("F8")).getColor(), PieceColor.WHITE);
 
     }
 
@@ -73,18 +73,18 @@ public class Promotion {
 
         ChessboardTest c = new ChessboardTest();
 
-        c.setKing(new King(Color.WHITE), "E1");
-        c.setKing(new King(Color.BLACK), "E7");
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setKing(new King(PieceColor.BLACK), "E7");
 
-        c.setPiece(new Pawn(Color.WHITE), "B7");
+        c.setPiece(new Pawn(PieceColor.WHITE), "B7");
 
-        c.setPromotion(Color.WHITE, Rook.class);
+        c.setPromotion(PieceColor.WHITE, Rook.class);
         c.move("B7", "B8");
 
         assertNull(c.getPieceAt(new Location("B7")));
         assertNotNull(c.getPieceAt(new Location("B8")));
         assertEquals(c.getPieceAt(new Location("B8")).getName(), "Rook");
-        assertEquals(c.getPieceAt(new Location("B8")).getColor(), Color.WHITE);
+        assertEquals(c.getPieceAt(new Location("B8")).getColor(), PieceColor.WHITE);
 
     }
 
@@ -93,20 +93,20 @@ public class Promotion {
 
         ChessboardTest c = new ChessboardTest();
 
-        c.setKing(new King(Color.WHITE), "E1");
-        c.setKing(new King(Color.BLACK), "E7");
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setKing(new King(PieceColor.BLACK), "E7");
 
-        c.setPiece(new Pawn(Color.WHITE), "G7");
+        c.setPiece(new Pawn(PieceColor.WHITE), "G7");
 
-        c.setPromotion(Color.WHITE, Knight.class);
+        c.setPromotion(PieceColor.WHITE, Knight.class);
 
-        c.setPromotion(Color.WHITE, Queen.class);
+        c.setPromotion(PieceColor.WHITE, Queen.class);
         c.move("G7", "G8");
 
         assertNull(c.getPieceAt(new Location("G7")));
         assertNotNull(c.getPieceAt(new Location("G8")));
         assertEquals(c.getPieceAt(new Location("G8")).getName(), "Queen");
-        assertEquals(c.getPieceAt(new Location("G8")).getColor(), Color.WHITE);
+        assertEquals(c.getPieceAt(new Location("G8")).getColor(), PieceColor.WHITE);
 
     }
 
@@ -115,19 +115,19 @@ public class Promotion {
 
         ChessboardTest c = new ChessboardTest();
 
-        c.setKing(new King(Color.WHITE), "E1");
-        c.setKing(new King(Color.BLACK), "E7");
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setKing(new King(PieceColor.BLACK), "E7");
 
-        c.setPiece(new Pawn(Color.BLACK), "A2");
+        c.setPiece(new Pawn(PieceColor.BLACK), "A2");
 
         c.changeTurn();
-        
+
         c.move("A2", "A1");
 
         assertNull(c.getPieceAt(new Location("A2")));
         assertNotNull(c.getPieceAt(new Location("A1")));
         assertEquals(c.getPieceAt(new Location("A1")).getName(), "Queen");
-        assertEquals(c.getPieceAt(new Location("A1")).getColor(), Color.BLACK);
+        assertEquals(c.getPieceAt(new Location("A1")).getColor(), PieceColor.BLACK);
 
     }
 
@@ -136,20 +136,20 @@ public class Promotion {
 
         ChessboardTest c = new ChessboardTest();
 
-        c.setKing(new King(Color.WHITE), "E1");
-        c.setKing(new King(Color.BLACK), "E7");
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setKing(new King(PieceColor.BLACK), "E7");
 
-        c.setPiece(new Pawn(Color.BLACK), "D2");
+        c.setPiece(new Pawn(PieceColor.BLACK), "D2");
 
         c.changeTurn();
 
-        c.setPromotion(Color.BLACK, Knight.class);
+        c.setPromotion(PieceColor.BLACK, Knight.class);
         c.move("D2", "D1");
 
         assertNull(c.getPieceAt(new Location("D2")));
         assertNotNull(c.getPieceAt(new Location("D1")));
         assertEquals(c.getPieceAt(new Location("D1")).getName(), "Knight");
-        assertEquals(c.getPieceAt(new Location("D1")).getColor(), Color.BLACK);
+        assertEquals(c.getPieceAt(new Location("D1")).getColor(), PieceColor.BLACK);
 
     }
 
@@ -158,20 +158,20 @@ public class Promotion {
 
         ChessboardTest c = new ChessboardTest();
 
-        c.setKing(new King(Color.WHITE), "E1");
-        c.setKing(new King(Color.BLACK), "E7");
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setKing(new King(PieceColor.BLACK), "E7");
 
-        c.setPiece(new Pawn(Color.BLACK), "F2");
+        c.setPiece(new Pawn(PieceColor.BLACK), "F2");
 
         c.changeTurn();
 
-        c.setPromotion(Color.BLACK, Bishop.class);
+        c.setPromotion(PieceColor.BLACK, Bishop.class);
         c.move("F2", "F1");
 
         assertNull(c.getPieceAt(new Location("F2")));
         assertNotNull(c.getPieceAt(new Location("F1")));
         assertEquals(c.getPieceAt(new Location("F1")).getName(), "Bishop");
-        assertEquals(c.getPieceAt(new Location("F1")).getColor(), Color.BLACK);
+        assertEquals(c.getPieceAt(new Location("F1")).getColor(), PieceColor.BLACK);
 
     }
 
@@ -180,20 +180,20 @@ public class Promotion {
 
         ChessboardTest c = new ChessboardTest();
 
-        c.setKing(new King(Color.WHITE), "E1");
-        c.setKing(new King(Color.BLACK), "E7");
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setKing(new King(PieceColor.BLACK), "E7");
 
-        c.setPiece(new Pawn(Color.BLACK), "B2");
+        c.setPiece(new Pawn(PieceColor.BLACK), "B2");
 
         c.changeTurn();
 
-        c.setPromotion(Color.BLACK, Rook.class);
+        c.setPromotion(PieceColor.BLACK, Rook.class);
         c.move("B2", "B1");
 
         assertNull(c.getPieceAt(new Location("B2")));
         assertNotNull(c.getPieceAt(new Location("B1")));
         assertEquals(c.getPieceAt(new Location("B1")).getName(), "Rook");
-        assertEquals(c.getPieceAt(new Location("B1")).getColor(), Color.BLACK);
+        assertEquals(c.getPieceAt(new Location("B1")).getColor(), PieceColor.BLACK);
 
     }
 
@@ -202,22 +202,22 @@ public class Promotion {
 
         ChessboardTest c = new ChessboardTest();
 
-        c.setKing(new King(Color.WHITE), "E1");
-        c.setKing(new King(Color.BLACK), "E7");
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setKing(new King(PieceColor.BLACK), "E7");
 
-        c.setPiece(new Pawn(Color.BLACK), "G2");
+        c.setPiece(new Pawn(PieceColor.BLACK), "G2");
 
         c.changeTurn();
 
-        c.setPromotion(Color.BLACK, Knight.class);
-        c.setPromotion(Color.BLACK, Queen.class);
+        c.setPromotion(PieceColor.BLACK, Knight.class);
+        c.setPromotion(PieceColor.BLACK, Queen.class);
 
         c.move("G2", "G1");
 
         assertNull(c.getPieceAt(new Location("G2")));
         assertNotNull(c.getPieceAt(new Location("G1")));
         assertEquals(c.getPieceAt(new Location("G1")).getName(), "Queen");
-        assertEquals(c.getPieceAt(new Location("G1")).getColor(), Color.BLACK);
+        assertEquals(c.getPieceAt(new Location("G1")).getColor(), PieceColor.BLACK);
 
     }
 
@@ -226,18 +226,18 @@ public class Promotion {
 
         ChessboardTest c = new ChessboardTest();
 
-        c.setKing(new King(Color.WHITE), "E1");
-        c.setKing(new King(Color.BLACK), "E7");
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setKing(new King(PieceColor.BLACK), "E7");
 
-        c.setPiece(new Pawn(Color.WHITE), "D7");
+        c.setPiece(new Pawn(PieceColor.WHITE), "D7");
 
-        c.setPromotion(Color.BLACK, Knight.class);
+        c.setPromotion(PieceColor.BLACK, Knight.class);
         c.move("D7", "D8");
 
         assertNull(c.getPieceAt(new Location("D7")));
         assertNotNull(c.getPieceAt(new Location("D8")));
         assertEquals(c.getPieceAt(new Location("D8")).getName(), "Queen");
-        assertEquals(c.getPieceAt(new Location("D8")).getColor(), Color.WHITE);
+        assertEquals(c.getPieceAt(new Location("D8")).getColor(), PieceColor.WHITE);
 
     }
 

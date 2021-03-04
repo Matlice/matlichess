@@ -1,16 +1,13 @@
 package it.matlice.settings;
 
-import it.matlice.matlichess.model.Location;
-
 import java.awt.*;
-import java.util.function.BiConsumer;
 
 public class Settings {
 
     public static final int CHESSBOARD_SIZE = 720;
     public static final int MARKER_DIAMETER = 45;
-    public static final BiConsumer<Graphics2D, Location> CHESSBOARD_BG = new ImageLoader("./res/blue_marble.jpg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE));
-    public static final BiConsumer<Graphics2D, Location>[] CBURNETT_PIECE = new BiConsumer[]{
+    public static final Drawable CHESSBOARD_BG = new ImageLoader("./res/blue_marble.jpg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE));
+    public static final Drawable[] CBURNETT_PIECE = new Drawable[]{
             new ImageLoader("./res/pieces/cburnett/wP.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
             new ImageLoader("./res/pieces/cburnett/wB.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
             new ImageLoader("./res/pieces/cburnett/wN.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),

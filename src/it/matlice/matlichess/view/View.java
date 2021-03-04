@@ -1,7 +1,7 @@
 package it.matlice.matlichess.view;
 
-import it.matlice.matlichess.model.Color;
-import it.matlice.matlichess.model.Location;
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ public class View {
     public void initialize(){
         new Thread(() -> {
             JFrame frame = new JFrame();
-            frame.setBounds(100, 100, 800, 800);
+            frame.setBounds(20, 20, 800, 800);
             frame.setExtendedState(JFrame.NORMAL);
             frame.setResizable(false);
             frame.setTitle("MatliChess");
@@ -25,7 +25,7 @@ public class View {
         }).start();
     }
 
-    public List<Location> waitForUserMove(Color side){
+    public List<Location> waitForUserMove(PieceColor side){
         try {
             return chessboardView.waitForUserMove(side);
         } catch (InterruptedException e) {
@@ -37,9 +37,8 @@ public class View {
     public void setPosition(ArrayList<PieceView> pieces) {
         this.chessboardView.setPosition(pieces);
     }
-//
-//    public void makeMove(int from_col, int from_row, int to_col, int to_row) {
-//        chessboardView.makeMove(from_col, from_row, to_col, to_row);
-//    }
 
+    public void setTurn(PieceColor turn) {
+        this.chessboardView.setTurn(turn);
+    }
 }
