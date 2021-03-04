@@ -3,7 +3,6 @@ package it.matlice.matlichess.view;
 import it.matlice.CommunicationSemaphore;
 import it.matlice.matlichess.model.Location;
 import it.matlice.settings.Settings;
-import javafx.scene.shape.Circle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,13 +19,23 @@ public class ChessboardView extends JPanel implements MouseListener {
     private Location move_from;
     private Location selected;
 
+    private PieceView p1 = new PieceView(PieceType.BISHOP_BLACK, new Location("a2"));
+    private PieceView p2 = new PieceView(PieceType.KING_WHITE, new Location("h6"));
+
     public ChessboardView(){
+        this.setPreferredSize( new Dimension(Settings.CHESSBOARD_SIZE,Settings.CHESSBOARD_SIZE));
         this.addMouseListener(this);
     }
+
     private CommunicationSemaphore<Location> wait_move = new CommunicationSemaphore<>(1);
 
-    public void draw(Graphics2D g2){
-        Settings.CHESSBOARD_BG.accept(g2, new Dimension(0, 0));
+    public void drawBoard(Graphics2D g2){
+        Settings.CHESSBOARD_BG.accept(g2, new Location(0, 7));
+    }
+
+    public void drawPieces(Graphics2D g2){
+        p1.draw(g2);
+        p2.draw(g2);
     }
 
     private Location pointerToLocation(MouseEvent e){
@@ -39,18 +48,25 @@ public class ChessboardView extends JPanel implements MouseListener {
 
         Graphics2D g2 = (Graphics2D) g;
 
-        draw(g2);
+        drawBoard(g2);
 
         g2.setColor(new Color(0, 172, 151, 77));
         if (selected != null) {
-            // todo
-//                g2.fillOval((int) ( ((double) Settings.CHESSBOARD_SIZE /8) * ((double) selected.col() + 1.0/2 ) - Settings.MARKER_DIAMETER/2),
-//                        (int) ( ((double) Settings.CHESSBOARD_SIZE /8) * (7 - (double) selected.row() + 1.0/2 ) - Settings.MARKER_DIAMETER/2),
-//                        Settings.MARKER_DIAMETER, Settings.MARKER_DIAMETER);
+
+            /*
+             todo
+               g2.fillOval((int) ( ((double) Settings.CHESSBOARD_SIZE /8) * ((double) selected.col() + 1.0/2 ) - Settings.MARKER_DIAMETER/2),
+                       (int) ( ((double) Settings.CHESSBOARD_SIZE /8) * (7 - (double) selected.row() + 1.0/2 ) - Settings.MARKER_DIAMETER/2),
+                        Settings.MARKER_DIAMETER, Settings.MARKER_DIAMETER);
+             */
+
             g2.fillRect((int) ( ((double) Settings.CHESSBOARD_SIZE /8) * ((double) selected.col())),
                     (int) ( ((double) Settings.CHESSBOARD_SIZE /8) * (7 - (double) selected.row())),
                     Settings.CHESSBOARD_SIZE /8, Settings.CHESSBOARD_SIZE /8);
         }
+
+        drawPieces(g2);
+
     }
 
     @Override

@@ -2,8 +2,6 @@ package it.matlice.matlichess;
 
 import it.matlice.matlichess.controller.Game;
 
-import java.awt.*;
-
 /**
  * EntryPoint of the program
  */

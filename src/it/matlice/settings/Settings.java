@@ -1,27 +1,28 @@
 package it.matlice.settings;
 
+import it.matlice.matlichess.model.Location;
+
 import java.awt.*;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class Settings {
 
     public static final int CHESSBOARD_SIZE = 720;
     public static final int MARKER_DIAMETER = 45;
-    public static final BiConsumer<Graphics2D, Dimension> CHESSBOARD_BG = new ImageLoader("./res/blue_marble.jpg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE));
-    public static final BiConsumer<Graphics2D, Dimension>[] CBURNETT_PIECE = new BiConsumer[]{
-            new ImageLoader("./res/pieces/wP.svg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE)),
-            new ImageLoader("./res/pieces/wB.svg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE)),
-            new ImageLoader("./res/pieces/wN.svg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE)),
-            new ImageLoader("./res/pieces/wR.svg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE)),
-            new ImageLoader("./res/pieces/wQ.svg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE)),
-            new ImageLoader("./res/pieces/wK.svg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE)),
-            new ImageLoader("./res/pieces/bP.svg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE)),
-            new ImageLoader("./res/pieces/bB.svg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE)),
-            new ImageLoader("./res/pieces/bN.svg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE)),
-            new ImageLoader("./res/pieces/bR.svg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE)),
-            new ImageLoader("./res/pieces/bQ.svg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE)),
-            new ImageLoader("./res/pieces/bK.svg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE))
+    public static final BiConsumer<Graphics2D, Location> CHESSBOARD_BG = new ImageLoader("./res/blue_marble.jpg", new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE));
+    public static final BiConsumer<Graphics2D, Location>[] CBURNETT_PIECE = new BiConsumer[]{
+            new ImageLoader("./res/pieces/cburnett/wP.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
+            new ImageLoader("./res/pieces/cburnett/wB.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
+            new ImageLoader("./res/pieces/cburnett/wN.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
+            new ImageLoader("./res/pieces/cburnett/wR.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
+            new ImageLoader("./res/pieces/cburnett/wQ.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
+            new ImageLoader("./res/pieces/cburnett/wK.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
+            new ImageLoader("./res/pieces/cburnett/bP.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
+            new ImageLoader("./res/pieces/cburnett/bB.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
+            new ImageLoader("./res/pieces/cburnett/bN.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
+            new ImageLoader("./res/pieces/cburnett/bR.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
+            new ImageLoader("./res/pieces/cburnett/bQ.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
+            new ImageLoader("./res/pieces/cburnett/bK.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8))
     };
 
 }
