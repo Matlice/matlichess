@@ -1,51 +1,50 @@
 package it.matlice.settings;
 
 import it.matlice.matlichess.model.Location;
+import it.matlice.matlichess.view.ScreenLocation;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.function.BiConsumer;
 
-public class ImageLoader implements BiConsumer<Graphics2D, Location> {
+public class ImageLoader implements Drawable {
 
-    private File image_path;
+    private BufferedImage img;
     private Dimension dim;
 
     public ImageLoader(File image_path, Dimension dim) {
-        this.image_path = image_path;
+        try {
+            this.img = ImageIO.read(image_path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.dim = dim;
     }
 
     public ImageLoader(String image_path, Dimension dim) {
-        this.image_path = new File(image_path);
+        try {
+            this.img = ImageIO.read(new File(image_path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.dim = dim;
     }
 
     public ImageLoader(String image_path, int w, int h) {
-        this.image_path = new File(image_path);
+        try {
+            this.img = ImageIO.read(new File(image_path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.dim = new Dimension(w, h);
     }
 
 
-    /**
-     * Performs this operation on the given argument.
-     *
-     * @param g the input argument
-     * @param l Location where to draw the image
-     */
     @Override
-    public void accept(Graphics2D g, Location l) {
-        try {
-            var img = ImageIO.read(this.image_path);
-
-            int xCoord = l.col() * Settings.CHESSBOARD_SIZE/8;
-            int yCoord = (7-l.row()) * Settings.CHESSBOARD_SIZE/8;
-
-            g.drawImage(img, xCoord, yCoord, this.dim.width, this.dim.height, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void accept(Graphics2D g, ScreenLocation l, ScreenLocation offset) {
+            g.drawImage(img, l.x - offset.x, l.y - offset.y, this.dim.width, this.dim.height, null);
     }
 }
