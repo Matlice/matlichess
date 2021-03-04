@@ -26,9 +26,9 @@ public class MovePattern {
      * When the program validates if a Chess box is reachable, it calls this method to save the locations.
      * Returns a boolean to continue or stop the iteration.
      *
-     * @param col        the column index of the location to check
-     * @param row        the row index of the location to check
-     * @param color      the player's color
+     * @param col   the column index of the location to check
+     * @param row   the row index of the location to check
+     * @param color the player's color
      * @return true if it's needed to stop the iteration, false to continue
      */
     private boolean piece_can_take(int col, int row, Color color) {
@@ -52,7 +52,7 @@ public class MovePattern {
         var col = pieceLocation.col();
         var row = pieceLocation.row();
 
-                // forward movements
+        // forward movements
         if (myColor == Color.WHITE) {
             if (row == 7) return this; // end of chessboard, should not happen
             else if (row == 1) // if still in original row, then it can go up two squares
@@ -89,35 +89,46 @@ public class MovePattern {
         // diagonal capture and en passant
         Location target = new Location(col - 1, row + dir);
         Location passantTarget = new Location(col - 1, row);
-        if (col > 0) _pawnCapture(chessboard, myColor, target, passantTarget);
+        if (col > 0) _pawnCapture(chessboard, myColor, target, passantTarget, pieceLocation);
 
         target = new Location(col + 1, row + dir);
         passantTarget = new Location(col + 1, row);
-        if (col < 7) _pawnCapture(chessboard, myColor, target, passantTarget);
+        if (col < 7) _pawnCapture(chessboard, myColor, target, passantTarget, pieceLocation);
 
         return this;
     }
 
     /**
      * Evaluates whether a pawn can capture a piece diagonally, or capture a pawn en passant
-     *
-     * @param chessboard      chessboard
+     *  @param chessboard      chessboard
      * @param myColor         color
      * @param moveTarget      the target location the pawn can capture and move to
      * @param enPassantTarget the location of the other pawn that can be captured en passant
+     * @param actualPosition
      */
-    private void _pawnCapture(Chessboard chessboard, Color myColor, Location moveTarget, Location enPassantTarget) {
+    private void _pawnCapture(Chessboard chessboard, Color myColor, Location moveTarget, Location enPassantTarget, Location actualPosition) {
         if (chessboard.getPieceAt(moveTarget) != null) {
             // normal diagonal capture
-            if (chessboard.getPieceAt(moveTarget).getColor().equals(myColor.opponent()))
-                locations.put(moveTarget);
+            if (chessboard.getPieceAt(moveTarget).getColor().equals(myColor.opponent())) {
+                Supplier<Piece> action;
+                if (moveTarget.row() == 0 || moveTarget.row() == 7) {
+                    action = () -> {
+                        chessboard.promote(actualPosition, myColor);
+                        return null;
+                    };
+                } else {
+                    action = () -> null;
+                }
+                locations.put(moveTarget, action);
+            }
+
         } else if (moveTarget.equals(chessboard.getEnPassantTargetSquare())) {
             // left en passant
             locations.put(moveTarget, () -> {
                 Piece p = chessboard.getPieceAt(enPassantTarget);
                 chessboard.removePiece(enPassantTarget);
                 return p;
-            } );
+            });
         }
     }
 
