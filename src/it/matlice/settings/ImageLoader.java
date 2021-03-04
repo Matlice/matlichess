@@ -38,7 +38,7 @@ public class ImageLoader implements BiConsumer<Graphics2D, Location> {
     @Override
     public void accept(Graphics2D g, Location l) {
         try {
-            var img = ImageIO.read(this.image_path);
+            var img = ImageIO.read(this.image_path).getScaledInstance(this.dim.width, this.dim.height, Image.SCALE_SMOOTH);
 
             int xCoord = l.col() * Settings.CHESSBOARD_SIZE/8;
             int yCoord = (7-l.row()) * Settings.CHESSBOARD_SIZE/8;
