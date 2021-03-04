@@ -21,5 +21,6 @@ public class Settings {
             new ImageLoader("./res/pieces/cburnett/bQ.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8)),
             new ImageLoader("./res/pieces/cburnett/bK.png", new Dimension(CHESSBOARD_SIZE/8, CHESSBOARD_SIZE/8))
     };
+    public static final boolean USE_ANTIALIAS = true;
 
 }

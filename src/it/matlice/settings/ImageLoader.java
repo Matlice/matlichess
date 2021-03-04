@@ -15,7 +15,7 @@ public class ImageLoader implements Drawable {
 
     public ImageLoader(String image_path, Dimension dim) {
         try {
-            this.img = ImageIO.read(new File(image_path)).getScaledInstance(dim.width, dim.height, Image.SCALE_SMOOTH);
+            this.img = ImageIO.read(new File(image_path)).getScaledInstance(dim.width, dim.height, Settings.USE_ANTIALIAS ? Image.SCALE_SMOOTH : Image.SCALE_DEFAULT);
         } catch (IOException e) {
             e.printStackTrace();
         }
