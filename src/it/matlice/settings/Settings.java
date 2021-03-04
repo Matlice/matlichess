@@ -1,10 +1,6 @@
 package it.matlice.settings;
 
-import it.matlice.matlichess.model.Location;
-import it.matlice.matlichess.view.ScreenLocation;
-
 import java.awt.*;
-import java.util.function.BiConsumer;
 
 public class Settings {
 

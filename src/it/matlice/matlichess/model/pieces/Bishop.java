@@ -1,5 +1,7 @@
 package it.matlice.matlichess.model.pieces;
 
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.*;
 
 /**
@@ -7,8 +9,8 @@ import it.matlice.matlichess.model.*;
  */
 public class Bishop extends Piece {
 
-    public Bishop(Color color) {
-        super("Bishop", "B", 3, color);
+    public Bishop(PieceColor pieceColor) {
+        super("Bishop", "B", 3, pieceColor);
     }
 
     @Override

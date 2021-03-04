@@ -1,5 +1,7 @@
 package it.matlice.matlichess.model.pieces;
 
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.*;
 
 /**
@@ -7,8 +9,8 @@ import it.matlice.matlichess.model.*;
  */
 public class Knight extends Piece {
 
-    public Knight(Color color) {
-        super("Knight", "N", 3, color);
+    public Knight(PieceColor pieceColor) {
+        super("Knight", "N", 3, pieceColor);
     }
 
     @Override

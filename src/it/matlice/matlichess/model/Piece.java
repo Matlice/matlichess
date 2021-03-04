@@ -1,5 +1,7 @@
 package it.matlice.matlichess.model;
 
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 
 import java.util.Objects;
@@ -15,13 +17,13 @@ public abstract class Piece {
     private final String name;
     private final String shortName;
     private final int value;
-    private final Color color;
+    private final PieceColor pieceColor;
 
-    public Piece(String name, String shortName, int value, Color color) {
+    public Piece(String name, String shortName, int value, PieceColor pieceColor) {
         this.name = name;
         this.shortName = shortName;
         this.value = value;
-        this.color = color;
+        this.pieceColor = pieceColor;
     }
 
     /**
@@ -58,8 +60,8 @@ public abstract class Piece {
      *
      * @return the color of the piece
      */
-    public Color getColor() {
-        return color;
+    public PieceColor getColor() {
+        return pieceColor;
     }
 
     /**
@@ -68,7 +70,7 @@ public abstract class Piece {
      * @return the short name of the piece
      */
     public String getShortName() {
-        return getColor() == Color.WHITE ? shortName.toUpperCase() : shortName.toLowerCase();
+        return getColor() == PieceColor.WHITE ? shortName.toUpperCase() : shortName.toLowerCase();
     }
 
     /**
@@ -133,7 +135,7 @@ public abstract class Piece {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Piece piece = (Piece) o;
-        return value == piece.value && has_moved == piece.has_moved && Objects.equals(name, piece.name) && Objects.equals(shortName, piece.shortName) && color == piece.color;
+        return value == piece.value && has_moved == piece.has_moved && Objects.equals(name, piece.name) && Objects.equals(shortName, piece.shortName) && pieceColor == piece.pieceColor;
     }
 
 }

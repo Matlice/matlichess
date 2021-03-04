@@ -1,5 +1,7 @@
 package it.matlice.matlichess.view;
 
+import it.matlice.matlichess.PieceColor;
+
 public enum PieceType {
 
     PAWN_WHITE(0),
@@ -19,6 +21,11 @@ public enum PieceType {
 
     PieceType(int index) {
         this.index = index;
+    }
+
+    public PieceColor getColor(){
+        if(index <= 5) return PieceColor.WHITE;
+        return PieceColor.BLACK;
     }
 
 }

@@ -2,9 +2,8 @@ package it.matlice.malichess.movements;
 
 import it.matlice.malichess.ChessboardTest;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
-import it.matlice.matlichess.model.Chessboard;
-import it.matlice.matlichess.model.Color;
-import it.matlice.matlichess.model.Location;
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.pieces.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,13 +12,13 @@ public class NormalMovement {
 
     @org.junit.jupiter.api.Test
     public void rookTest(){
-        King k1 = new King(Color.WHITE);
-        King k2 = new King(Color.BLACK);
+        King k1 = new King(PieceColor.WHITE);
+        King k2 = new King(PieceColor.BLACK);
 
-        Rook r1 = new Rook(Color.WHITE);
-        Rook r2 = new Rook(Color.WHITE);
-        Rook r5 = new Rook(Color.BLACK);
-        Rook r6 = new Rook(Color.BLACK);
+        Rook r1 = new Rook(PieceColor.WHITE);
+        Rook r2 = new Rook(PieceColor.WHITE);
+        Rook r5 = new Rook(PieceColor.BLACK);
+        Rook r6 = new Rook(PieceColor.BLACK);
 
         ChessboardTest c = new ChessboardTest();
         c.setKing(k1, new Location("C7"));
@@ -42,13 +41,13 @@ public class NormalMovement {
 
     @org.junit.jupiter.api.Test
     public void bishopTest(){
-        King k1 = new King(Color.WHITE);
-        King k2 = new King(Color.BLACK);
+        King k1 = new King(PieceColor.WHITE);
+        King k2 = new King(PieceColor.BLACK);
 
-        Bishop b1 = new Bishop(Color.WHITE);
-        Bishop b2 = new Bishop(Color.WHITE);
-        Bishop b3 = new Bishop(Color.BLACK);
-        Pawn p1 = new Pawn(Color.BLACK);
+        Bishop b1 = new Bishop(PieceColor.WHITE);
+        Bishop b2 = new Bishop(PieceColor.WHITE);
+        Bishop b3 = new Bishop(PieceColor.BLACK);
+        Pawn p1 = new Pawn(PieceColor.BLACK);
 
         ChessboardTest c = new ChessboardTest();
         c.setKing(k1, new Location("C7"));
@@ -76,12 +75,12 @@ public class NormalMovement {
 
     @org.junit.jupiter.api.Test
     public void queenTest(){
-        King k1 = new King(Color.WHITE);
-        King k2 = new King(Color.BLACK);
+        King k1 = new King(PieceColor.WHITE);
+        King k2 = new King(PieceColor.BLACK);
 
-        Queen q1 = new Queen(Color.WHITE);
-        Queen q2 = new Queen(Color.WHITE);
-        Queen q3 = new Queen(Color.BLACK);
+        Queen q1 = new Queen(PieceColor.WHITE);
+        Queen q2 = new Queen(PieceColor.WHITE);
+        Queen q3 = new Queen(PieceColor.BLACK);
 
         ChessboardTest c = new ChessboardTest();
         c.setKing(k1, new Location("C7"));
@@ -103,12 +102,12 @@ public class NormalMovement {
 
     @org.junit.jupiter.api.Test
     public void KnightTest(){
-        King k1 = new King(Color.WHITE);
-        King k2 = new King(Color.BLACK);
+        King k1 = new King(PieceColor.WHITE);
+        King k2 = new King(PieceColor.BLACK);
 
-        Knight kn1 = new Knight(Color.WHITE);
-        Knight kn2 = new Knight(Color.WHITE);
-        Knight kn3 = new Knight(Color.BLACK);
+        Knight kn1 = new Knight(PieceColor.WHITE);
+        Knight kn2 = new Knight(PieceColor.WHITE);
+        Knight kn3 = new Knight(PieceColor.BLACK);
 
         ChessboardTest c = new ChessboardTest();
         c.setKing(k1, new Location("C7"));

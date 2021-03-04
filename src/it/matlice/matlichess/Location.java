@@ -1,4 +1,4 @@
-package it.matlice.matlichess.model;
+package it.matlice.matlichess;
 
 import it.matlice.matlichess.exceptions.ChessboardLocationException;
 

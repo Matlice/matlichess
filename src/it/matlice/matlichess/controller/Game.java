@@ -3,14 +3,13 @@ package it.matlice.matlichess.controller;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.Chessboard;
-import it.matlice.matlichess.model.Color;
-import it.matlice.matlichess.model.Location;
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.Piece;
 import it.matlice.matlichess.view.PieceType;
 import it.matlice.matlichess.view.PieceView;
 import it.matlice.matlichess.view.View;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +19,7 @@ public class Game {
     private Chessboard chessboard;
     private View view;
 
-    private Map<Color, Map<String, PieceType>> pieceConversionMap = getPieceConversionMap();
+    private Map<PieceColor, Map<String, PieceType>> pieceConversionMap = getPieceConversionMap();
 
     private static Game instance = null;
 
@@ -38,21 +37,21 @@ public class Game {
     public void display(){
         view.initialize();
         while(true) {
-            var move = view.waitForUserMove(Color.WHITE);
+            var move = view.waitForUserMove(PieceColor.WHITE);
             try {
                 chessboard.move(move.get(0), move.get(1));
                 System.out.println(move);
                 view.setPosition(convertChessboardToView(chessboard));
+                view.setTurn(chessboard.getTurn());
             } catch (InvalidMoveException e) {
                 System.out.println("WTF");
             } catch (InvalidTurnException e) {
                 System.out.println("Wrong turn man");
             }
-
         }
     }
 
-    private Map<Color, Map<String, PieceType>> getPieceConversionMap() {
+    private Map<PieceColor, Map<String, PieceType>> getPieceConversionMap() {
 
         Map<String, PieceType> whiteConversionMap = new HashMap<>();
         whiteConversionMap.put("Pawn", PieceType.PAWN_WHITE);
@@ -70,9 +69,9 @@ public class Game {
         blackConversionMap.put("Queen", PieceType.QUEEN_BLACK);
         blackConversionMap.put("King", PieceType.KING_BLACK);
 
-        Map<Color, Map<String, PieceType>> conversionMap = new HashMap<>();
-        conversionMap.put(Color.WHITE, whiteConversionMap);
-        conversionMap.put(Color.BLACK, blackConversionMap);
+        Map<PieceColor, Map<String, PieceType>> conversionMap = new HashMap<>();
+        conversionMap.put(PieceColor.WHITE, whiteConversionMap);
+        conversionMap.put(PieceColor.BLACK, blackConversionMap);
 
         return conversionMap;
     }
@@ -87,12 +86,12 @@ public class Game {
                     pieces.add(new PieceView(getPieceType(chessboardMatrix[i][j]), new Location(i,j)));
             }
         }
-
         return pieces;
     }
 
     private PieceType getPieceType(Piece piece) {
         return this.pieceConversionMap.get(piece.getColor()).get(piece.getName());
     }
+
 
 }
