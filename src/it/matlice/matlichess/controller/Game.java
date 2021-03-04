@@ -4,11 +4,14 @@ import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.model.Color;
+import it.matlice.matlichess.model.Location;
 import it.matlice.matlichess.model.Piece;
 import it.matlice.matlichess.view.PieceType;
+import it.matlice.matlichess.view.PieceView;
 import it.matlice.matlichess.view.View;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,14 +77,14 @@ public class Game {
         return conversionMap;
     }
 
-    private PieceType[][] convertChessboardToView(Chessboard c) {
-        PieceType[][] pieces = new PieceType[8][8];
+    private ArrayList<PieceView> convertChessboardToView(Chessboard c) {
+        ArrayList<PieceView> pieces = new ArrayList<>();
         Piece[][] chessboardMatrix = c.getChessboardMatrix();
 
         for(int i=0; i<8; i++) {
             for(int j=0; j<8; j++) {
                 if (chessboardMatrix[i][j] != null)
-                    pieces[i][j] = getPieceType(chessboardMatrix[i][j]);
+                    pieces.add(new PieceView(getPieceType(chessboardMatrix[i][j]), new Location(i,j)));
             }
         }
 

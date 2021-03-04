@@ -4,6 +4,7 @@ import it.matlice.matlichess.model.Color;
 import it.matlice.matlichess.model.Location;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class View {
@@ -33,7 +34,7 @@ public class View {
         }
     }
 
-    public void setPosition(PieceType[][] pieces) {
+    public void setPosition(ArrayList<PieceView> pieces) {
         this.chessboardView.setPosition(pieces);
     }
 //

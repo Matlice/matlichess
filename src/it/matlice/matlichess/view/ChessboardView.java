@@ -3,12 +3,12 @@ package it.matlice.matlichess.view;
 import it.matlice.CommunicationSemaphore;
 import it.matlice.matlichess.model.Location;
 import it.matlice.settings.Settings;
-import javafx.scene.shape.Circle;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class ChessboardView extends JPanel implements MouseListener {
     private PieceView p1 = new PieceView(PieceType.BISHOP_BLACK, new Location("a2"));
     private PieceView p2 = new PieceView(PieceType.KING_WHITE, new Location("h6"));
 
-    private PieceType[][] pieces = new PieceType[8][8];
+    private ArrayList<PieceView> pieces = new ArrayList<>();
 
     public ChessboardView(){
         this.setPreferredSize( new Dimension(Settings.CHESSBOARD_SIZE,Settings.CHESSBOARD_SIZE));
@@ -37,8 +37,9 @@ public class ChessboardView extends JPanel implements MouseListener {
     }
 
     public void drawPieces(Graphics2D g2){
-        p1.draw(g2);
-        p2.draw(g2);
+        for (PieceView pv : pieces) {
+            pv.draw(g2);
+        }
     }
 
     private Location pointerToLocation(MouseEvent e){
@@ -154,7 +155,7 @@ public class ChessboardView extends JPanel implements MouseListener {
 //        this.repaint();
 //    }
 
-    public void setPosition(PieceType[][] pieces) {
+    public void setPosition(ArrayList<PieceView> pieces) {
         this.pieces = pieces;
 
         this.repaint();
