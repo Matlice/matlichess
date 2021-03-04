@@ -1,6 +1,7 @@
 package it.matlice.matlichess.model;
 
 import it.matlice.matlichess.exceptions.ChessboardLocationException;
+import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.pieces.*;
 
@@ -107,6 +108,14 @@ public class Chessboard {
     }
 
     /**
+     * Return the whole chessboard matrix
+     * @return chessboard matrix
+     */
+    public Piece[][] getChessboardMatrix() {
+        return this.chessboard;
+    }
+
+    /**
      * Getter for the variable. If a pawn has moved by two squares in the last move, the variable will contain the skipped square, else null
      *
      * @return the enPassant Target Square
@@ -201,6 +210,7 @@ public class Chessboard {
     public Piece move(Location src, Location destination) {
         // TODO check if its correct player turn
         assert kings[0] != null && kings[1] != null;
+        if (getPieceAt(src) == null) throw new InvalidMoveException();
         Supplier<Piece> action = getPieceAt(src).getAction(this, destination, src);
         return _make_move(src, destination, action);
     }

@@ -3,6 +3,7 @@ package it.matlice.matlichess.view;
 import it.matlice.CommunicationSemaphore;
 import it.matlice.matlichess.model.Location;
 import it.matlice.settings.Settings;
+import javafx.scene.shape.Circle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,6 +22,8 @@ public class ChessboardView extends JPanel implements MouseListener {
 
     private PieceView p1 = new PieceView(PieceType.BISHOP_BLACK, new Location("a2"));
     private PieceView p2 = new PieceView(PieceType.KING_WHITE, new Location("h6"));
+
+    private PieceType[][] pieces = new PieceType[8][8];
 
     public ChessboardView(){
         this.setPreferredSize( new Dimension(Settings.CHESSBOARD_SIZE,Settings.CHESSBOARD_SIZE));
@@ -88,6 +91,8 @@ public class ChessboardView extends JPanel implements MouseListener {
             mouse_index++;
         }
 
+        if (this.mouse[0] == null) return;
+
         if (!this.mouse[0].equals(this.mouse[1])) {
             // if first press and first release are different, it's a drag-and-drop move
             this.move_from = this.mouse[0];
@@ -142,6 +147,16 @@ public class ChessboardView extends JPanel implements MouseListener {
         return Arrays.asList(this.move_from, obtained);
     }
 
-    public void makeMove(Location frm, Location to){
+//    public void makeMove(int from_col, int from_row, int to_col, int to_row) {
+//        this.pieces[to_col][to_row] = this.pieces[from_col][from_row];
+//        this.pieces[from_col][from_row] = null;
+//
+//        this.repaint();
+//    }
+
+    public void setPosition(PieceType[][] pieces) {
+        this.pieces = pieces;
+
+        this.repaint();
     }
 }
