@@ -215,7 +215,6 @@ public class Chessboard {
      * @return the taken {@link Piece} if exists, else null
      */
     public Piece move(Location src, Location destination) {
-        // TODO check if its correct player turn
         assert kings[0] != null && kings[1] != null;
         if (getPieceAt(src) == null) throw new InvalidMoveException();
         Supplier<Piece> action = getPieceAt(src).getAction(this, destination, src);

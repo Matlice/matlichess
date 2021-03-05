@@ -56,9 +56,9 @@ public class Game {
                 view.setPosition(convertChessboardToView(chessboard));
                 view.setTurn(chessboard.getTurn());
             } catch (InvalidMoveException e) {
-                System.out.println("WTF");
+                System.out.println("Invalid move " + move.get(0) + " " + move.get(1));
             } catch (InvalidTurnException e) {
-                System.out.println("Wrong turn man");
+                System.out.println("Wrong turn man " + move.get(0) + " " + move.get(1));
             }
         }
     }

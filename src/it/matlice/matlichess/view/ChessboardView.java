@@ -3,6 +3,7 @@ package it.matlice.matlichess.view;
 import it.matlice.CommunicationSemaphore;
 import it.matlice.matlichess.Location;
 import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.settings.Settings;
 
 import javax.swing.*;
@@ -86,25 +87,43 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
     @Override
     public void mousePressed(MouseEvent e) {
+
+        Location pointerLoc;
+
+        try {
+            pointerLoc = pointerToLocation(e);
+        } catch (InvalidMoveException exc) {
+            return;
+        }
+
         if (this.asking_move) {
             if(mouse_index == 0){
-                if (!isMyPiece(pointerToLocation(e))) return;
+                if (!isMyPiece(pointerLoc)) return;
             }
             if (mouse_index == 2) {
-                if (isMyPiece(pointerToLocation(e))) {
+                if (isMyPiece(pointerLoc)) {
                     resetClicks();
                 }
             }
-            this.mouse[this.mouse_index] = pointerToLocation(e);
-            if (isMyPiece(pointerToLocation(e))) this.selected = this.mouse[0];
+            this.mouse[this.mouse_index] = pointerLoc;
+            if (isMyPiece(pointerLoc)) this.selected = this.mouse[0];
             mouse_index++;
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+
+        Location pointerLoc;
+
+        try {
+            pointerLoc = pointerToLocation(e);
+        } catch (InvalidMoveException exc) {
+            return;
+        }
+
         if (asking_move) {
-            this.mouse[this.mouse_index] = pointerToLocation(e);
+            this.mouse[this.mouse_index] = pointerLoc;
             mouse_index++;
         }
 
@@ -153,10 +172,13 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     }
 
     public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
-        this.askMove();
-        var obtained = this.wait_move.r_acquire();
-        this.wait_move.r_release(null);
-        this.asking_move = false;
+        Location obtained;
+        do {
+            this.askMove();
+            obtained = this.wait_move.r_acquire();
+            this.wait_move.r_release(null);
+            this.asking_move = false;
+        } while (this.move_from == null || obtained == null);
         return Arrays.asList(this.move_from, obtained);
     }
 
@@ -181,18 +203,18 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     @Override
     public void mouseDragged(MouseEvent e) {
 
-        // todo errore in cui se clicco sul pezzo del colore che deve muovere dopo posso trascinare un pezzo dell'avversario
-
         var piece_at = this.pieces
                 .stream()
                 .filter(p -> p.getLocation().equals(this.mouse[2] != null ? this.mouse[2] : this.mouse[0]))
                 .findFirst().orElse(null);
-        if (piece_at != null) {
+
+        if (piece_at != null && isMyPiece(piece_at.getLocation())) {
             piece_at.setOffset(locationToPointer(piece_at.getLocation())
                     .diff(e.getPoint())
                     .diff(-Settings.CHESSBOARD_SIZE / 16, -Settings.CHESSBOARD_SIZE / 16));
             this.repaint();
         }
+
     }
 
     /**

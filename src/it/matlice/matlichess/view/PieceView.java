@@ -1,6 +1,7 @@
 package it.matlice.matlichess.view;
 
 import it.matlice.matlichess.Location;
+import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.settings.Settings;
 
 import java.awt.*;
@@ -19,7 +20,12 @@ public class PieceView{
     }
 
     public static Location pointerToLocation(MouseEvent e){
-        return new Location(e.getX()/(Settings.CHESSBOARD_SIZE/8), (Settings.CHESSBOARD_SIZE - e.getY())/(Settings.CHESSBOARD_SIZE/8));
+        int col = e.getX()/(Settings.CHESSBOARD_SIZE/8);
+        int row = (Settings.CHESSBOARD_SIZE - e.getY())/(Settings.CHESSBOARD_SIZE/8);
+        if (0 <= col && col < 8 && 0 <= row && row < 8)
+            return new Location(col, row);
+        else
+            throw new InvalidMoveException();
     }
 
     /**
