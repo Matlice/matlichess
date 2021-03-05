@@ -45,9 +45,15 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     }
 
     public void drawPieces(Graphics2D g2) {
+        PieceView drawLast = null;
         for (PieceView pv : pieces) {
-            pv.draw(g2);
+            if (pv.getLocation().equals(mouse[0]))
+                drawLast = pv;
+            else
+                pv.draw(g2);
         }
+        if (drawLast != null)
+            drawLast.draw(g2);
     }
 
     @Override
@@ -174,6 +180,9 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
      */
     @Override
     public void mouseDragged(MouseEvent e) {
+
+        // todo errore in cui se clicco sul pezzo del colore che deve muovere dopo posso trascinare un pezzo dell'avversario
+
         var piece_at = this.pieces
                 .stream()
                 .filter(p -> p.getLocation().equals(this.mouse[2] != null ? this.mouse[2] : this.mouse[0]))
