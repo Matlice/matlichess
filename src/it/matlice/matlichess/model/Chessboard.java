@@ -1,12 +1,13 @@
 package it.matlice.matlichess.model;
 
-import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.Location;
+import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.exceptions.ChessboardLocationException;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.pieces.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -15,6 +16,7 @@ import java.util.function.Supplier;
 /**
  * The game field. It contains information about the location of the pieces on it.
  * Here the pieces will move to proceed on the game
+ * This class is the representative of the model in the MCV architecture
  */
 public class Chessboard {
 
@@ -24,6 +26,8 @@ public class Chessboard {
     private PieceColor turn = PieceColor.WHITE;
 
     private Location enPassantTargetSquare = null;
+
+    private Class<? extends Piece>[] promotions = new Class[]{Queen.class, Queen.class};
 
     // this is the number of halfMoves since the last capture or pawn advance.
     // The reason for this field is that the value is used in the fifty-move rule.
@@ -111,6 +115,7 @@ public class Chessboard {
 
     /**
      * Return the whole chessboard matrix
+     *
      * @return chessboard matrix
      */
     public Piece[][] getChessboardMatrix() {
@@ -215,6 +220,30 @@ public class Chessboard {
         if (getPieceAt(src) == null) throw new InvalidMoveException();
         Supplier<Piece> action = getPieceAt(src).getAction(this, destination, src);
         return _make_move(src, destination, action);
+    }
+
+    /**
+     * Set the promotion type for the player
+     *
+     * @param color The color of the piece to promote
+     * @param klass The type of the piece setted to promote to
+     */
+    public void setPromotion(PieceColor color, Class<? extends Piece> klass) {
+        promotions[color.index] = klass;
+    }
+
+    /**
+     * Removes the piece and replaces it with a new piece
+     * @param location Location of the piece
+     * @param color Color of the piece
+     */
+    public void promote(Location location, PieceColor color) {
+        removePiece(location); // remove the pawn
+        try {
+            setPiece((Piece) promotions[color.index].getConstructors()[0].newInstance(color), location);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -367,9 +396,10 @@ public class Chessboard {
 
     /**
      * Returns a traditional start game chessboard
+     *
      * @return Traditional Chessboard
      */
-    public static Chessboard getDefault(){
+    public static Chessboard getDefault() {
         Chessboard c = new Chessboard();
 
         c.setPiece(new Rook(PieceColor.WHITE), "A1");
@@ -411,6 +441,10 @@ public class Chessboard {
         return c;
     }
 
+    /**
+     * getter for the turn
+     * @return which player has to move
+     */
     public PieceColor getTurn() {
         return turn;
     }

@@ -4,6 +4,8 @@ import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.pieces.King;
 
+import java.util.function.Supplier;
+
 /**
  * Set of patterns used by the pieces to move along the chessboard
  * It also provides utility methods for the control of the came, like checking if the king is under attack
@@ -45,14 +47,13 @@ public class MovePattern {
     /**
      * Pattern to add the reachable locations by a pawn, including the first move skipping two squares and
      * the adjacent diagonals when it can take a piece, and en passant when it can
+     * Here also is managed the promotion of the pawn
      *
      * @return the updated pattern
      */
     public MovePattern addPawn() {
         var col = pieceLocation.col();
         var row = pieceLocation.row();
-
-        // todo add promotion
 
         // forward movements
         if (myPieceColor == PieceColor.WHITE) {
@@ -76,41 +77,61 @@ public class MovePattern {
         int dir = (myPieceColor == PieceColor.WHITE) ? 1 : -1;
 
         if (chessboard.getPieceAt(col, row + dir) == null) {
-            locations.put(col, row + dir);
+            Supplier<Piece> action;
+            if (row + dir == 0 || row + dir == 7) {
+                action = () -> {
+                    chessboard.promote(new Location(col, row), myPieceColor);
+                    return null;
+                };
+            } else {
+                action = () -> null;
+            }
+            locations.put(col, row + dir, action);
         }
 
         // diagonal capture and en passant
         Location target = new Location(col - 1, row + dir);
         Location passantTarget = new Location(col - 1, row);
-        if (col > 0) _pawnCapture(chessboard, myPieceColor, target, passantTarget);
+        if (col > 0) _pawnCapture(chessboard, myPieceColor, target, passantTarget, pieceLocation);
 
         target = new Location(col + 1, row + dir);
         passantTarget = new Location(col + 1, row);
-        if (col < 7) _pawnCapture(chessboard, myPieceColor, target, passantTarget);
+        if (col < 7) _pawnCapture(chessboard, myPieceColor, target, passantTarget, pieceLocation);
 
         return this;
     }
 
     /**
      * Evaluates whether a pawn can capture a piece diagonally, or capture a pawn en passant
-     *
      * @param chessboard      chessboard
      * @param myPieceColor         color
      * @param moveTarget      the target location the pawn can capture and move to
      * @param enPassantTarget the location of the other pawn that can be captured en passant
+     * @param actualPosition
      */
-    private void _pawnCapture(Chessboard chessboard, PieceColor myPieceColor, Location moveTarget, Location enPassantTarget) {
+    private void _pawnCapture(Chessboard chessboard, PieceColor myPieceColor, Location moveTarget, Location enPassantTarget, Location actualPosition) {
         if (chessboard.getPieceAt(moveTarget) != null) {
             // normal diagonal capture
-            if (chessboard.getPieceAt(moveTarget).getColor().equals(myPieceColor.opponent()))
-                locations.put(moveTarget);
+            if (chessboard.getPieceAt(moveTarget).getColor().equals(myPieceColor.opponent())) {
+                Supplier<Piece> action;
+                if (moveTarget.row() == 0 || moveTarget.row() == 7) {
+                    action = () -> {
+                        chessboard.promote(actualPosition, myPieceColor);
+                        return null;
+                    };
+                } else {
+                    action = () -> null;
+                }
+                locations.put(moveTarget, action);
+            }
+
         } else if (moveTarget.equals(chessboard.getEnPassantTargetSquare())) {
             // left en passant
             locations.put(moveTarget, () -> {
                 Piece p = chessboard.getPieceAt(enPassantTarget);
                 chessboard.removePiece(enPassantTarget);
                 return p;
-            } );
+            });
         }
     }
 

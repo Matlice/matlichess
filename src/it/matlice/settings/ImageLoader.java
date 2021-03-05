@@ -10,34 +10,16 @@ import java.io.IOException;
 
 public class ImageLoader implements Drawable {
 
-    private BufferedImage img;
+    private Image img;
     private Dimension dim;
-
-    public ImageLoader(File image_path, Dimension dim) {
-        try {
-            this.img = ImageIO.read(image_path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        this.dim = dim;
-    }
 
     public ImageLoader(String image_path, Dimension dim) {
         try {
-            this.img = ImageIO.read(new File(image_path));
+            this.img = ImageIO.read(new File(image_path)).getScaledInstance(dim.width, dim.height, Settings.USE_ANTIALIAS ? Image.SCALE_AREA_AVERAGING : Image.SCALE_DEFAULT);
         } catch (IOException e) {
             e.printStackTrace();
         }
         this.dim = dim;
-    }
-
-    public ImageLoader(String image_path, int w, int h) {
-        try {
-            this.img = ImageIO.read(new File(image_path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        this.dim = new Dimension(w, h);
     }
 
 

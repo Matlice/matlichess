@@ -14,6 +14,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Singleton entity which represents the game session,
+ * This class is the controller in the MCV architecture:
+ * it contains an instance of the model and an instance of the view and takes information from both of them
+ */
 public class Game {
 
     private Chessboard chessboard;
@@ -23,6 +28,10 @@ public class Game {
 
     private static Game instance = null;
 
+    /**
+     * Singleton getter
+     * @return the instance of the current game
+     */
     public static Game getInstance(){
         if(instance == null) instance = new Game();
         return instance;
@@ -34,6 +43,9 @@ public class Game {
         view.setPosition(convertChessboardToView(chessboard));
     }
 
+    /**
+     * initializes the game and asks the players to make their moves
+     */
     public void display(){
         view.initialize();
         while(true) {
@@ -51,6 +63,10 @@ public class Game {
         }
     }
 
+    /**
+     * Utility method to convert a string representing a PieceType to the relative {@link PieceType}
+     * @return map that relates a string with the relative PieceType
+     */
     private Map<PieceColor, Map<String, PieceType>> getPieceConversionMap() {
 
         Map<String, PieceType> whiteConversionMap = new HashMap<>();
@@ -76,6 +92,11 @@ public class Game {
         return conversionMap;
     }
 
+    /**
+     * Converts a given chessboard into an array of PieceView, which will be utilized by the view
+     * @param c the given chessboard to convert
+     * @return the representative array of PieceView
+     */
     private ArrayList<PieceView> convertChessboardToView(Chessboard c) {
         ArrayList<PieceView> pieces = new ArrayList<>();
         Piece[][] chessboardMatrix = c.getChessboardMatrix();
@@ -89,6 +110,11 @@ public class Game {
         return pieces;
     }
 
+    /**
+     * Utility method to get the type of a piece
+     * @param piece the piece to get the type
+     * @return the type of a piece
+     */
     private PieceType getPieceType(Piece piece) {
         return this.pieceConversionMap.get(piece.getColor()).get(piece.getName());
     }

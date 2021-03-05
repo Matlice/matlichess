@@ -78,15 +78,15 @@ public class King extends Piece {
     /**
      * Check whether the castling is doable right now
      *
-     * @param c    chessboard
+     * @param c chessboard
      * @param side the side to check, "Queen" or "King"
      * @return true if can castle
      */
     public boolean canCastle(Chessboard c, String side) {
-        //if the king has moved we cant castle
+        //if the king has moved, it cannot castle
         if (this.hasMoved()) return false;
         var king_position = this.getColor().equals(PieceColor.WHITE) ? new Location("E1") : new Location("E8");
-        //if the king is under check it can not castle
+        //if the king is under check, it cannot castle
         if (this.isUnderCheck(c, king_position)) return false;
 
         switch (side) {

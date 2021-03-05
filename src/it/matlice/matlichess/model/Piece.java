@@ -35,6 +35,10 @@ public abstract class Piece {
         return has_moved;
     }
 
+    /**
+     * Method used to reset the movement of a piece during th validation of a move
+     * @param v boolean to set the variable in the class
+     */
     public void _reset_movement(boolean v) {
         has_moved = v;
     }
@@ -120,7 +124,7 @@ public abstract class Piece {
      *
      * @param chessboard  Chessboard
      * @param destination the move location to go to
-     * @param myPosition
+     * @param myPosition the position of the piece
      */
     public Supplier<Piece> getAction(Chessboard chessboard, Location destination, Location myPosition) {
         MoveList moves = getAvailableMoves(chessboard, myPosition);
