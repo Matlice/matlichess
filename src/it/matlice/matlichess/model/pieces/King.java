@@ -14,8 +14,8 @@ public class King extends Piece {
     private final Location WHITE_QUEEN_ROOK_LOCATION = new Location("A1");
     private final Location WHITE_KING_ROOK_LOCATION = new Location("H1");
 
-    public King(Color color) {
-        super("King", "K", Math.abs(~0), color);
+    public King(Color pieceColor) {
+        super("King", "K", Math.abs(~0), pieceColor);
     }
 
     /**
@@ -76,15 +76,15 @@ public class King extends Piece {
     /**
      * Check whether the castling is doable right now
      *
-     * @param c    chessboard
+     * @param c chessboard
      * @param side the side to check, "Queen" or "King"
      * @return true if can castle
      */
     public boolean canCastle(Chessboard c, String side) {
-        //if the king has moved we cant castle
+        //if the king has moved, it cannot castle
         if (this.hasMoved()) return false;
         var king_position = this.getColor().equals(Color.WHITE) ? new Location("E1") : new Location("E8");
-        //if the king is under check it can not castle
+        //if the king is under check, it cannot castle
         if (this.isUnderCheck(c, king_position)) return false;
 
         switch (side) {
@@ -131,6 +131,20 @@ public class King extends Piece {
     public MovePattern unvalidated_move_pattern(Chessboard chessboard, Location myPosition) {
         return new MovePattern(chessboard, myPosition, this.getColor())
                 .addKing();
+    }
+
+
+    @Override
+    public MoveList getAvailableMoves(Chessboard chessboard, Location myPosition) {
+        var moves = this.unvalidated_move_pattern(chessboard, myPosition).validate().get();
+        var other_king = chessboard.getOpponentKing(getColor());
+        var oth_k_location = chessboard.getPieces().get("King").get(other_king);
+
+        var r = new MoveList();
+        moves.keySet().forEach(e -> {
+            if(!(Math.abs(e.row()-oth_k_location.row()) <= 1 && Math.abs(e.col()-oth_k_location.col()) <= 1)) r.put(e, moves.get(e));
+        });
+        return r;
     }
 
     @Override
