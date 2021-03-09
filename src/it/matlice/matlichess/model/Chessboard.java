@@ -447,4 +447,9 @@ public class Chessboard {
     public PieceColor getTurn() {
         return turn;
     }
+
+    public MoveList getAvailableMoves(Location l){
+        if(this.getPieceAt(l) != null) return this.getPieceAt(l).getAvailableMoves(this, l);
+        return null;
+    }
 }

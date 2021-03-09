@@ -5,14 +5,13 @@ import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.Location;
+import it.matlice.matlichess.model.MoveList;
 import it.matlice.matlichess.model.Piece;
 import it.matlice.matlichess.view.PieceType;
 import it.matlice.matlichess.view.PieceView;
 import it.matlice.matlichess.view.View;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Singleton entity which represents the game session,
@@ -23,9 +22,7 @@ public class Game {
 
     private Chessboard chessboard;
     private View view;
-
     private Map<PieceColor, Map<String, PieceType>> pieceConversionMap = getPieceConversionMap();
-
     private static Game instance = null;
 
     /**
@@ -119,5 +116,7 @@ public class Game {
         return this.pieceConversionMap.get(piece.getColor()).get(piece.getName());
     }
 
-
+    public Set<Location> getAvailableMoves(Location piece){
+        return chessboard.getAvailableMoves(piece).keySet();
+    }
 }

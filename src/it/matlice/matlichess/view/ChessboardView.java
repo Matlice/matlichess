@@ -3,6 +3,7 @@ package it.matlice.matlichess.view;
 import it.matlice.CommunicationSemaphore;
 import it.matlice.matlichess.Location;
 import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.controller.Game;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.settings.Settings;
 
@@ -13,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.List;
 
 import static it.matlice.matlichess.view.PieceView.locationToPointer;
@@ -25,6 +27,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     private int mouse_index = 0;
     private Location move_from;
     private Location selected;
+    private Set<Location> feasableMoves = null;
     private PieceColor turn = PieceColor.WHITE;
 
     private ArrayList<PieceView> pieces = new ArrayList<>();
@@ -53,8 +56,15 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
             else
                 pv.draw(g2);
         }
-        if (drawLast != null)
-            drawLast.draw(g2);
+        if(selected != null){
+            if(feasableMoves != null)
+                feasableMoves.forEach((e) -> {
+                    g2.setColor(new Color(0, 0, 0, 80));
+                    var p = locationToPointer(e);
+                    g2.fillOval(p.x + Settings.CHESSBOARD_SIZE/16 - 20, p.y + Settings.CHESSBOARD_SIZE/16 - 20, 40, 40);
+                });
+        }
+        if (drawLast != null) drawLast.draw(g2);
     }
 
     @Override
@@ -106,7 +116,10 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
                 }
             }
             this.mouse[this.mouse_index] = pointerLoc;
-            if (isMyPiece(pointerLoc)) this.selected = this.mouse[0];
+            if (isMyPiece(pointerLoc)){
+                this.selected = this.mouse[0];
+                this.feasableMoves = Game.getInstance().getAvailableMoves(selected);
+            }
             mouse_index++;
         }
     }
@@ -187,19 +200,6 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         this.repaint();
     }
 
-    /**
-     * Invoked when a mouse button is pressed on a component and then
-     * dragged.  {@code MOUSE_DRAGGED} events will continue to be
-     * delivered to the component where the drag originated until the
-     * mouse button is released (regardless of whether the mouse position
-     * is within the bounds of the component).
-     * <p>
-     * Due to platform-dependent Drag&amp;Drop implementations,
-     * {@code MOUSE_DRAGGED} events may not be delivered during a native
-     * Drag&amp;Drop operation.
-     *
-     * @param e the event to be processed
-     */
     @Override
     public void mouseDragged(MouseEvent e) {
 
@@ -217,12 +217,6 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
     }
 
-    /**
-     * Invoked when the mouse cursor has been moved onto a component
-     * but no buttons have been pushed.
-     *
-     * @param e the event to be processed
-     */
     @Override
     public void mouseMoved(MouseEvent e) { }
 
