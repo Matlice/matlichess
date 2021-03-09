@@ -56,15 +56,28 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
             else
                 pv.draw(g2);
         }
+        if (drawLast != null) drawLast.draw(g2);
+    }
+
+    public void drawFeasableMoves(Graphics2D g2){
         if(selected != null){
             if(feasableMoves != null)
                 feasableMoves.forEach((e) -> {
-                    g2.setColor(new Color(0, 0, 0, 80));
                     var p = locationToPointer(e);
-                    g2.fillOval(p.x + Settings.CHESSBOARD_SIZE/16 - 20, p.y + Settings.CHESSBOARD_SIZE/16 - 20, 40, 40);
+                    final boolean[] is_capture = new boolean[]{false};
+                    pieces.forEach(x -> {
+                        if(x.getLocation().equals(e)){
+                            g2.setColor(new Color(255, 0, 0, 120));
+                            g2.fillOval(p.x + Settings.CHESSBOARD_SIZE/16 - 40, p.y + Settings.CHESSBOARD_SIZE/16 - 40, 80, 80);
+                            is_capture[0] = true;
+                        }
+                    });
+                    if(!is_capture[0]){
+                        g2.setColor(new Color(0, 0, 127, 80));
+                        g2.fillOval(p.x + Settings.CHESSBOARD_SIZE/16 - 20, p.y + Settings.CHESSBOARD_SIZE/16 - 20, 40, 40);
+                    }
                 });
         }
-        if (drawLast != null) drawLast.draw(g2);
     }
 
     @Override
@@ -76,18 +89,11 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
         g2.setColor(new Color(0, 172, 151, 77));
         if (selected != null) {
-
-            /*
-             todo
-               g2.fillOval((int) ( ((double) Settings.CHESSBOARD_SIZE /8) * ((double) selected.col() + 1.0/2 ) - Settings.MARKER_DIAMETER/2),
-                       (int) ( ((double) Settings.CHESSBOARD_SIZE /8) * (7 - (double) selected.row() + 1.0/2 ) - Settings.MARKER_DIAMETER/2),
-                        Settings.MARKER_DIAMETER, Settings.MARKER_DIAMETER);
-             */
-
             g2.fillRect((int) (((double) Settings.CHESSBOARD_SIZE / 8) * ((double) selected.col())),
                     (int) (((double) Settings.CHESSBOARD_SIZE / 8) * (7 - (double) selected.row())),
                     Settings.CHESSBOARD_SIZE / 8, Settings.CHESSBOARD_SIZE / 8);
         }
+        drawFeasableMoves(g2);
         drawPieces(g2);
     }
 
