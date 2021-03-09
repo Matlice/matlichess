@@ -98,6 +98,10 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     @Override
     public void mousePressed(MouseEvent e) {
 
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            return;
+        }
+
         Location pointerLoc;
 
         try {
@@ -126,6 +130,23 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
     @Override
     public void mouseReleased(MouseEvent e) {
+
+        if (e.getButton() == MouseEvent.BUTTON3) {
+
+            var piece_at = this.pieces
+                    .stream()
+                    .filter(p -> p.getLocation().equals(this.mouse[2] != null ? this.mouse[2] : this.mouse[0]))
+                    .findFirst().orElse(null);
+
+            if (piece_at != null)
+                piece_at.resetOffset();
+
+            resetClicks();
+            this.selected = null;
+
+            this.repaint();
+            return;
+        }
 
         Location pointerLoc;
 
