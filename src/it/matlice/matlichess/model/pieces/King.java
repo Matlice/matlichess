@@ -130,6 +130,19 @@ public class King extends Piece {
     }
 
     @Override
+    public MoveList getAvailableMoves(Chessboard chessboard, Location myPosition) {
+        var moves = this.unvalidated_move_pattern(chessboard, myPosition).validate().get();
+        var other_king = chessboard.getOpponentKing(getColor());
+        var oth_k_location = chessboard.getPieces().get("King").get(other_king);
+
+        var r = new MoveList();
+        moves.keySet().forEach(e -> {
+            if(!(Math.abs(e.row()-oth_k_location.row()) <= 1 && Math.abs(e.col()-oth_k_location.col()) <= 1)) r.put(e, moves.get(e));
+        });
+        return r;
+    }
+
+    @Override
     public MovePattern unvalidated_move_pattern(Chessboard chessboard, Location myPosition) {
         return new MovePattern(chessboard, myPosition, this.getColor())
                 .addKing();

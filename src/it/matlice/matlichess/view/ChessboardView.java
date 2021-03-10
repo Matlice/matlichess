@@ -138,7 +138,6 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     public void mouseReleased(MouseEvent e) {
 
         if (e.getButton() == MouseEvent.BUTTON3) {
-
             var piece_at = this.pieces
                     .stream()
                     .filter(p -> p.getLocation().equals(this.mouse[2] != null ? this.mouse[2] : this.mouse[0]))
@@ -146,16 +145,12 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
             if (piece_at != null)
                 piece_at.resetOffset();
-
             resetClicks();
-            this.selected = null;
-
             this.repaint();
             return;
         }
 
         Location pointerLoc;
-
         try {
             pointerLoc = pointerToLocation(e);
         } catch (InvalidMoveException exc) {
@@ -164,7 +159,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
         if (asking_move) {
             this.mouse[this.mouse_index] = pointerLoc;
-            mouse_index++;
+            mouse_index += 1;
         }
 
         if (this.mouse[0] == null) return;
@@ -193,10 +188,23 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
     @Override
     public void mouseEntered(MouseEvent e) {
+        if(mouse[2] != null){
+            mouse[2] = null;
+            mouse[3] = null;
+            mouse_index = 2;
+        }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+        if(mouse[0] != null && mouse[0].equals(mouse[1]) && mouse[2] == null) return;
+        this.pieces
+                .stream()
+                .filter(p -> p.getLocation().equals(this.mouse[2] != null ? this.mouse[2] : this.mouse[0]))
+                .findFirst().ifPresent(PieceView::resetOffset);
+
+        resetClicks();
+        this.repaint();
     }
 
     private void resetClicks() {
@@ -219,6 +227,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
             this.wait_move.r_release(null);
             this.asking_move = false;
         } while (this.move_from == null || obtained == null);
+        this.feasableMoves = null;
         return Arrays.asList(this.move_from, obtained);
     }
 
