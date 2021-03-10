@@ -2,6 +2,8 @@ package it.matlice.matlichess;
 
 import it.matlice.matlichess.exceptions.ChessboardLocationException;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -76,5 +78,10 @@ public class Location {
     @Override
     public String toString() {
         return String.valueOf((char) (col + 0x41)) + (row + 1);
+    }
+
+    public static List<Location> fromExtendedMove(String move){
+        assert move.length() == 4;
+        return Arrays.asList(new Location(move.substring(0, 2)), new Location(move.substring(2)));
     }
 }

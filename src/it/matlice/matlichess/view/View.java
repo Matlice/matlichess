@@ -2,8 +2,10 @@ package it.matlice.matlichess.view;
 
 import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.Location;
+import it.matlice.matlichess.controller.PlayerInterface;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,8 +13,8 @@ public class View {
 
    private ChessboardView chessboardView = new ChessboardView();
 
-    public void initialize(){
-        new Thread(() -> {
+    public PlayerInterface initialize(){
+        EventQueue.invokeLater(() -> {
             JFrame frame = new JFrame();
             frame.setBounds(20, 20, 800, 800);
             frame.setExtendedState(JFrame.NORMAL);
@@ -22,16 +24,8 @@ public class View {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.add(chessboardView);
             frame.pack();
-        }).start();
-    }
-
-    public List<Location> waitForUserMove(PieceColor side){
-        try {
-            return chessboardView.waitForUserMove(side);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return null;
-        }
+        });
+        return chessboardView;
     }
 
     public void setPosition(ArrayList<PieceView> pieces) {
