@@ -1,13 +1,16 @@
 package it.matlice.matlichess.controller;
 
-import it.matlice.matlichess.Location;
-import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.GameState;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.Chessboard;
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.Location;
+import it.matlice.matlichess.model.MoveList;
 import it.matlice.matlichess.model.Piece;
 import it.matlice.matlichess.view.PieceType;
 import it.matlice.matlichess.view.PieceView;
+import it.matlice.matlichess.view.View;
 
 import java.util.*;
 

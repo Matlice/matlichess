@@ -29,12 +29,12 @@ public class King extends Piece {
      */
     public boolean isUnderCheck(Chessboard chessboard, Location location) {
         for (Map<Piece, Location> family : chessboard.getPieces().values()) {
-            for (Map.Entry<Piece, Location> value : family.entrySet()) {
-                if (value.getKey() instanceof King) break;
+            for (Map.Entry<Piece, Location> entry : family.entrySet()) {
+                if (entry.getKey() instanceof King) break;
                 // value contains an opponent Piece and his Location
-                if (value.getKey().getColor().equals(this.getColor().opponent()))
+                if (entry.getKey().getColor().equals(this.getColor().opponent()))
                     // unvalidated_move_pattern is used because is not necessary to move the opponent piece to check
-                    if (value.getKey().unvalidated_move_pattern(chessboard, value.getValue()).get().containsKey(location))
+                    if (entry.getKey().unvalidated_move_pattern(chessboard, entry.getValue()).get().containsKey(location))
                         return true;
             }
         }
@@ -127,6 +127,19 @@ public class King extends Piece {
             default:
                 return false;
         }
+    }
+
+    @Override
+    public MoveList getAvailableMoves(Chessboard chessboard, Location myPosition) {
+        var moves = this.unvalidated_move_pattern(chessboard, myPosition).validate().get();
+        var other_king = chessboard.getOpponentKing(getColor());
+        var oth_k_location = chessboard.getPieces().get("King").get(other_king);
+
+        var r = new MoveList();
+        moves.keySet().forEach(e -> {
+            if(!(Math.abs(e.row()-oth_k_location.row()) <= 1 && Math.abs(e.col()-oth_k_location.col()) <= 1)) r.put(e, moves.get(e));
+        });
+        return r;
     }
 
     @Override
