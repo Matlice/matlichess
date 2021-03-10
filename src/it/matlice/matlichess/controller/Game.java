@@ -1,5 +1,6 @@
 package it.matlice.matlichess.controller;
 
+import it.matlice.matlichess.GameState;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.Chessboard;
@@ -51,6 +52,11 @@ public class Game {
                 chessboard.move(move.get(0), move.get(1));
                 System.out.println(move);
                 view.setPosition(convertChessboardToView(chessboard));
+                GameState state = chessboard.getGameState();
+                if(!state.equals(GameState.PLAYING)){
+                    System.out.println(state);
+                    throw new RuntimeException();
+                }
                 view.setTurn(chessboard.getTurn());
             } catch (InvalidMoveException e) {
                 System.out.println("Invalid move " + move.get(0) + " " + move.get(1));

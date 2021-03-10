@@ -1,5 +1,6 @@
 package it.matlice.matlichess.model;
 
+import it.matlice.matlichess.GameState;
 import it.matlice.matlichess.Location;
 import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.exceptions.ChessboardLocationException;
@@ -8,6 +9,7 @@ import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.pieces.*;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -31,7 +33,6 @@ public class Chessboard {
 
     // this is the number of halfMoves since the last capture or pawn advance.
     // The reason for this field is that the value is used in the fifty-move rule.
-    // TODO condizioni di patta
     private int halfMoveClock = 0;
 
     // the number of the full move. It starts at 1, and is incremented after Black's move.
@@ -233,8 +234,9 @@ public class Chessboard {
 
     /**
      * Removes the piece and replaces it with a new piece
+     *
      * @param location Location of the piece
-     * @param color Color of the piece
+     * @param color    Color of the piece
      */
     public void promote(Location location, PieceColor color) {
         removePiece(location); // remove the pawn
@@ -442,14 +444,37 @@ public class Chessboard {
 
     /**
      * getter for the turn
+     *
      * @return which player has to move
      */
     public PieceColor getTurn() {
         return turn;
     }
 
-    public MoveList getAvailableMoves(Location l){
-        if(this.getPieceAt(l) != null) return this.getPieceAt(l).getAvailableMoves(this, l);
+    public MoveList getAvailableMoves(Location l) {
+        if (this.getPieceAt(l) != null) return this.getPieceAt(l).getAvailableMoves(this, l);
         return null;
+    }
+
+    /**
+     * todo add draw by repetition
+     */
+    public GameState getGameState() {
+        if(halfMoveClock == 50) return GameState.DRAW;
+        ArrayList<Location> allMoves = new ArrayList<>();
+        for (Map<Piece, Location> family : getPieces().values()) {
+            for (Map.Entry<Piece, Location> entry : family.entrySet()) {
+                if(entry.getKey().getColor().equals(turn))
+                    allMoves.addAll(entry.getKey().getAvailableMoves(this, entry.getValue()).keySet());
+            }
+        }
+        if(allMoves.isEmpty())
+            if(getKing(turn).isUnderCheck(this, getPieces().get("King").get(getKing(turn)))){
+                if(turn.equals(PieceColor.BLACK)) return GameState.WHITE_WIN;
+                return GameState.BLACK_WIN;
+            }else{
+                return GameState.DRAW;
+            }
+        return GameState.PLAYING;
     }
 }
