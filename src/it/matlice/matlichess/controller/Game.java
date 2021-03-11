@@ -8,6 +8,10 @@ import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.MoveList;
 import it.matlice.matlichess.model.Piece;
+import it.matlice.matlichess.model.pieces.Bishop;
+import it.matlice.matlichess.model.pieces.Knight;
+import it.matlice.matlichess.model.pieces.Queen;
+import it.matlice.matlichess.model.pieces.Rook;
 import it.matlice.matlichess.view.PieceType;
 import it.matlice.matlichess.view.PieceView;
 import it.matlice.matlichess.view.View;
@@ -22,16 +26,19 @@ import java.util.*;
 public class Game {
 
     private static Game instance = null;
-    PlayerInterface[] players;
+    List<PlayerInterface> players; // 0 is white, 1 is black, any others are watchers
     private Chessboard chessboard;
     private Map<PieceColor, Map<String, PieceType>> pieceConversionMap = getPieceConversionMap();
     private PieceColor turn = PieceColor.WHITE; //0 white, 1 black
 
-    private Game(PlayerInterface[] players) {
+    private Game(List<PlayerInterface> players, List<PlayerInterface> nonPlayers) {
         chessboard = Chessboard.getDefault();
-        assert players.length == 2;
+        assert players.size() == 2;
         this.players = players;
-        Arrays.stream(this.players).forEach(e -> e.setPosition(convertChessboardToView(chessboard)));
+        if (nonPlayers != null) {
+            this.players.addAll(nonPlayers);
+        }
+        this.players.forEach(e -> e.setPosition(convertChessboardToView(chessboard)));
     }
 
     /**
@@ -45,7 +52,20 @@ public class Game {
     }
 
     public static Game getInstance(PlayerInterface white, PlayerInterface black) {
-        if (instance == null) instance = new Game(new PlayerInterface[]{white, black});
+        return getInstance(white, black, new ArrayList<>());
+    }
+
+    public static Game getInstance(PlayerInterface white, PlayerInterface black, PlayerInterface nonPlayer) {
+        List<PlayerInterface> nonPlayers = new ArrayList<>();
+        nonPlayers.add(nonPlayer);
+        return getInstance(white, black, nonPlayers);
+    }
+
+    public static Game getInstance(PlayerInterface white, PlayerInterface black, List<PlayerInterface> nonPlayers) {
+        ArrayList<PlayerInterface> players = new ArrayList<PlayerInterface>();
+        players.add(white);
+        players.add(black);
+        if (instance == null) instance = new Game(players, nonPlayers);
         return instance;
     }
 
@@ -53,18 +73,31 @@ public class Game {
         return instance != null;
     }
 
+    public void setup() {
+        this.players.forEach(e -> {
+            e.setPosition(convertChessboardToView(chessboard));
+            e.setTurn(chessboard.getTurn());
+        });
+        turn = chessboard.getTurn();
+    }
+
     public boolean mainloop() {
         List<Location> move = null;
         try {
-            move = players[turn.index].waitForUserMove(PieceColor.WHITE);
+            move = players.get(turn.index).waitForUserMove(PieceColor.WHITE);
             chessboard.move(move.get(0), move.get(1));
 
             System.out.println(move);
 
-            Arrays.stream(players).forEach(e -> {
+            this.players.forEach(e -> {
                 e.setPosition(convertChessboardToView(chessboard));
                 e.setTurn(chessboard.getTurn());
             });
+            GameState state = chessboard.getGameState();
+            if(!state.equals(GameState.PLAYING)){
+                System.out.println(state);
+                throw new RuntimeException();
+            }
             turn = chessboard.getTurn();
         } catch (InvalidMoveException e) {
             System.out.println("Invalid move " + move.get(0) + " " + move.get(1));
@@ -139,7 +172,22 @@ public class Game {
         return chessboard.getAvailableMoves(piece).keySet();
     }
 
-    public String getPositionFen() {
-        return chessboard.toFEN();
+    public void setPromotion(String promotion) {
+        switch (promotion) {
+            case "q": chessboard.setPromotion(turn, Queen.class); break;
+            case "r": chessboard.setPromotion(turn, Rook.class); break;
+            case "b": chessboard.setPromotion(turn, Bishop.class); break;
+            case "n": chessboard.setPromotion(turn, Knight.class); break;
+            default: break;
+        }
     }
+
+    public String getPositionFen(boolean complete) {
+        return chessboard.toFEN(complete);
+    }
+
+    public String getPositionFen() {
+        return chessboard.toFEN(true);
+    }
+
 }

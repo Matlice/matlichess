@@ -485,8 +485,14 @@ public class Chessboard {
      * @return the state of the game
      */
     public GameState getGameState() {
-        if(halfMoveClock == 50) return GameState.DRAW;
-        if(positions.containsValue(3)) return GameState.DRAW;
+        if(halfMoveClock == 50) {
+            //System.out.println("DRAW by 50 moves");
+            return GameState.DRAW;
+        }
+        if(positions.containsValue(3)) {
+            //System.out.println("DRAW by repetition");
+            return GameState.DRAW;
+        }
         ArrayList<Location> allMoves = new ArrayList<>();
         for (Map<Piece, Location> family : getPieces().values()) {
             for (Map.Entry<Piece, Location> entry : family.entrySet()) {
@@ -496,9 +502,14 @@ public class Chessboard {
         }
         if(allMoves.isEmpty())
             if(getKing(turn).isUnderCheck(this, getPieces().get("King").get(getKing(turn)))){
-                if(turn.equals(PieceColor.BLACK)) return GameState.WHITE_WIN;
+                if(turn.equals(PieceColor.BLACK)) {
+                    //System.out.println("WIN WHITE by checkmate");
+                    return GameState.WHITE_WIN;
+                }
+                //System.out.println("WIN BLACK by checkmate");
                 return GameState.BLACK_WIN;
             }else{
+                //System.out.println("DRAW by stalemate");
                 return GameState.DRAW;
             }
         return GameState.PLAYING;

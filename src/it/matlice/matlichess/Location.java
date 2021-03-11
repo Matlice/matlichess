@@ -80,8 +80,14 @@ public class Location {
         return String.valueOf((char) (col + 0x41)) + (row + 1);
     }
 
+    /**
+     * Return a list of two locations, to represent a move
+     * example: ["A4", "C6"]
+     * @param move
+     * @return
+     */
     public static List<Location> fromExtendedMove(String move){
         assert move.length() == 4;
-        return Arrays.asList(new Location(move.substring(0, 2)), new Location(move.substring(2)));
+        return Arrays.asList(new Location(move.substring(0, 2)), new Location(move.substring(2, 4)));
     }
 }
