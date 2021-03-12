@@ -20,6 +20,7 @@ public class StockfishPlayer implements PlayerInterface {
     public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
         Stockfish.nSearchBestMove(depth, false);
         var move = Stockfish.nGetFoundNextMoveStr();
+        Stockfish.nGetScore(true);
         return Location.fromExtendedMove(move);
     }
 
