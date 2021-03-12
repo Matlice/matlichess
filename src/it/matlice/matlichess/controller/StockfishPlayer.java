@@ -10,17 +10,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class StockfishPlayer implements PlayerInterface {
-    private int depth = 20;
+    private int depth;
+    private int skill;
 
     private int delay = 100;
 
-    public StockfishPlayer(int depth){
+    public StockfishPlayer(int depth, int skill){
         this.depth = depth;
+        this.skill = skill;
         Stockfish.getInstance();
     }
 
     @Override
     public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
+        Stockfish.nSetOption("Skill Level", String.valueOf(this.skill));
         Stockfish.nSearchBestMove(depth, false);
         var move = Stockfish.nGetFoundNextMoveStr();
         if (move.length() == 5) {
@@ -36,7 +39,7 @@ public class StockfishPlayer implements PlayerInterface {
         if(Game.hasInstance()) {
             Stockfish.nSetPosition(Game.getInstance().getPositionFen());
         }
-        // Stockfish.nDbgDisplay();
+        Stockfish.nDbgDisplay();
     }
 
     @Override

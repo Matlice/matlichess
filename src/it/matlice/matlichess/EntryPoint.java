@@ -14,8 +14,8 @@ public class EntryPoint {
 
     public static void main(String[] args) {
         var v = new View().initialize();
-        var white = new StockfishPlayer(7);
-        var black = new StockfishPlayer(7);
+        var white = new StockfishPlayer(16, 20);
+        var black = new StockfishPlayer(16, 0);
 
         Game.getInstance(white, black, v).setup();
         while(Game.getInstance().mainloop());
