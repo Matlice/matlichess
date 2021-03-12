@@ -6,7 +6,6 @@ import it.matlice.matlichess.view.PieceView;
 import it.matlice.stockfish.Stockfish;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class StockfishPlayer implements PlayerInterface {
@@ -26,6 +25,7 @@ public class StockfishPlayer implements PlayerInterface {
         Stockfish.nSetOption("Skill Level", String.valueOf(this.skill));
         Stockfish.nSearchBestMove(depth, false);
         var move = Stockfish.nGetFoundNextMoveStr();
+        Stockfish.nGetScore(true);
         if (move.length() == 5) {
             String promotion = move.substring(4, 5);
             Game.getInstance().setPromotion(promotion);

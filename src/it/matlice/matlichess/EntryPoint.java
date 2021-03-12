@@ -1,11 +1,8 @@
 package it.matlice.matlichess;
 
 import it.matlice.matlichess.controller.Game;
-import it.matlice.matlichess.controller.PlayerInterface;
 import it.matlice.matlichess.controller.StockfishPlayer;
 import it.matlice.matlichess.view.View;
-
-import java.util.ArrayList;
 
 /**
  * EntryPoint of the program
