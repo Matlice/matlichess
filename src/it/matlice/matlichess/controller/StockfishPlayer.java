@@ -11,6 +11,9 @@ import java.util.List;
 
 public class StockfishPlayer implements PlayerInterface {
     private int depth = 20;
+
+    private int delay = 100;
+
     public StockfishPlayer(int depth){
         this.depth = depth;
         Stockfish.getInstance();
@@ -22,12 +25,20 @@ public class StockfishPlayer implements PlayerInterface {
         var move = Stockfish.nGetFoundNextMoveStr();
         Stockfish.nGetScore(true);
         return Location.fromExtendedMove(move);
+        if (move.length() == 5) {
+            String promotion = move.substring(4, 5);
+            Game.getInstance().setPromotion(promotion);
+        }
+        Thread.sleep(delay);
+        return Location.fromExtendedMove(move.substring(0, 4));
     }
 
     @Override
     public void setPosition(ArrayList<PieceView> pieces) {
-        if(Game.hasInstance()) Stockfish.nSetPosition(Game.getInstance().getPositionFen());
-        Stockfish.nDbgDisplay();
+        if(Game.hasInstance()) {
+            Stockfish.nSetPosition(Game.getInstance().getPositionFen());
+        }
+        // Stockfish.nDbgDisplay();
     }
 
     @Override

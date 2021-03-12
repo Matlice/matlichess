@@ -1,5 +1,6 @@
 package it.matlice.matlichess.model;
 
+import it.matlice.matlichess.GameState;
 import it.matlice.matlichess.Location;
 import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.exceptions.ChessboardLocationException;
@@ -8,6 +9,7 @@ import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.pieces.*;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -24,14 +26,15 @@ public class Chessboard {
     private final Map<String, Map<Piece, Location>> pieces = new HashMap<>();
     private King[] kings = new King[2];
     private PieceColor turn = PieceColor.WHITE;
-
     private Location enPassantTargetSquare = null;
+
+    //This map is needed to implement a quick algorithm for three repetition rule
+    private HashMap<String, Integer> positions = new HashMap<>();
 
     private Class<? extends Piece>[] promotions = new Class[]{Queen.class, Queen.class};
 
     // this is the number of halfMoves since the last capture or pawn advance.
     // The reason for this field is that the value is used in the fifty-move rule.
-    // TODO condizioni di patta
     private int halfMoveClock = 0;
 
     // the number of the full move. It starts at 1, and is incremented after Black's move.
@@ -203,6 +206,8 @@ public class Chessboard {
         _set_piece_at(destination, getPieceAt(src));
         chessboard[src.col()][src.row()] = null;
 
+        saveFEN(toFEN(false));
+
         return toCapture;
     }
 
@@ -233,8 +238,9 @@ public class Chessboard {
 
     /**
      * Removes the piece and replaces it with a new piece
+     *
      * @param location Location of the piece
-     * @param color Color of the piece
+     * @param color    Color of the piece
      */
     public void promote(Location location, PieceColor color) {
         removePiece(location); // remove the pawn
@@ -306,7 +312,6 @@ public class Chessboard {
         });
         cloned.kings = kings;
 
-
         cloned.enPassantTargetSquare = this.enPassantTargetSquare;
         cloned.fullMoveNumber = this.fullMoveNumber;
         cloned.halfMoveClock = this.halfMoveClock;
@@ -344,9 +349,10 @@ public class Chessboard {
      * Returns the Forsyth–Edwards Notation (FEN) used for describing a particular board position of a chess game
      * The purpose of FEN is to provide all the necessary information to restart a game from a particular position
      *
+     * @param complete set true if you want the compete fen, false to cut the move numbers
      * @return the string representation of the FEN
      */
-    public String toFEN() {
+    public String toFEN(boolean complete) {
         StringBuilder fen = new StringBuilder();
 
         // base position
@@ -384,6 +390,8 @@ public class Chessboard {
         fen.append(" ");
         fen.append(enPassantTargetSquare != null ? enPassantTargetSquare.toString().toLowerCase() : "-");
 
+        if(!complete) return fen.toString();
+
         // move number
         fen.append(" ");
         fen.append(halfMoveClock);
@@ -391,6 +399,19 @@ public class Chessboard {
         fen.append(fullMoveNumber);
 
         return fen.toString();
+    }
+
+    public String toFEN() {
+        return toFEN(true);
+    }
+
+    /**
+     * Saves in a variable how many times is reached the same position
+     * @param fen the relative FEN of the position
+     */
+    public void saveFEN(String fen){
+        if(!positions.containsKey(fen)) positions.put(fen, 1);
+        else positions.put(fen, positions.get(fen)+1);
     }
 
     /**
@@ -442,14 +463,55 @@ public class Chessboard {
 
     /**
      * getter for the turn
+     *
      * @return which player has to move
      */
     public PieceColor getTurn() {
         return turn;
     }
 
-    public MoveList getAvailableMoves(Location l){
-        if(this.getPieceAt(l) != null) return this.getPieceAt(l).getAvailableMoves(this, l);
+    /**
+     * Return all the available moves of a piece in a certain Location
+     * @param l the location where the piece is
+     * @return all the available moves of the piece
+     */
+    public MoveList getAvailableMoves(Location l) {
+        if (this.getPieceAt(l) != null) return this.getPieceAt(l).getAvailableMoves(this, l);
         return null;
+    }
+
+    /**
+     * Notifies if the match is not over, if it is in a draw position or if a player has won
+     * @return the state of the game
+     */
+    public GameState getGameState() {
+        if(halfMoveClock == 50) {
+            //System.out.println("DRAW by 50 moves");
+            return GameState.DRAW;
+        }
+        if(positions.containsValue(3)) {
+            //System.out.println("DRAW by repetition");
+            return GameState.DRAW;
+        }
+        ArrayList<Location> allMoves = new ArrayList<>();
+        for (Map<Piece, Location> family : getPieces().values()) {
+            for (Map.Entry<Piece, Location> entry : family.entrySet()) {
+                if(entry.getKey().getColor().equals(turn))
+                    allMoves.addAll(entry.getKey().getAvailableMoves(this, entry.getValue()).keySet());
+            }
+        }
+        if(allMoves.isEmpty())
+            if(getKing(turn).isUnderCheck(this, getPieces().get("King").get(getKing(turn)))){
+                if(turn.equals(PieceColor.BLACK)) {
+                    //System.out.println("WIN WHITE by checkmate");
+                    return GameState.WHITE_WIN;
+                }
+                //System.out.println("WIN BLACK by checkmate");
+                return GameState.BLACK_WIN;
+            }else{
+                //System.out.println("DRAW by stalemate");
+                return GameState.DRAW;
+            }
+        return GameState.PLAYING;
     }
 }

@@ -1,8 +1,11 @@
 package it.matlice.matlichess;
 
 import it.matlice.matlichess.controller.Game;
+import it.matlice.matlichess.controller.PlayerInterface;
 import it.matlice.matlichess.controller.StockfishPlayer;
 import it.matlice.matlichess.view.View;
+
+import java.util.ArrayList;
 
 /**
  * EntryPoint of the program
@@ -10,10 +13,11 @@ import it.matlice.matlichess.view.View;
 public class EntryPoint {
 
     public static void main(String[] args) {
-        var v = new View();
-        var white = v.initialize();
-        var s = new StockfishPlayer(12);
+        var v = new View().initialize();
+        var white = new StockfishPlayer(7);
+        var black = new StockfishPlayer(7);
 
-        while(Game.getInstance(white, s).mainloop());
+        Game.getInstance(white, black, v).setup();
+        while(Game.getInstance().mainloop());
     }
 }
