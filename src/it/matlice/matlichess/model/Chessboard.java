@@ -206,8 +206,6 @@ public class Chessboard {
         _set_piece_at(destination, getPieceAt(src));
         chessboard[src.col()][src.row()] = null;
 
-        saveFEN(toFEN(false));
-
         return toCapture;
     }
 
@@ -223,7 +221,9 @@ public class Chessboard {
         assert kings[0] != null && kings[1] != null;
         if (getPieceAt(src) == null) throw new InvalidMoveException();
         Supplier<Piece> action = getPieceAt(src).getAction(this, destination, src);
-        return _make_move(src, destination, action);
+        Piece captured = _make_move(src, destination, action);
+        saveFEN(toFEN(false));
+        return captured;
     }
 
     /**

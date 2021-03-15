@@ -23,4 +23,6 @@ public class Settings {
     };
     public static final boolean USE_ANTIALIAS = true;
 
+    public static final int NETWORK_PORT = 13579;
+
 }

@@ -12,7 +12,7 @@ public class StockfishPlayer implements PlayerInterface {
     private int depth;
     private int skill;
 
-    private int delay = 100;
+    private int delay = 0;
 
     public StockfishPlayer(int depth, int skill){
         this.depth = depth;
@@ -22,7 +22,9 @@ public class StockfishPlayer implements PlayerInterface {
 
     @Override
     public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
-        Stockfish.nSetOption("Skill Level", String.valueOf(this.skill));
+        Stockfish.nSetOption("Use NNUE", String.valueOf(false)); // true or false // use neural network
+        Stockfish.nSetOption("Contempt", String.valueOf(-100)); // -100, 100  // lower prefers draw
+        Stockfish.nSetOption("Skill Level", String.valueOf(this.skill)); // 0, 20 // skill level, 0 is tough tho
         Stockfish.nSearchBestMove(depth, false);
         var move = Stockfish.nGetFoundNextMoveStr();
         Stockfish.nGetScore(true);

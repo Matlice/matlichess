@@ -60,7 +60,7 @@ public class King extends Piece {
     public boolean isQueenCastlingAvailable(Chessboard c) {
         var rook = c.getPieceAt(this.getColor().equals(PieceColor.WHITE) ? WHITE_QUEEN_ROOK_LOCATION : BLACK_QUEEN_ROOK_LOCATION);
         if(rook == null) return false;
-        return rook.getName().equals("Rook") && !rook.hasMoved();
+        return rook.getName().equals("Rook") && !rook.hasMoved() && !this.has_moved;
     }
 
     /**
@@ -72,7 +72,7 @@ public class King extends Piece {
     public boolean isKingCastlingAvailable(Chessboard c) {
         Piece rook = c.getPieceAt(this.getColor().equals(PieceColor.WHITE) ? WHITE_KING_ROOK_LOCATION : BLACK_KING_ROOK_LOCATION);
         if(rook == null) return false;
-        return rook.getName().equals("Rook") && !rook.hasMoved();
+        return rook.getName().equals("Rook") && !rook.hasMoved() && !this.has_moved;
     }
 
     /**
