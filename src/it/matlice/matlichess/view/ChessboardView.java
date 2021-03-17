@@ -29,6 +29,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     private Location move_from;
     private Location selected;
     private Set<Location> feasableMoves = null;
+    private PieceColor myColor = PieceColor.WHITE;
     private PieceColor turn = PieceColor.WHITE;
 
     private ArrayList<PieceView> pieces = new ArrayList<>();
@@ -55,9 +56,9 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
             if (pv.getLocation().equals(mouse[0]))
                 drawLast = pv;
             else
-                pv.draw(g2);
+                pv.draw(g2, this.myColor.equals(PieceColor.BLACK));
         }
-        if (drawLast != null) drawLast.draw(g2);
+        if (drawLast != null) drawLast.draw(g2, this.myColor.equals(PieceColor.BLACK));
     }
 
     public void drawFeasableMoves(Graphics2D g2) {
@@ -227,6 +228,11 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     }
 
     @Override
+    public void setColor(PieceColor color) {
+        this.myColor = color;
+    }
+
+    @Override
     public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
         Location obtained;
         do {
@@ -243,6 +249,11 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     public void setPosition(ArrayList<PieceView> pieces) {
         this.pieces = pieces;
         this.repaint();
+    }
+
+    @Override
+    public void setMove(Location from, Location to) {
+        return;
     }
 
     @Override

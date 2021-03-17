@@ -13,10 +13,20 @@ public class PieceView{
     private Location location;
     private ScreenLocation offset = new ScreenLocation();
 
-    public static ScreenLocation locationToPointer(Location l){
-        int xCoord = l.col() * Settings.CHESSBOARD_SIZE/8;
-        int yCoord = (7-l.row()) * Settings.CHESSBOARD_SIZE/8;
+    public static ScreenLocation locationToPointer(Location l, boolean invert){
+        int xCoord, yCoord;
+        if (!invert) {
+            xCoord = l.col() * Settings.CHESSBOARD_SIZE/8;
+            yCoord = (7-l.row()) * Settings.CHESSBOARD_SIZE/8;
+        } else {
+            xCoord = (7-l.col()) * Settings.CHESSBOARD_SIZE/8;
+            yCoord = l.row() * Settings.CHESSBOARD_SIZE/8;
+        }
         return new ScreenLocation(xCoord, yCoord);
+    }
+
+    public static ScreenLocation locationToPointer(Location l) {
+        return locationToPointer(l, false);
     }
 
     public static Location pointerToLocation(MouseEvent e){
@@ -37,8 +47,12 @@ public class PieceView{
         this.location = location;
     }
 
+    public void draw(Graphics2D g2, boolean invert) {
+        Settings.CBURNETT_PIECE[pieceType.index].accept(g2, locationToPointer(location, invert), offset);
+    }
+
     public void draw(Graphics2D g2) {
-        Settings.CBURNETT_PIECE[pieceType.index].accept(g2, locationToPointer(location), offset);
+        this.draw(g2, false);
     }
 
     public Location getLocation(){

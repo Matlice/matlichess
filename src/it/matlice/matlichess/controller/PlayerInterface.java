@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface PlayerInterface {
     public List<Location> waitForUserMove(PieceColor side) throws InterruptedException;
+    public void setColor(PieceColor color);
     public void setPosition(ArrayList<PieceView> pieces);
+    public void setMove(Location from, Location to);
     public void setTurn(PieceColor turn);
 }

@@ -13,6 +13,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class NetworkPlayer implements PlayerInterface {
@@ -94,26 +95,38 @@ public class NetworkPlayer implements PlayerInterface {
     }
 
     @Override
-    public List<Location> waitForUserMove(PieceColor side) {
+    public void setColor(PieceColor color) {
+        return;
+    }
+
+    @Override
+    public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
+        while (socketIn == null) Thread.sleep(200); // no sockets has connected
         List<Location> move = null;
-        try {
-            while (!isReady());
-            String s = this.socketIn.nextLine();
-                if (s != null){
-                    System.out.println(s); // todo
-                    move = Location.fromExtendedMove(s);
+        do {
+            try {
+                String moveString = this.socketIn.nextLine();
+                if (moveString != null) {
+                    move = Location.fromExtendedMove(moveString);
                 }
-        } catch (RuntimeException e) {
-            // todo remove?
-            System.err.println("Move not valid");
-        }
+            } catch (NoSuchElementException e) {
+                // socket has been closed, repeat
+                Thread.sleep(100);
+            } catch (RuntimeException e) {
+                // todo remove?
+                Thread.sleep(100);
+                System.err.println("Move not valid");
+            }
+        } while (move == null);
         return move;
     }
 
     //todo docs
     private boolean isReady(){
+        if (this.socket == null) return false;
         try {
-            return this.socket != null && !this.socket.getInetAddress().isReachable(500);
+            this.socket.getOutputStream().write(0xff); // todo other client is not expecting this
+            return true;
         } catch (IOException e) {
             return false;
         }
@@ -121,8 +134,13 @@ public class NetworkPlayer implements PlayerInterface {
 
     @Override
     public void setPosition(ArrayList<PieceView> pieces) {
+        return;
+    }
+
+    @Override
+    public void setMove(Location from, Location to) {
         if (Game.hasInstance() && this.socketOut != null)
-            this.socketOut.println(Game.getInstance().getPositionFen());
+            this.socketOut.println(from.toString() + to.toString());
     }
 
     @Override

@@ -78,6 +78,8 @@ public class Game {
             e.setPosition(convertChessboardToView(chessboard));
             e.setTurn(chessboard.getTurn());
         });
+        this.players.get(0).setColor(PieceColor.WHITE);
+        this.players.get(1).setColor(PieceColor.BLACK);
         turn = chessboard.getTurn();
     }
 
@@ -89,8 +91,10 @@ public class Game {
 
             System.out.println(move);
 
+            List<Location> finalMove = move; // needed for the lambda below
             this.players.forEach(e -> {
                 e.setPosition(convertChessboardToView(chessboard));
+                e.setMove(finalMove.get(0), finalMove.get(1));
                 e.setTurn(chessboard.getTurn());
             });
             GameState state = chessboard.getGameState();

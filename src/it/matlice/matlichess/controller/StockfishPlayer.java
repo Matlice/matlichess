@@ -21,6 +21,11 @@ public class StockfishPlayer implements PlayerInterface {
     }
 
     @Override
+    public void setColor(PieceColor color) {
+        return;
+    }
+
+    @Override
     public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
         Stockfish.nSetOption("Use NNUE", String.valueOf(false)); // true or false // use neural network
         Stockfish.nSetOption("Contempt", String.valueOf(-100)); // -100, 100  // lower prefers draw
@@ -42,6 +47,11 @@ public class StockfishPlayer implements PlayerInterface {
             Stockfish.nSetPosition(Game.getInstance().getPositionFen());
         }
         Stockfish.nDbgDisplay();
+    }
+
+    @Override
+    public void setMove(Location from, Location to) {
+        return;
     }
 
     @Override
