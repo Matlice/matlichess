@@ -128,21 +128,38 @@ public class NetworkPlayer implements PlayerInterface {
 
     @Override
     public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
+        var socket_died = false;
         while (socketIn == null) Thread.sleep(200); // no sockets has connected
         List<Location> move = null;
         do {
             sem.acquire();
             try {
+                if(socket_died){
+                    this.socketOut.writeObject(new PositionInit(this.mycolor, Game.getInstance().getTurn()));
+                    socketOut.flush();
+                }
                 var p = (ComPacket) socketIn.readObject();
+
+                switch(p.getPacketType()){
+                    case "MOVE":
+                        if (((Move) p).getExtendedMove() != null) {
+                            move = Location.fromExtendedMove(((Move) p).getExtendedMove());
+                            if(!Game.getInstance().isMoveValid(move.get(0), move.get(1))) throw new InvalidMoveException();
+                        }
+                        break;
+                    case "POS_INIT":
+                        Game.getInstance().loadState((PositionInit) p);
+                        break;
+                    default:
+                        throw new ClassNotFoundException("Protocol error");
+                }
                 if(!p.getPacketType().equals("MOVE"))
                     throw new ClassNotFoundException("Protocol error");
-                if (((Move) p).getExtendedMove() != null) {
-                    move = Location.fromExtendedMove(((Move) p).getExtendedMove());
-                    if(!Game.getInstance().isMoveValid(move.get(0), move.get(1))) throw new InvalidMoveException();
-                }
+
             } catch (IOException e) {
                 // socket has been closed, repeat
                 Thread.sleep(100);
+                socket_died = true;
             } catch (RuntimeException | ClassNotFoundException e) {
                 Thread.sleep(100);
                 System.err.println("received an invalid move");
