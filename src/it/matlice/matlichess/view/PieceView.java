@@ -16,11 +16,11 @@ public class PieceView{
     public static ScreenLocation locationToPointer(Location l, boolean invert){
         int xCoord, yCoord;
         if (!invert) {
-            xCoord = l.col() * Settings.CHESSBOARD_SIZE/8;
-            yCoord = (7-l.row()) * Settings.CHESSBOARD_SIZE/8;
+            xCoord = l.col() * Settings.CHESSBOARD_SQUARE_SIZE;
+            yCoord = (7-l.row()) * Settings.CHESSBOARD_SQUARE_SIZE;
         } else {
-            xCoord = (7-l.col()) * Settings.CHESSBOARD_SIZE/8;
-            yCoord = l.row() * Settings.CHESSBOARD_SIZE/8;
+            xCoord = (7-l.col()) * Settings.CHESSBOARD_SQUARE_SIZE;
+            yCoord = l.row() * Settings.CHESSBOARD_SQUARE_SIZE;
         }
         return new ScreenLocation(xCoord, yCoord);
     }
@@ -32,11 +32,11 @@ public class PieceView{
     public static Location pointerToLocation(MouseEvent e, boolean invert){
         int row, col;
         if (!invert) {
-             col = e.getX()/(Settings.CHESSBOARD_SIZE/8);
-            row = (Settings.CHESSBOARD_SIZE - e.getY())/(Settings.CHESSBOARD_SIZE/8);
+             col = e.getX()/(Settings.CHESSBOARD_SQUARE_SIZE);
+            row = (Settings.CHESSBOARD_SIZE - e.getY())/(Settings.CHESSBOARD_SQUARE_SIZE);
         } else {
-            col = (Settings.CHESSBOARD_SIZE - e.getX())/(Settings.CHESSBOARD_SIZE/8);
-            row = e.getY()/(Settings.CHESSBOARD_SIZE/8);
+            col = (Settings.CHESSBOARD_SIZE - e.getX())/(Settings.CHESSBOARD_SQUARE_SIZE);
+            row = e.getY()/(Settings.CHESSBOARD_SQUARE_SIZE);
         }
 
         if (0 <= col && col < 8 && 0 <= row && row < 8)

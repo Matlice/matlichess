@@ -25,11 +25,19 @@ import java.util.*;
  */
 public class Game {
 
+    // singleton
     private static Game instance = null;
-    List<PlayerInterface> players; // 0 is white, 1 is black, any others are watchers
+
+    // list of player interfaces; 0 is white, 1 is black, any others are watchers
+    List<PlayerInterface> players;
+
+    // chessboard model instance
     private Chessboard chessboard;
-    private Map<PieceColor, Map<String, PieceType>> pieceConversionMap = getPieceConversionMap();
+
+    // todo get from model instead of having it saved here
     private PieceColor turn = PieceColor.WHITE; //0 white, 1 black
+
+    private Map<PieceColor, Map<String, PieceType>> pieceConversionMap = getPieceConversionMap();
 
     private Game(List<PlayerInterface> players, List<PlayerInterface> nonPlayers) {
         chessboard = Chessboard.getDefault();
@@ -51,10 +59,25 @@ public class Game {
         return instance;
     }
 
+    /**
+     * Singleton getter, passing only the two players
+     *
+     * @param white the white player
+     * @param black the black player
+     * @return
+     */
     public static Game getInstance(PlayerInterface white, PlayerInterface black) {
         return getInstance(white, black, new ArrayList<>());
     }
 
+    /**
+     * Singleton getter, passing white, black and any other "only watching" player interfaces
+     *
+     * @param white the white player
+     * @param black the black player
+     * @param nonPlayer any other "player" who is not really playing
+     * @return
+     */
     public static Game getInstance(PlayerInterface white, PlayerInterface black, PlayerInterface nonPlayer) {
         List<PlayerInterface> nonPlayers = new ArrayList<>();
         nonPlayers.add(nonPlayer);

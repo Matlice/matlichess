@@ -42,7 +42,7 @@ public class Chessboard {
     private int fullMoveNumber = 1;
 
     /**
-     * Puts a {@link Piece} on a certain box in the chessboard.
+     * Puts a {@link Piece} on a certain box in the chessboard, WITHOUT checking whether the destination square is empty.
      *
      * @param loc the {@link Location} of the box
      * @param p   the chess {@link Piece} to put
@@ -54,7 +54,7 @@ public class Chessboard {
     }
 
     /**
-     * Puts a {@link Piece} on a certain box in the chessboard
+     * Puts a {@link Piece} on a certain box in the chessboard, checking whether the destination square is empty
      *
      * @param piece the chess {@link Piece} to put
      * @param loc   the {@link Location} of the box
@@ -407,6 +407,7 @@ public class Chessboard {
 
     /**
      * Saves in a variable how many times is reached the same position
+     *
      * @param fen the relative FEN of the position
      */
     public void saveFEN(String fen){
@@ -462,7 +463,7 @@ public class Chessboard {
     }
 
     /**
-     * getter for the turn
+     * Getter for the turn
      *
      * @return which player has to move
      */
@@ -472,6 +473,7 @@ public class Chessboard {
 
     /**
      * Return all the available moves of a piece in a certain Location
+     *
      * @param l the location where the piece is
      * @return all the available moves of the piece
      */
@@ -482,6 +484,7 @@ public class Chessboard {
 
     /**
      * Notifies if the match is not over, if it is in a draw position or if a player has won
+     *
      * @return the state of the game
      */
     public GameState getGameState() {

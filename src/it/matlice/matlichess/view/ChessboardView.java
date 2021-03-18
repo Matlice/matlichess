@@ -51,16 +51,18 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     }
 
     public void drawSelectedSquare(Graphics2D g2) {
-        g2.setColor(new Color(0, 172, 151, 77));
+        g2.setColor(Settings.SELECTION_BG_COLOR);
         if (selected != null) {
             if (this.myColor.equals(PieceColor.BLACK)) {
-                g2.fillRect((int) (((double) Settings.CHESSBOARD_SIZE / 8) * (7 - (double) selected.col())),
-                        (int) (((double) Settings.CHESSBOARD_SIZE / 8) * ((double) selected.row())),
-                        Settings.CHESSBOARD_SIZE / 8, Settings.CHESSBOARD_SIZE / 8);
+                g2.fillRect(Settings.CHESSBOARD_SQUARE_SIZE * (7 - selected.col()),
+                            Settings.CHESSBOARD_SQUARE_SIZE * selected.row(),
+                            Settings.CHESSBOARD_SQUARE_SIZE,
+                            Settings.CHESSBOARD_SQUARE_SIZE);
             } else {
-                g2.fillRect((int) (((double) Settings.CHESSBOARD_SIZE / 8) * ((double) selected.col())),
-                        (int) (((double) Settings.CHESSBOARD_SIZE / 8) * (7 - (double) selected.row())),
-                        Settings.CHESSBOARD_SIZE / 8, Settings.CHESSBOARD_SIZE / 8);
+                g2.fillRect(Settings.CHESSBOARD_SQUARE_SIZE * selected.col(),
+                            Settings.CHESSBOARD_SQUARE_SIZE * (7 - selected.row()),
+                            Settings.CHESSBOARD_SQUARE_SIZE,
+                            Settings.CHESSBOARD_SQUARE_SIZE);
             }
         }
     }
@@ -73,14 +75,20 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
                     final boolean[] is_capture = new boolean[]{false};
                     pieces.forEach(x -> {
                         if (x.getLocation().equals(e)) {
-                            g2.setColor(new Color(255, 0, 0, 120));
-                            g2.fillOval(p.x + Settings.CHESSBOARD_SIZE / 16 - 40, p.y + Settings.CHESSBOARD_SIZE / 16 - 40, 80, 80);
+                            g2.setColor(Settings.CAPTURE_COLOR);
+                            g2.fillOval(p.x + Settings.CHESSBOARD_SQUARE_SIZE/2 - Settings.CAPTURE_DIAMETER/2,
+                                        p.y + Settings.CHESSBOARD_SQUARE_SIZE/2 - Settings.CAPTURE_DIAMETER/2,
+                                        Settings.CAPTURE_DIAMETER,
+                                        Settings.CAPTURE_DIAMETER);
                             is_capture[0] = true;
                         }
                     });
                     if (!is_capture[0]) {
-                        g2.setColor(new Color(0, 0, 127, 80));
-                        g2.fillOval(p.x + Settings.CHESSBOARD_SIZE / 16 - 20, p.y + Settings.CHESSBOARD_SIZE / 16 - 20, 40, 40);
+                        g2.setColor(Settings.MOVE_COLOR);
+                        g2.fillOval(p.x + Settings.CHESSBOARD_SQUARE_SIZE/2 - Settings.MOVE_DIAMETER/2,
+                                    p.y + Settings.CHESSBOARD_SQUARE_SIZE/2 - Settings.MOVE_DIAMETER/2,
+                                    Settings.MOVE_DIAMETER,
+                                    Settings.MOVE_DIAMETER);
                     }
                 });
         }
@@ -104,11 +112,10 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         Graphics2D g2 = (Graphics2D) g;
         drawBoard(g2);
 
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        if (Settings.USE_ANTIALIAS) {
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        }
 
         drawSelectedSquare(g2);
         drawFeasableMoves(g2);
@@ -276,7 +283,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         if (piece_at != null && isMyPiece(piece_at.getLocation())) {
             piece_at.setOffset(locationToPointer(piece_at.getLocation(), this.myColor.equals(PieceColor.BLACK))
                     .diff(e.getPoint())
-                    .diff(-Settings.CHESSBOARD_SIZE / 16, -Settings.CHESSBOARD_SIZE / 16));
+                    .diff(-Settings.CHESSBOARD_SQUARE_SIZE / 2, -Settings.CHESSBOARD_SQUARE_SIZE / 2));
             this.repaint();
         }
     }
