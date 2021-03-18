@@ -10,6 +10,7 @@ import it.matlice.matlichess.model.pieces.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -27,6 +28,10 @@ public class Chessboard {
     private King[] kings = new King[2];
     private PieceColor turn = PieceColor.WHITE;
     private Location enPassantTargetSquare = null;
+
+    public HashMap<String, Integer> getPositions() {
+        return positions;
+    }
 
     //This map is needed to implement a quick algorithm for three repetition rule
     private HashMap<String, Integer> positions = new HashMap<>();
@@ -224,6 +229,16 @@ public class Chessboard {
         Piece captured = _make_move(src, destination, action);
         saveFEN(toFEN(false));
         return captured;
+    }
+
+    public boolean isMoveValid(Location src, Location destination) {
+        var c = this.clone();
+        try{
+            c.move(src, destination);
+            return true;
+        } catch (InvalidMoveException e){
+            return false;
+        }
     }
 
     /**
@@ -478,6 +493,15 @@ public class Chessboard {
     public MoveList getAvailableMoves(Location l) {
         if (this.getPieceAt(l) != null) return this.getPieceAt(l).getAvailableMoves(this, l);
         return null;
+    }
+
+    public void setPositions(HashMap<String, Integer> positions) {
+        this.positions = positions;
+    }
+    public void setPositions(String[] pos_fen, Integer[] times) {
+        assert  times.length == pos_fen.length;
+        for (int i = 0; i < pos_fen.length; i++)
+            this.positions.put(pos_fen[i], times[i]);
     }
 
     /**
