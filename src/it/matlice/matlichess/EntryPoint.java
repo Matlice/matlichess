@@ -5,7 +5,6 @@ import it.matlice.matlichess.controller.NetworkPlayer;
 import it.matlice.matlichess.controller.StockfishPlayer;
 import it.matlice.matlichess.view.View;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -24,7 +23,7 @@ public class EntryPoint {
             var black = new StockfishPlayer(16, 20);
             var network = new NetworkPlayer();
 
-            Game.getInstance(v, network).setup();
+            Game.getInstance(v, v).setup();
             while (Game.getInstance().mainloop());
         } else {
             var v = new View().initialize();

@@ -244,6 +244,14 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         this.wait_move.r_acquire();
     }
 
+    private String askPromotionPiece() {
+        String input;
+        do{
+           input = JOptionPane.showInputDialog("Promotion: ");
+        } while (!input.equals("q") && !input.equals("n") && !input.equals("r") && !input.equals("b"));
+        return input;
+    }
+
     @Override
     public void setColor(PieceColor color) {
         this.myColor = color;
@@ -258,6 +266,11 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
             this.wait_move.r_release(null);
             this.asking_move = false;
         } while (this.move_from == null || obtained == null);
+        if(Game.getInstance().isPromotionRequired(move_from, obtained)){
+            String promotion = askPromotionPiece();
+            //todo controlli
+            Game.getInstance().setPromotion(promotion);
+        }
         this.feasableMoves = null;
         return Arrays.asList(this.move_from, obtained);
     }
