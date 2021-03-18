@@ -13,12 +13,16 @@ public class Stockfish {
             System.loadLibrary("stockfishjni");
             stockfish_is_loaded = true;
         } catch (UnsatisfiedLinkError e){
-            System.err.println("Cannot load stockfish from library path, trying from " + System.getProperty("user.dir"));
+            System.out.println("Cannot load stockfish from library path, trying from " + System.getProperty("user.dir"));
             try {
-                if(System.getProperty("os.name").toLowerCase().startsWith("win"))
+                if(System.getProperty("os.name").toLowerCase().startsWith("win")){
                     System.load(System.getProperty("user.dir") + "/libstockfishjni.dll");
-                else
+                    System.out.println("Stockfish found in " + System.getProperty("user.dir"));
+                }
+                else{
                     System.load(System.getProperty("user.dir") + "/libstockfishjni.so");
+                    System.out.println("Stockfish found in " + System.getProperty("user.dir"));
+                }
                 stockfish_is_loaded = true;
             } catch (UnsatisfiedLinkError err){
                 System.err.println("Cannot load stockfish. Some functionalities will be compromised");

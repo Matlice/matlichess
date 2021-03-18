@@ -25,9 +25,8 @@ public class EntryPoint {
             var network = new NetworkPlayer();
 
             Game.getInstance(v, network).setup();
-            while (Game.getInstance().mainloop()) ;
+            while (Game.getInstance().mainloop());
         } else {
-
             var v = new View().initialize();
             var white = new StockfishPlayer(16, 10);
             var black = new StockfishPlayer(16, 20);
