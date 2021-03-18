@@ -14,7 +14,7 @@ import java.net.UnknownHostException;
  */
 public class EntryPoint {
 
-    private static boolean CLIENT = true;
+    private static boolean CLIENT = false;
 
     public static void main(String[] args) {
 
@@ -25,9 +25,8 @@ public class EntryPoint {
             var network = new NetworkPlayer();
 
             Game.getInstance(v, network).setup();
-            while (Game.getInstance().mainloop()) ;
+            while (Game.getInstance().mainloop());
         } else {
-
             var v = new View().initialize();
             var white = new StockfishPlayer(16, 10);
             var black = new StockfishPlayer(16, 20);
