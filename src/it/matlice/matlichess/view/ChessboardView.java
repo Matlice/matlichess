@@ -50,22 +50,26 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         Settings.CHESSBOARD_BG.accept(g2, new ScreenLocation());
     }
 
-    public void drawPieces(Graphics2D g2) {
-        PieceView drawLast = null;
-        for (PieceView pv : pieces) {
-            if (pv.getLocation().equals(mouse[0]))
-                drawLast = pv;
-            else
-                pv.draw(g2, this.myColor.equals(PieceColor.BLACK));
+    public void drawSelectedSquare(Graphics2D g2) {
+        g2.setColor(new Color(0, 172, 151, 77));
+        if (selected != null) {
+            if (this.myColor.equals(PieceColor.BLACK)) {
+                g2.fillRect((int) (((double) Settings.CHESSBOARD_SIZE / 8) * (7 - (double) selected.col())),
+                        (int) (((double) Settings.CHESSBOARD_SIZE / 8) * ((double) selected.row())),
+                        Settings.CHESSBOARD_SIZE / 8, Settings.CHESSBOARD_SIZE / 8);
+            } else {
+                g2.fillRect((int) (((double) Settings.CHESSBOARD_SIZE / 8) * ((double) selected.col())),
+                        (int) (((double) Settings.CHESSBOARD_SIZE / 8) * (7 - (double) selected.row())),
+                        Settings.CHESSBOARD_SIZE / 8, Settings.CHESSBOARD_SIZE / 8);
+            }
         }
-        if (drawLast != null) drawLast.draw(g2, this.myColor.equals(PieceColor.BLACK));
     }
 
     public void drawFeasableMoves(Graphics2D g2) {
         if (selected != null) {
             if (feasableMoves != null)
                 feasableMoves.forEach((e) -> {
-                    var p = locationToPointer(e);
+                    var p = locationToPointer(e, this.myColor.equals(PieceColor.BLACK));
                     final boolean[] is_capture = new boolean[]{false};
                     pieces.forEach(x -> {
                         if (x.getLocation().equals(e)) {
@@ -82,6 +86,17 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         }
     }
 
+    public void drawPieces(Graphics2D g2) {
+        PieceView drawLast = null;
+        for (PieceView pv : pieces) {
+            if (pv.getLocation().equals(mouse[0]))
+                drawLast = pv;
+            else
+                pv.draw(g2, this.myColor.equals(PieceColor.BLACK));
+        }
+        if (drawLast != null) drawLast.draw(g2, this.myColor.equals(PieceColor.BLACK));
+    }
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -95,12 +110,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        g2.setColor(new Color(0, 172, 151, 77));
-        if (selected != null) {
-            g2.fillRect((int) (((double) Settings.CHESSBOARD_SIZE / 8) * ((double) selected.col())),
-                    (int) (((double) Settings.CHESSBOARD_SIZE / 8) * (7 - (double) selected.row())),
-                    Settings.CHESSBOARD_SIZE / 8, Settings.CHESSBOARD_SIZE / 8);
-        }
+        drawSelectedSquare(g2);
         drawFeasableMoves(g2);
         drawPieces(g2);
     }
@@ -119,7 +129,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         Location pointerLoc;
 
         try {
-            pointerLoc = pointerToLocation(e);
+            pointerLoc = pointerToLocation(e, this.myColor.equals(PieceColor.BLACK));
         } catch (InvalidMoveException exc) {
             return;
         }
@@ -160,7 +170,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
         Location pointerLoc;
         try {
-            pointerLoc = pointerToLocation(e);
+            pointerLoc = pointerToLocation(e, this.myColor.equals(PieceColor.BLACK));
         } catch (InvalidMoveException exc) {
             return;
         }
@@ -264,7 +274,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
                 .findFirst().orElse(null);
 
         if (piece_at != null && isMyPiece(piece_at.getLocation())) {
-            piece_at.setOffset(locationToPointer(piece_at.getLocation())
+            piece_at.setOffset(locationToPointer(piece_at.getLocation(), this.myColor.equals(PieceColor.BLACK))
                     .diff(e.getPoint())
                     .diff(-Settings.CHESSBOARD_SIZE / 16, -Settings.CHESSBOARD_SIZE / 16));
             this.repaint();

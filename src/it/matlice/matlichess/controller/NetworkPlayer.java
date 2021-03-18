@@ -29,13 +29,17 @@ public class NetworkPlayer implements PlayerInterface {
      * @throws IOException
      */
     public NetworkPlayer() {
-        try {
-            server = new ServerSocket(Settings.NETWORK_PORT);
-        } catch (IOException e) {
-            // todo remove?
-            System.err.println("Connection lost");
+        boolean serverStarted = false;
+        while (!serverStarted) {
+            try {
+                server = new ServerSocket(Settings.NETWORK_PORT);
+                (new Thread(this::handleServer)).start();
+                serverStarted = true;
+            } catch (IOException e) {
+                // todo remove?
+                System.err.println("Cannot connect, maybe port is already bind");
+            }
         }
-        (new Thread(this::handleServer)).start();
     }
 
     /**

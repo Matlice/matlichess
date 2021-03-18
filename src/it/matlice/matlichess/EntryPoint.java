@@ -14,7 +14,7 @@ import java.net.UnknownHostException;
  */
 public class EntryPoint {
 
-    private static boolean CLIENT = true;
+    private static boolean CLIENT = false;
 
     public static void main(String[] args) {
 

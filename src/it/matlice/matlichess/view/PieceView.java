@@ -29,13 +29,24 @@ public class PieceView{
         return locationToPointer(l, false);
     }
 
-    public static Location pointerToLocation(MouseEvent e){
-        int col = e.getX()/(Settings.CHESSBOARD_SIZE/8);
-        int row = (Settings.CHESSBOARD_SIZE - e.getY())/(Settings.CHESSBOARD_SIZE/8);
+    public static Location pointerToLocation(MouseEvent e, boolean invert){
+        int row, col;
+        if (!invert) {
+             col = e.getX()/(Settings.CHESSBOARD_SIZE/8);
+            row = (Settings.CHESSBOARD_SIZE - e.getY())/(Settings.CHESSBOARD_SIZE/8);
+        } else {
+            col = (Settings.CHESSBOARD_SIZE - e.getX())/(Settings.CHESSBOARD_SIZE/8);
+            row = e.getY()/(Settings.CHESSBOARD_SIZE/8);
+        }
+
         if (0 <= col && col < 8 && 0 <= row && row < 8)
             return new Location(col, row);
         else
             throw new InvalidMoveException();
+    }
+
+    public static Location pointerToLocation(MouseEvent e) {
+        return pointerToLocation(e, false);
     }
 
     /**
