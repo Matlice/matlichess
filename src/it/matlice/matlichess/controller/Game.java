@@ -1,12 +1,12 @@
 package it.matlice.matlichess.controller;
 
 import it.matlice.matlichess.GameState;
+import it.matlice.matlichess.controller.net.PositionInit;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.Chessboard;
 import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.Location;
-import it.matlice.matlichess.model.MoveList;
 import it.matlice.matlichess.model.Piece;
 import it.matlice.matlichess.model.pieces.Bishop;
 import it.matlice.matlichess.model.pieces.Knight;
@@ -14,7 +14,6 @@ import it.matlice.matlichess.model.pieces.Queen;
 import it.matlice.matlichess.model.pieces.Rook;
 import it.matlice.matlichess.view.PieceType;
 import it.matlice.matlichess.view.PieceView;
-import it.matlice.matlichess.view.View;
 
 import java.util.*;
 
@@ -117,7 +116,8 @@ public class Game {
             List<Location> finalMove = move; // needed for the lambda below
             this.players.forEach(e -> {
                 e.setPosition(convertChessboardToView(chessboard));
-                e.setMove(finalMove.get(0), finalMove.get(1));
+                if(!e.equals(players.get(turn.index)))
+                    e.setMove(finalMove.get(0), finalMove.get(1));
                 e.setTurn(chessboard.getTurn());
             });
             GameState state = chessboard.getGameState();
@@ -215,6 +215,31 @@ public class Game {
 
     public String getPositionFen() {
         return chessboard.toFEN(true);
+    }
+
+    public PieceColor getTurn() {
+        return turn;
+    }
+
+    public HashMap<String, Integer> getPositions() {
+        return chessboard.getPositions();
+    }
+
+    public void loadState(PositionInit pos){
+        chessboard.setPositions(pos.getMoves(), pos.getMove_times());
+        this.turn = pos.getTurn();
+        //todo set position from FEN
+        if(pos.getColor().equals(PieceColor.BLACK)){
+            var t = this.players.get(0);
+            this.players.set(0, this.players.get(1));
+            this.players.set(0, t);
+        }
+
+        setup();
+    }
+
+    public boolean isMoveValid(Location src, Location dest){
+        return chessboard.isMoveValid(src, dest);
     }
 
 }
