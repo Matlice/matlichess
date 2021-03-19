@@ -100,8 +100,9 @@ public class Game {
             e.setPosition(convertChessboardToView(chessboard));
             e.setTurn(chessboard.getTurn());
         });
-        this.players.get(0).setColor(PieceColor.WHITE);
+        //in this case, when playing local v local, the last call to setColor will be for white, thus we get the correct view.
         this.players.get(1).setColor(PieceColor.BLACK);
+        this.players.get(0).setColor(PieceColor.WHITE);
         turn = chessboard.getTurn();
     }
 
