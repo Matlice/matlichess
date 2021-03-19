@@ -267,8 +267,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
             this.asking_move = false;
         } while (this.move_from == null || obtained == null);
         if(Game.getInstance().isPromotionRequired(move_from, obtained)){
-            String promotion = askPromotionPiece();
-            //todo controlli
+            String promotion = new PromotionChoiceBox(turn).askPromotion(MouseInfo.getPointerInfo().getLocation());
             Game.getInstance().setPromotion(promotion);
         }
         this.feasableMoves = null;
