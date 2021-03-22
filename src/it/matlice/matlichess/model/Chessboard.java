@@ -287,6 +287,16 @@ public class Chessboard {
         }
     }
 
+    public boolean isMoveValid(Location src, Location destination) {
+        var c = this.clone();
+        try{
+            c.move(src, destination);
+            return true;
+        } catch (InvalidMoveException e){
+            return false;
+        }
+    }
+
     /**
      * Set the promotion type for the player
      *
@@ -310,6 +320,15 @@ public class Chessboard {
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isPromoting (Location from, Location to){
+        Piece toMove = getPieceAt(from);
+        if(!(toMove instanceof Pawn)) return false;
+        if(!isMoveValid(from, to)) return false;
+        if(toMove.getColor().equals(PieceColor.WHITE) && to.row() == 7) return true;
+        if(toMove.getColor().equals(PieceColor.BLACK) && to.row() == 0) return true;
+        return false;
     }
 
     /**

@@ -111,7 +111,6 @@ public class Game {
         try {
             move = players.get(turn.index).waitForUserMove(PieceColor.WHITE);
             chessboard.move(move.get(0), move.get(1));
-
             System.out.println(move);
 
             List<Location> finalMove = move; // needed for the lambda below
@@ -218,6 +217,10 @@ public class Game {
 
     public String getPositionFen() {
         return chessboard.toFEN(true);
+    }
+
+    public boolean isPromotionRequired(Location from, Location to){
+        return chessboard.isPromoting(from, to);
     }
 
     public PieceColor getTurn() {
