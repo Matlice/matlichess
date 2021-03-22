@@ -2,6 +2,7 @@ package it.matlice.matlichess.view;
 
 import it.matlice.matlichess.Location;
 import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.settings.Settings;
 
 import javax.swing.*;
@@ -9,6 +10,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.concurrent.Semaphore;
+
+import static it.matlice.matlichess.view.PieceView.locationToPointer;
+import static it.matlice.matlichess.view.PieceView.pointerToLocation;
 
 public class PromotionChoiceBox extends JPanel implements MouseListener {
 
@@ -50,10 +54,10 @@ public class PromotionChoiceBox extends JPanel implements MouseListener {
             bishop = new PieceView(PieceType.BISHOP_WHITE, new Location("A5"));
         }
         else{
-            queen = new PieceView(PieceType.QUEEN_BLACK, new Location("A5"));
-            knight = new PieceView(PieceType.KNIGHT_BLACK, new Location("A6"));
-            rook = new PieceView(PieceType.ROOK_BLACK, new Location("A7"));
-            bishop = new PieceView(PieceType.BISHOP_BLACK, new Location("A8"));
+            queen = new PieceView(PieceType.QUEEN_BLACK, new Location("A8"));
+            knight = new PieceView(PieceType.KNIGHT_BLACK, new Location("A7"));
+            rook = new PieceView(PieceType.ROOK_BLACK, new Location("A6"));
+            bishop = new PieceView(PieceType.BISHOP_BLACK, new Location("A5"));
         }
 
         g2.setColor(Color.WHITE);
@@ -94,7 +98,16 @@ public class PromotionChoiceBox extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        selectedPiece = "q";
+        Location pointerLoc;
+        try {
+            pointerLoc = pointerToLocation(e, false);
+        } catch (InvalidMoveException exc) {
+            return;
+        }
+        if (pointerLoc.equals(new Location("A8"))) selectedPiece = "q";
+        else if (pointerLoc.equals(new Location("A7"))) selectedPiece = "n";
+        else if (pointerLoc.equals(new Location("A6"))) selectedPiece = "r";
+        else if (pointerLoc.equals(new Location("A5"))) selectedPiece = "b";
         semaphore.release();
     }
 

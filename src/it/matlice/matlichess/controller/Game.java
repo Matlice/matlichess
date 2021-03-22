@@ -101,8 +101,8 @@ public class Game {
             e.setPosition(convertChessboardToView(chessboard));
             e.setTurn(chessboard.getTurn());
         });
-        this.players.get(0).setColor(PieceColor.WHITE);
         this.players.get(1).setColor(PieceColor.BLACK);
+        this.players.get(0).setColor(PieceColor.WHITE);
         turn = chessboard.getTurn();
     }
 
