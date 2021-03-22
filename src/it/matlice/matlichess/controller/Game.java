@@ -200,11 +200,11 @@ public class Game {
     }
 
     public void setPromotion(String promotion) {
-        switch (promotion) {
-            case "q": chessboard.setPromotion(turn, Queen.class); break;
-            case "r": chessboard.setPromotion(turn, Rook.class); break;
-            case "b": chessboard.setPromotion(turn, Bishop.class); break;
-            case "n": chessboard.setPromotion(turn, Knight.class); break;
+        switch (promotion.toUpperCase()) {
+            case "Q": chessboard.setPromotion(turn, Queen.class); break;
+            case "R": chessboard.setPromotion(turn, Rook.class); break;
+            case "B": chessboard.setPromotion(turn, Bishop.class); break;
+            case "N": chessboard.setPromotion(turn, Knight.class); break;
             default: break;
         }
     }

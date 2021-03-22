@@ -15,12 +15,15 @@ public class Stockfish {
         } catch (UnsatisfiedLinkError e){
             System.out.println("Cannot load stockfish from library path, trying from " + System.getProperty("user.dir"));
             try {
-                if(System.getProperty("os.name").toLowerCase().startsWith("win")){
-                    System.load(System.getProperty("user.dir") + "/libstockfishjni.dll");
+                if(System.getProperty("os.name").toLowerCase().contains("win")){
+                    System.load(System.getProperty("user.dir") + "/libstockfishjni.win.amd64.dll");
                     System.out.println("Stockfish found in " + System.getProperty("user.dir"));
-                }
-                else{
-                    System.load(System.getProperty("user.dir") + "/libstockfishjni.so");
+                } else if (System.getProperty("os.name").toLowerCase().contains("nux")) {
+                    System.load(System.getProperty("user.dir") + "/libstockfishjni.linux.amd64.so");
+                    System.out.println("Stockfish found in " + System.getProperty("user.dir"));
+                } else if (System.getProperty("os.name").toLowerCase().contains("mac") ||
+                        System.getProperty("os.name").toLowerCase().contains("darwin")) {
+                    System.load(System.getProperty("user.dir") + "/libstockfishjni.osx.amd64.so");
                     System.out.println("Stockfish found in " + System.getProperty("user.dir"));
                 }
                 stockfish_is_loaded = true;
