@@ -249,18 +249,27 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         this.myColor = color;
     }
 
+    private Thread t = null;
     @Override
     public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
         Location obtained;
         do {
             this.askMove();
             //save thread
+            t = Thread.currentThread();
             obtained = this.wait_move.r_acquire();
+            t = null;
             this.wait_move.r_release(null);
             this.asking_move = false;
         } while (this.move_from == null || obtained == null);
         this.feasableMoves = null;
         return Arrays.asList(this.move_from, obtained);
+    }
+
+    @Override
+    public void interrupt() {
+        if(t != null)
+            t.interrupt();
     }
 
     @Override

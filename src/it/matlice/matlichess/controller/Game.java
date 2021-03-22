@@ -131,6 +131,8 @@ public class Game {
             System.out.println("Invalid move " + move.get(0) + " " + move.get(1));
         } catch (InvalidTurnException e) {
             System.out.println("Wrong turn man " + move.get(0) + " " + move.get(1));
+        } catch (InterruptedException e) {
+            return true;
         } catch (Exception e) {
             return false;
         }
@@ -226,17 +228,27 @@ public class Game {
         return chessboard.getPositions();
     }
 
-    public void loadState(PositionInit pos){
-        chessboard.setPositions(pos.getMoves(), pos.getMove_times());
-        this.turn = pos.getTurn();
-        this.chessboard.setTurn(this.turn);
-        //todo set position from FEN
-        if(pos.getColor().equals(PieceColor.BLACK)){
+    public void reinitialize(boolean swapPlayers){
+        if(swapPlayers){
             var t = this.players.get(0);
             this.players.set(0, this.players.get(1));
             this.players.set(1, t);
         }
         setup();
+        this.players.forEach(PlayerInterface::interrupt);
+    }
+
+    private void setPositionFromFen(String fen){
+
+        chessboard.setPosition(fen);
+    }
+
+    public void loadState(PositionInit pos){
+        chessboard.setPositions(pos.getMoves(), pos.getMove_times());
+        this.turn = pos.getTurn();
+        this.chessboard.setTurn(this.turn);
+        setPositionFromFen(pos.getCurrentFEN());
+        reinitialize(pos.getColor().equals(PieceColor.BLACK) && this.players.get(1) instanceof NetworkPlayer);
     }
 
     public boolean isMoveValid(Location src, Location dest){

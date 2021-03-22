@@ -10,7 +10,6 @@ import it.matlice.matlichess.model.pieces.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -28,23 +27,70 @@ public class Chessboard {
     private King[] kings = new King[2];
     private PieceColor turn = PieceColor.WHITE;
     private Location enPassantTargetSquare = null;
+    //This map is needed to implement a quick algorithm for three repetition rule
+    private HashMap<String, Integer> positions = new HashMap<>();
+    private Class<? extends Piece>[] promotions = new Class[]{Queen.class, Queen.class};
+    // this is the number of halfMoves since the last capture or pawn advance.
+    // The reason for this field is that the value is used in the fifty-move rule.
+    private int halfMoveClock = 0;
+    // the number of the full move. It starts at 1, and is incremented after Black's move.
+    // It is used in the creation of the FEN Notation
+    private int fullMoveNumber = 1;
+
+    /**
+     * Returns a traditional start game chessboard
+     *
+     * @return Traditional Chessboard
+     */
+    public static Chessboard getDefault() {
+        Chessboard c = new Chessboard();
+
+        c.setPiece(new Rook(PieceColor.WHITE), "A1");
+        c.setPiece(new Knight(PieceColor.WHITE), "B1");
+        c.setPiece(new Bishop(PieceColor.WHITE), "C1");
+        c.setPiece(new Queen(PieceColor.WHITE), "D1");
+        c.setKing(new King(PieceColor.WHITE), "E1");
+        c.setPiece(new Bishop(PieceColor.WHITE), "F1");
+        c.setPiece(new Knight(PieceColor.WHITE), "G1");
+        c.setPiece(new Rook(PieceColor.WHITE), "H1");
+
+        c.setPiece(new Pawn(PieceColor.WHITE), "A2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "B2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "C2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "D2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "E2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "F2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "G2");
+        c.setPiece(new Pawn(PieceColor.WHITE), "H2");
+
+        c.setPiece(new Rook(PieceColor.BLACK), "A8");
+        c.setPiece(new Knight(PieceColor.BLACK), "B8");
+        c.setPiece(new Bishop(PieceColor.BLACK), "C8");
+        c.setPiece(new Queen(PieceColor.BLACK), "D8");
+        c.setKing(new King(PieceColor.BLACK), "E8");
+        c.setPiece(new Bishop(PieceColor.BLACK), "F8");
+        c.setPiece(new Knight(PieceColor.BLACK), "G8");
+        c.setPiece(new Rook(PieceColor.BLACK), "H8");
+
+        c.setPiece(new Pawn(PieceColor.BLACK), "A7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "B7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "C7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "D7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "E7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "F7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "G7");
+        c.setPiece(new Pawn(PieceColor.BLACK), "H7");
+
+        return c;
+    }
 
     public HashMap<String, Integer> getPositions() {
         return positions;
     }
 
-    //This map is needed to implement a quick algorithm for three repetition rule
-    private HashMap<String, Integer> positions = new HashMap<>();
-
-    private Class<? extends Piece>[] promotions = new Class[]{Queen.class, Queen.class};
-
-    // this is the number of halfMoves since the last capture or pawn advance.
-    // The reason for this field is that the value is used in the fifty-move rule.
-    private int halfMoveClock = 0;
-
-    // the number of the full move. It starts at 1, and is incremented after Black's move.
-    // It is used in the creation of the FEN Notation
-    private int fullMoveNumber = 1;
+    public void setPositions(HashMap<String, Integer> positions) {
+        this.positions = positions;
+    }
 
     /**
      * Puts a {@link Piece} on a certain box in the chessboard, WITHOUT checking whether the destination square is empty.
@@ -233,10 +279,10 @@ public class Chessboard {
 
     public boolean isMoveValid(Location src, Location destination) {
         var c = this.clone();
-        try{
+        try {
             c.move(src, destination);
             return true;
-        } catch (InvalidMoveException e){
+        } catch (InvalidMoveException e) {
             return false;
         }
     }
@@ -405,7 +451,7 @@ public class Chessboard {
         fen.append(" ");
         fen.append(enPassantTargetSquare != null ? enPassantTargetSquare.toString().toLowerCase() : "-");
 
-        if(!complete) return fen.toString();
+        if (!complete) return fen.toString();
 
         // move number
         fen.append(" ");
@@ -425,56 +471,19 @@ public class Chessboard {
      *
      * @param fen the relative FEN of the position
      */
-    public void saveFEN(String fen){
-        if(!positions.containsKey(fen)) positions.put(fen, 1);
-        else positions.put(fen, positions.get(fen)+1);
+    public void saveFEN(String fen) {
+        if (!positions.containsKey(fen)) positions.put(fen, 1);
+        else positions.put(fen, positions.get(fen) + 1);
     }
 
-    /**
-     * Returns a traditional start game chessboard
-     *
-     * @return Traditional Chessboard
-     */
-    public static Chessboard getDefault() {
-        Chessboard c = new Chessboard();
+    public void setPosition(String fen) {
+        positions = new HashMap<>();
+        for (int i = 0; i < 8; i++)
+            for (int j = 0; j < 8; j++)
+                this.chessboard[i][j] = null;
 
-        c.setPiece(new Rook(PieceColor.WHITE), "A1");
-        c.setPiece(new Knight(PieceColor.WHITE), "B1");
-        c.setPiece(new Bishop(PieceColor.WHITE), "C1");
-        c.setPiece(new Queen(PieceColor.WHITE), "D1");
-        c.setKing(new King(PieceColor.WHITE), "E1");
-        c.setPiece(new Bishop(PieceColor.WHITE), "F1");
-        c.setPiece(new Knight(PieceColor.WHITE), "G1");
-        c.setPiece(new Rook(PieceColor.WHITE), "H1");
+        this.kings = new King[]{null, null};
 
-        c.setPiece(new Pawn(PieceColor.WHITE), "A2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "B2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "C2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "D2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "E2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "F2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "G2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "H2");
-
-        c.setPiece(new Rook(PieceColor.BLACK), "A8");
-        c.setPiece(new Knight(PieceColor.BLACK), "B8");
-        c.setPiece(new Bishop(PieceColor.BLACK), "C8");
-        c.setPiece(new Queen(PieceColor.BLACK), "D8");
-        c.setKing(new King(PieceColor.BLACK), "E8");
-        c.setPiece(new Bishop(PieceColor.BLACK), "F8");
-        c.setPiece(new Knight(PieceColor.BLACK), "G8");
-        c.setPiece(new Rook(PieceColor.BLACK), "H8");
-
-        c.setPiece(new Pawn(PieceColor.BLACK), "A7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "B7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "C7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "D7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "E7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "F7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "G7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "H7");
-
-        return c;
     }
 
     /**
@@ -485,6 +494,7 @@ public class Chessboard {
     public PieceColor getTurn() {
         return turn;
     }
+
     public void setTurn(PieceColor t) {
         turn = t;
     }
@@ -500,11 +510,8 @@ public class Chessboard {
         return null;
     }
 
-    public void setPositions(HashMap<String, Integer> positions) {
-        this.positions = positions;
-    }
     public void setPositions(String[] pos_fen, Integer[] times) {
-        assert  times.length == pos_fen.length;
+        assert times.length == pos_fen.length;
         for (int i = 0; i < pos_fen.length; i++)
             this.positions.put(pos_fen[i], times[i]);
     }
@@ -515,30 +522,30 @@ public class Chessboard {
      * @return the state of the game
      */
     public GameState getGameState() {
-        if(halfMoveClock == 50) {
+        if (halfMoveClock == 50) {
             //System.out.println("DRAW by 50 moves");
             return GameState.DRAW;
         }
-        if(positions.containsValue(3)) {
+        if (positions.containsValue(3)) {
             //System.out.println("DRAW by repetition");
             return GameState.DRAW;
         }
         ArrayList<Location> allMoves = new ArrayList<>();
         for (Map<Piece, Location> family : getPieces().values()) {
             for (Map.Entry<Piece, Location> entry : family.entrySet()) {
-                if(entry.getKey().getColor().equals(turn))
+                if (entry.getKey().getColor().equals(turn))
                     allMoves.addAll(entry.getKey().getAvailableMoves(this, entry.getValue()).keySet());
             }
         }
-        if(allMoves.isEmpty())
-            if(getKing(turn).isUnderCheck(this, getPieces().get("King").get(getKing(turn)))){
-                if(turn.equals(PieceColor.BLACK)) {
+        if (allMoves.isEmpty())
+            if (getKing(turn).isUnderCheck(this, getPieces().get("King").get(getKing(turn)))) {
+                if (turn.equals(PieceColor.BLACK)) {
                     //System.out.println("WIN WHITE by checkmate");
                     return GameState.WHITE_WIN;
                 }
                 //System.out.println("WIN BLACK by checkmate");
                 return GameState.BLACK_WIN;
-            }else{
+            } else {
                 //System.out.println("DRAW by stalemate");
                 return GameState.DRAW;
             }

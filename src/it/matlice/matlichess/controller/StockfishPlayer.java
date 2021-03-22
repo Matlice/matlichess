@@ -57,4 +57,9 @@ public class StockfishPlayer implements PlayerInterface {
     @Override
     public void setTurn(PieceColor turn) {
     }
+
+    @Override
+    public void interrupt() {
+
+    }
 }

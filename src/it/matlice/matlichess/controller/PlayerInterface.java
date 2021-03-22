@@ -13,4 +13,5 @@ public interface PlayerInterface {
     public void setPosition(ArrayList<PieceView> pieces);
     public void setMove(Location from, Location to);
     public void setTurn(PieceColor turn);
+    public void interrupt();
 }

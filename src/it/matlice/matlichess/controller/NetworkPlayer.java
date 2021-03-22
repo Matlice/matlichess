@@ -24,6 +24,7 @@ public class NetworkPlayer implements PlayerInterface {
     private ObjectOutputStream socketOut;
     private PieceColor mycolor = null;
     private Semaphore sem = new Semaphore(1);
+    private Thread askingThread = null;
 
     /**
      * Server constructor
@@ -150,7 +151,24 @@ public class NetworkPlayer implements PlayerInterface {
                     this.socketOut.writeObject(new PositionInit(this.mycolor, Game.getInstance().getTurn()));
                     socketOut.flush();
                 }
-                var p = (ComPacket) socketIn.readObject();
+
+                ComPacket pk[] = {null};
+                Exception e[] = {null};
+                askingThread = new Thread(() -> {
+                    try {
+                        pk[0] = (ComPacket) socketIn.readObject();
+                    } catch (IOException | ClassNotFoundException ex) {
+                        e[0] = ex;
+                    }
+                });
+                this.askingThread.start();
+                this.askingThread.join();
+                this.askingThread = null;
+
+                if(pk[0] == null) throw new InterruptedException();
+                if(e[0] != null) throw e[0];
+
+                var p = pk[0];
 
                 switch (p.getPacketType()) {
                     case "MOVE":
@@ -177,6 +195,8 @@ public class NetworkPlayer implements PlayerInterface {
                 Thread.sleep(100);
                 System.err.println("received an invalid move");
                 this.safeSend(new ComError("Invalid move"));
+            } catch (Exception e){
+
             }
             sem.release();
         } while (move == null);
@@ -221,6 +241,17 @@ public class NetworkPlayer implements PlayerInterface {
     public void setTurn(PieceColor turn) {
         // turn is given by the fen
         return;
+    }
+
+    @Override
+    public void interrupt() {
+        if(this.askingThread != null) {
+            try {
+                this.askingThread.join(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
