@@ -72,3 +72,7 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+!libstockfishjni.linux.amd64.so
+!libstockfishjni.osx.arm64.so
+!libstockfishjni.win.amd64.dll
