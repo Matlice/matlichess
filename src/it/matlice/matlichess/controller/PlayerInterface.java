@@ -1,5 +1,6 @@
 package it.matlice.matlichess.controller;
 
+import it.matlice.matlichess.GameState;
 import it.matlice.matlichess.Location;
 import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.view.PieceView;
@@ -13,4 +14,5 @@ public interface PlayerInterface {
     public void setPosition(ArrayList<PieceView> pieces);
     public void setMove(Location from, Location to);
     public void setTurn(PieceColor turn);
+    public boolean setState(GameState state);
 }

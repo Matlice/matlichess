@@ -1,6 +1,7 @@
 package it.matlice.matlichess.view;
 
 import it.matlice.CommunicationSemaphore;
+import it.matlice.matlichess.GameState;
 import it.matlice.matlichess.Location;
 import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.controller.Game;
@@ -297,6 +298,50 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
             if (p.getLocation().equals(l))
                 if (p.getPieceType().getColor().equals(turn)) return true;
         }
+        return false;
+    }
+
+    @Override
+    public boolean setState(GameState state) {
+        // solo se color è settato, altrimenti è spettatore
+        if (state.equals(GameState.PLAYING)) return false;
+
+        StringBuilder message = new StringBuilder();
+        if (state.equals(GameState.DRAW))
+            message.append(Settings.DRAW_MESSAGE);
+        else if (state.equals(GameState.WHITE_WIN)) {
+            if (myColor.equals(PieceColor.WHITE))
+                message.append(Settings.WIN_MESSAGE);
+            else
+                message.append(Settings.LOST_MESSAGE);
+        } else {
+            if (myColor.equals(PieceColor.WHITE))
+                message.append(Settings.LOST_MESSAGE);
+            else
+                message.append(Settings.WIN_MESSAGE);
+        }
+
+        message.append("\n\n");
+        message.append(Settings.REMATCH_MESSAGE);
+
+        int selection = JOptionPane.showOptionDialog(this.getParent(),
+                message,
+                "Endgame",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                Settings.DIALOG_OPTIONS,
+                Settings.DIALOG_OPTIONS[0]);
+
+        if (selection == Settings.CANCEL_OPTION_INDEX || selection == Settings.DIALOG_CLOSED_INDEX)
+            return false;
+        else if (selection == Settings.EXIT_OPTION_INDEX) {
+            // ((Frame) this.getParent()).dispose(); // todo non funziona
+            return false;
+        }
+        else if (selection == Settings.REMATCH_OPTION_INDEX)
+            return true;
+
         return false;
     }
 }

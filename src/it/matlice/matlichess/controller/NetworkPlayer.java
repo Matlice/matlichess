@@ -1,5 +1,6 @@
 package it.matlice.matlichess.controller;
 
+import it.matlice.matlichess.GameState;
 import it.matlice.matlichess.Location;
 import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.controller.net.*;
@@ -212,4 +213,9 @@ public class NetworkPlayer implements PlayerInterface {
         return;
     }
 
+    @Override
+    public boolean setState(GameState state) {
+        // the other client should be able to know if it's ending state without telling him
+        return true;
+    }
 }

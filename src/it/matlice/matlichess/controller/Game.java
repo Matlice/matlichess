@@ -38,6 +38,8 @@ public class Game {
 
     private Map<PieceColor, Map<String, PieceType>> pieceConversionMap = getPieceConversionMap();
 
+    private static boolean _is_rematch = false;
+
     private Game(List<PlayerInterface> players, List<PlayerInterface> nonPlayers) {
         chessboard = Chessboard.getDefault();
         assert players.size() == 2;
@@ -95,6 +97,27 @@ public class Game {
         return instance != null;
     }
 
+    public static void reinstance(boolean invertPlayers) {
+        if (instance == null) return;
+
+        _is_rematch = true;
+
+        List<PlayerInterface> newPlayers = new ArrayList<>();
+        newPlayers.addAll(instance.players);
+
+        if (invertPlayers) {
+            newPlayers.set(0, instance.players.get(1));
+            newPlayers.set(1, instance.players.get(0));
+        }
+
+        if (newPlayers.size() == 2) {
+            instance = new Game(newPlayers, null);
+        } else {
+            instance = new Game(newPlayers.subList(0, 2), newPlayers.subList(2, newPlayers.size()-1));
+        }
+
+    }
+
     public void setup() {
         this.players.forEach(e -> {
             e.setPosition(convertChessboardToView(chessboard));
@@ -107,23 +130,39 @@ public class Game {
     }
 
     public boolean mainloop() {
+
+        GameState state = chessboard.getGameState();
+        if (!state.equals(GameState.PLAYING)) {
+            Game.reinstance(true);
+            instance.setup();
+            return true;
+        }
+
+        _is_rematch = false;
         List<Location> move = null;
+        List<Boolean> wants_rematch = new ArrayList<>();
         try {
             move = players.get(turn.index).waitForUserMove(PieceColor.WHITE);
             chessboard.move(move.get(0), move.get(1));
 
             System.out.println(move);
 
+            GameState newState = chessboard.getGameState();
+
+            wants_rematch = new ArrayList<>();
+
             List<Location> finalMove = move; // needed for the lambda below
-            this.players.forEach(e -> {
+            for (PlayerInterface e : this.players) {
                 e.setPosition(convertChessboardToView(chessboard));
                 if(!e.equals(players.get(turn.index)))
                     e.setMove(finalMove.get(0), finalMove.get(1));
                 e.setTurn(chessboard.getTurn());
-            });
-            GameState state = chessboard.getGameState();
-            if(!state.equals(GameState.PLAYING)){
-                System.out.println(state);
+                boolean rematch = e.setState(newState);
+                wants_rematch.add(rematch);
+            }
+
+            if(!newState.equals(GameState.PLAYING)){
+                System.out.println(newState);
                 throw new RuntimeException();
             }
             turn = chessboard.getTurn();
@@ -132,7 +171,8 @@ public class Game {
         } catch (InvalidTurnException e) {
             System.out.println("Wrong turn man " + move.get(0) + " " + move.get(1));
         } catch (Exception e) {
-            return false;
+            // endgame
+            return wants_rematch.get(0) && wants_rematch.get(1);
         }
         return true;
     }

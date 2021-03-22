@@ -45,6 +45,19 @@ public class Settings {
             new ImageLoader("./res/pieces/" + PIECE_STYLE + "/bK.png", new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE))
     };
 
+    // Endgame
+    public static final String DRAW_MESSAGE = "The game finished as a draw...";
+    public static final String WIN_MESSAGE = "You WON the game, congratulations!";
+    public static final String LOST_MESSAGE = "You lost the game, next time will be better";
+
+    public static final String REMATCH_MESSAGE = "Do you want to play again?";
+
+    public static final Object[] DIALOG_OPTIONS = {"Cancel", "Exit", "Yes, again!" };
+    public static final int DIALOG_CLOSED_INDEX = -1;
+    public static final int CANCEL_OPTION_INDEX = 0;
+    public static final int EXIT_OPTION_INDEX = 1;
+    public static final int REMATCH_OPTION_INDEX = 2;
+
     // Anti-aliasing
     public static final boolean USE_ANTIALIAS = true;
 

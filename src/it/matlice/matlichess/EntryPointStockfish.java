@@ -15,10 +15,11 @@ public class EntryPointStockfish {
 
 
     public static void main(String[] args) {
-        var white = new StockfishPlayer(16, 10);
-        var black = new StockfishPlayer(16, 20);
+        var v = new View().initialize();
+        var white = new StockfishPlayer(1, 20);
+        var black = new StockfishPlayer(1, 20);
 
-        Game.getInstance(white, black).setup();
+        Game.getInstance(white, black, v).setup();
         while (Game.getInstance().mainloop());
         System.out.println("Final FEN: ");
         System.out.println(Game.getInstance().getPositionFen(true));

@@ -1,5 +1,6 @@
 package it.matlice.matlichess.controller;
 
+import it.matlice.matlichess.GameState;
 import it.matlice.matlichess.Location;
 import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.view.PieceView;
@@ -56,5 +57,10 @@ public class StockfishPlayer implements PlayerInterface {
 
     @Override
     public void setTurn(PieceColor turn) {
+    }
+
+    @Override
+    public boolean setState(GameState state) {
+        return true;
     }
 }
