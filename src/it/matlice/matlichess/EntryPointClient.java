@@ -19,13 +19,13 @@ public class EntryPointClient {
 //        var white = new StockfishPlayer(16, 10);
 //        var black = new StockfishPlayer(16, 20);
 //
-//        NetworkPlayer network = null;
-//        try {
-//            network = new NetworkPlayer(InetAddress.getByAddress(new byte[]{87,14,86,(byte) 236}));
-//        } catch (UnknownHostException e) {
-//            e.printStackTrace();
-//        }
-        Game.getInstance(v, v).setup();
+        NetworkPlayer network = null;
+        try {
+            network = new NetworkPlayer(InetAddress.getByAddress(new byte[]{(byte) 127,(byte) 0,(byte) 0,(byte) 1}));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        Game.getInstance(v, network).setup();
         while (Game.getInstance().mainloop());
     }
 

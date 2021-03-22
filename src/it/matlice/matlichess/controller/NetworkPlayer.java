@@ -52,32 +52,40 @@ public class NetworkPlayer implements PlayerInterface {
     public NetworkPlayer(InetAddress address) {
         try {
             sem.acquire();
-            this.socket = new Socket(address, Settings.NETWORK_PORT);
-            this.socketOut = new ObjectOutputStream(new BufferedOutputStream(this.socket.getOutputStream()));
-            this.socketOut.flush();
-            this.socketIn = new ObjectInputStream(new BufferedInputStream(this.socket.getInputStream()));
-            //this must be done in a separate thread because wants an istance that is being creating while calling this constructor
-            EventQueue.invokeLater(() -> {
-                //should receive a welcome
-                while(!Game.hasInstance()) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
+            while (true) {
                 try {
-                    var p = (ComPacket) socketIn.readObject();
-                    if(!p.getPacketType().equals("POS_INIT"))
-                        throw new ClassNotFoundException("Protocol error");
-                    Game.getInstance().loadState((PositionInit) p);
-                    sem.release();
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
+                    this.socket = new Socket(address, Settings.NETWORK_PORT);
+                    this.socketOut = new ObjectOutputStream(new BufferedOutputStream(this.socket.getOutputStream()));
+                    this.socketOut.flush();
+                    this.socketIn = new ObjectInputStream(new BufferedInputStream(this.socket.getInputStream()));
+                    //this must be done in a separate thread because wants an istance that is being creating while calling this constructor
+                    EventQueue.invokeLater(() -> {
+                        //should receive a welcome
+                        while (!Game.hasInstance()) {
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        try {
+                            var p = (ComPacket) socketIn.readObject();
+                            if (!p.getPacketType().equals("POS_INIT"))
+                                throw new ClassNotFoundException("Protocol error");
+                            Game.getInstance().loadState((PositionInit) p);
+                            sem.release();
+                        } catch (IOException | ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    break;
+                } catch (IOException e){
+                    System.err.println("Failed to connect, retrying in 1sec");
+                    Thread.sleep(1000);
                 }
-            });
-        } catch (IOException | InterruptedException e) {
+            }
+        } catch (InterruptedException e) {
             // todo remove?
             System.err.println("Connection lost or broken");
         }
@@ -115,7 +123,7 @@ public class NetworkPlayer implements PlayerInterface {
                 this.socket = s;
                 this.socketIn = socketIn;
                 this.socketOut = socketOut;
-                while(this.mycolor == null) Thread.sleep(200);
+                while (this.mycolor == null) Thread.sleep(200);
                 this.socketOut.writeObject(new PositionInit(this.mycolor, Game.getInstance().getTurn()));
                 socketOut.flush();
             }
@@ -138,17 +146,18 @@ public class NetworkPlayer implements PlayerInterface {
         do {
             sem.acquire();
             try {
-                if(socket_died){
+                if (socket_died) {
                     this.socketOut.writeObject(new PositionInit(this.mycolor, Game.getInstance().getTurn()));
                     socketOut.flush();
                 }
                 var p = (ComPacket) socketIn.readObject();
 
-                switch(p.getPacketType()){
+                switch (p.getPacketType()) {
                     case "MOVE":
                         if (((Move) p).getExtendedMove() != null) {
                             move = Location.fromExtendedMove(((Move) p).getExtendedMove());
-                            if(!Game.getInstance().isMoveValid(move.get(0), move.get(1))) throw new InvalidMoveException();
+                            if (!Game.getInstance().isMoveValid(move.get(0), move.get(1)))
+                                throw new InvalidMoveException();
                         }
                         break;
                     case "POS_INIT":
@@ -157,7 +166,7 @@ public class NetworkPlayer implements PlayerInterface {
                     default:
                         throw new ClassNotFoundException("Protocol error");
                 }
-                if(!p.getPacketType().equals("MOVE"))
+                if (!p.getPacketType().equals("MOVE"))
                     throw new ClassNotFoundException("Protocol error");
 
             } catch (IOException e) {
@@ -175,7 +184,7 @@ public class NetworkPlayer implements PlayerInterface {
         return move;
     }
 
-    private void safeSend(Object o){
+    private void safeSend(Object o) {
         try {
             this.socketOut.writeObject(o);
             socketOut.flush();
@@ -183,7 +192,8 @@ public class NetworkPlayer implements PlayerInterface {
             e.printStackTrace();
         }
     }
-    private Object safeRead(){
+
+    private Object safeRead() {
         try {
             return this.socketIn.readObject();
         } catch (IOException | ClassNotFoundException e) {
@@ -202,7 +212,8 @@ public class NetworkPlayer implements PlayerInterface {
         if (Game.hasInstance() && this.socketOut != null) {
             safeSend(new Move(from.toString() + to.toString()));
             var p = (ComPacket) safeRead();
-            if(p == null || !p.getPacketType().equals("NOP")) throw new InvalidMoveException();;
+            if (p == null || !p.getPacketType().equals("NOP")) throw new InvalidMoveException();
+            ;
         }
     }
 

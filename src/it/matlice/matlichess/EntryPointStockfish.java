@@ -15,8 +15,8 @@ public class EntryPointStockfish {
 
 
     public static void main(String[] args) {
-        var white = new StockfishPlayer(16, 10);
-        var black = new StockfishPlayer(16, 20);
+        var white = new StockfishPlayer(8, 10);
+        var black = new StockfishPlayer(8, 20);
 
         Game.getInstance(white, black).setup();
         while (Game.getInstance().mainloop());

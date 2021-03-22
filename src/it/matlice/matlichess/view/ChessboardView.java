@@ -254,6 +254,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         Location obtained;
         do {
             this.askMove();
+            //save thread
             obtained = this.wait_move.r_acquire();
             this.wait_move.r_release(null);
             this.asking_move = false;

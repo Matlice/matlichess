@@ -229,13 +229,13 @@ public class Game {
     public void loadState(PositionInit pos){
         chessboard.setPositions(pos.getMoves(), pos.getMove_times());
         this.turn = pos.getTurn();
+        this.chessboard.setTurn(this.turn);
         //todo set position from FEN
         if(pos.getColor().equals(PieceColor.BLACK)){
             var t = this.players.get(0);
             this.players.set(0, this.players.get(1));
-            this.players.set(0, t);
+            this.players.set(1, t);
         }
-
         setup();
     }
 

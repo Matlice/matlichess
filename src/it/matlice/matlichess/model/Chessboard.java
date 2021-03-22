@@ -485,6 +485,9 @@ public class Chessboard {
     public PieceColor getTurn() {
         return turn;
     }
+    public void setTurn(PieceColor t) {
+        turn = t;
+    }
 
     /**
      * Return all the available moves of a piece in a certain Location
