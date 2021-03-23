@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 public class Chessboard {
 
     private final Piece[][] chessboard = new Piece[8][8];
-    private final Map<String, Map<Piece, Location>> pieces = new HashMap<>();
+    private Map<String, Map<Piece, Location>> pieces = new HashMap<>();
     private King[] kings = new King[2];
     private PieceColor turn = PieceColor.WHITE;
     private Location enPassantTargetSquare = null;
@@ -487,12 +487,18 @@ public class Chessboard {
 
     public void setPosition(String fen) {
         positions = new HashMap<>();
+        pieces = new HashMap<>();
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++)
                 this.chessboard[i][j] = null;
 
         this.kings = new King[]{null, null};
 
+        FenReader f = FenReader.PIECE_POSITION;
+        int c = 0;
+        while(f != FenReader.FINISHED)
+            f = f.action(this, fen.charAt(c++));
+        System.out.println(this);
     }
 
     /**
@@ -523,6 +529,14 @@ public class Chessboard {
         assert times.length == pos_fen.length;
         for (int i = 0; i < pos_fen.length; i++)
             this.positions.put(pos_fen[i], times[i]);
+    }
+
+    public void setHalfMoveClock(int halfMoveClock) {
+        this.halfMoveClock = halfMoveClock;
+    }
+
+    public void setFullMoveNumber(int fullMoveNumber) {
+        this.fullMoveNumber = fullMoveNumber;
     }
 
     /**

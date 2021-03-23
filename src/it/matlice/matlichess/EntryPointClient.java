@@ -16,8 +16,6 @@ public class EntryPointClient {
 
     public static void main(String[] args) {
         var v = new View().initialize();
-        var white = new StockfishPlayer(16, 10);
-        var black = new StockfishPlayer(16, 20);
 
         NetworkPlayer network = null;
         try {
@@ -25,6 +23,7 @@ public class EntryPointClient {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+
         Game.getInstance(network, v).setup();
         while (Game.getInstance().mainloop());
     }

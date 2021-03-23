@@ -126,7 +126,7 @@ public class NetworkPlayer implements PlayerInterface {
                 this.socketIn = socketIn;
                 this.socketOut = socketOut;
                 while (this.mycolor == null) Thread.sleep(200);
-                this.socketOut.writeObject(new PositionInit(this.mycolor, Game.getInstance().getTurn()));
+                this.socketOut.writeObject(new PositionInit(this.mycolor));
                 socketOut.flush();
             }
         } catch (IOException | InterruptedException e) {
@@ -149,7 +149,7 @@ public class NetworkPlayer implements PlayerInterface {
             sem.acquire();
             try {
                 if (socket_died) {
-                    this.socketOut.writeObject(new PositionInit(this.mycolor, Game.getInstance().getTurn()));
+                    this.socketOut.writeObject(new PositionInit(this.mycolor));
                     socketOut.flush();
                 }
 
