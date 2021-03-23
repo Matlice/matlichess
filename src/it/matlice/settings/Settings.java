@@ -14,7 +14,7 @@ public class Settings {
     public static final int CHESSBOARD_SIZE = 8*CHESSBOARD_SQUARE_SIZE;
 
     // Chessboard background
-    public static final String CHESSBOARD_BG_STYLE = "metal.jpg";
+    public static final String CHESSBOARD_BG_STYLE = "blue3.jpg";
     public static final Drawable CHESSBOARD_BG = new ImageLoader(Settings.class.getClassLoader().getResource("chessboards/" + CHESSBOARD_BG_STYLE).getFile(), new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE));
 
     // Selection marker
@@ -29,7 +29,7 @@ public class Settings {
     public static final int MOVE_DIAMETER = 40;
 
     // Pieces
-    public static final String PIECE_STYLE = "cardinal";
+    public static final String PIECE_STYLE = "staunty";
     public static final Drawable[] CBURNETT_PIECE = new Drawable[]{
             new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE + "/wP.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
             new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE + "/wB.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),

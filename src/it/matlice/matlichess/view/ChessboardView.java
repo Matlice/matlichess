@@ -31,9 +31,11 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     private Set<Location> feasableMoves = null;
     private PieceColor myColor = PieceColor.WHITE;
     private PieceColor turn = PieceColor.WHITE;
+    private Thread t = null;
 
     private ArrayList<PieceView> pieces = new ArrayList<>();
     private CommunicationSemaphore<Location> wait_move = new CommunicationSemaphore<>(1);
+    private Location[] lastMove = new Location[2];
 
     public ChessboardView() {
         this.setPreferredSize(new Dimension(Settings.CHESSBOARD_SIZE, Settings.CHESSBOARD_SIZE));
@@ -64,6 +66,24 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
                         Settings.CHESSBOARD_SQUARE_SIZE,
                         Settings.CHESSBOARD_SQUARE_SIZE);
             }
+        }
+    }
+
+    public void drawLastMove(Graphics2D g2){
+        g2.setColor(Settings.SELECTION_BG_COLOR);
+        if(Arrays.equals(lastMove, new Location[2])) return;
+        if (this.myColor.equals(PieceColor.BLACK)) {
+            for (Location l: lastMove)
+                g2.fillRect(Settings.CHESSBOARD_SQUARE_SIZE * (7-l.col()),
+                        Settings.CHESSBOARD_SQUARE_SIZE * l.row(),
+                        Settings.CHESSBOARD_SQUARE_SIZE,
+                        Settings.CHESSBOARD_SQUARE_SIZE);
+        }else{
+            for (Location l: lastMove)
+                g2.fillRect(Settings.CHESSBOARD_SQUARE_SIZE * l.col(),
+                        Settings.CHESSBOARD_SQUARE_SIZE * (7 - l.row()),
+                        Settings.CHESSBOARD_SQUARE_SIZE,
+                        Settings.CHESSBOARD_SQUARE_SIZE);
         }
     }
 
@@ -119,6 +139,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
         drawSelectedSquare(g2);
         drawFeasableMoves(g2);
+        drawLastMove(g2);
         drawPieces(g2);
     }
 
@@ -257,7 +278,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         this.myColor = color;
     }
 
-    private Thread t = null;
+
     @Override
     public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
         Location obtained;
@@ -275,6 +296,8 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
             Game.getInstance().setPromotion(promotion);
         }
         this.feasableMoves = null;
+        lastMove[0] = this.move_from;
+        lastMove[1] = obtained;
         return Arrays.asList(this.move_from, obtained);
     }
 

@@ -287,16 +287,6 @@ public class Chessboard {
         }
     }
 
-    public boolean isMoveValid(Location src, Location destination) {
-        var c = this.clone();
-        try{
-            c.move(src, destination);
-            return true;
-        } catch (InvalidMoveException e){
-            return false;
-        }
-    }
-
     /**
      * Set the promotion type for the player
      *
