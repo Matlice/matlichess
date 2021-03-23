@@ -15,7 +15,7 @@ public enum FenReader {
 
     int cur_rank = 7;
     int cur_col = 0;
-    String location_partial = "";
+    String partial = "";
 
     FenReader action(Chessboard c, char character) {
         switch (this) {
@@ -74,19 +74,29 @@ public enum FenReader {
                 break;
             case EN_PASSANT:
                 if (character == ' ') {
-                    if (!this.location_partial.equals("-"))
-                        c.setEnPassantTargetSquare(new Location(this.location_partial));
+                    if (!this.partial.equals("-"))
+                        c.setEnPassantTargetSquare(new Location(this.partial));
                     return FenReader.SEMIMOVES;
                 } else {
-                    this.location_partial += character;
+                    this.partial += character;
                 }
                 break;
             case SEMIMOVES:
-                //todo
-                return FenReader.MOVES;
+                if (character == ' ') {
+                    c.setHalfMoveClock(Integer.parseInt(partial));
+                    return FenReader.MOVES;
+                } else {
+                    this.partial += character;
+                }
+                break;
             case MOVES:
-                //todo
-                return FenReader.FINISHED;
+                if (character == ' ') {
+                    c.setFullMoveNumber(Integer.parseInt(partial));
+                    return FenReader.FINISHED;
+                } else {
+                    this.partial += character;
+                }
+                break;
             case FINISHED:
             default:
                 break;

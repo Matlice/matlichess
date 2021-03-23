@@ -531,6 +531,14 @@ public class Chessboard {
             this.positions.put(pos_fen[i], times[i]);
     }
 
+    public void setHalfMoveClock(int halfMoveClock) {
+        this.halfMoveClock = halfMoveClock;
+    }
+
+    public void setFullMoveNumber(int fullMoveNumber) {
+        this.fullMoveNumber = fullMoveNumber;
+    }
+
     /**
      * Notifies if the match is not over, if it is in a draw position or if a player has won
      *
