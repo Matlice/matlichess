@@ -194,6 +194,10 @@ public class Chessboard {
         this.enPassantTargetSquare = enPassantTargetSquare;
     }
 
+    public Class<? extends Piece>[] getPromotions() {
+        return promotions;
+    }
+
     /**
      * Removes a Piece from the chessboard reference map
      *
@@ -496,8 +500,13 @@ public class Chessboard {
 
         FenReader f = FenReader.PIECE_POSITION;
         int c = 0;
-        while(f != FenReader.FINISHED)
-            f = f.action(this, fen.charAt(c++));
+        while(f != FenReader.FINISHED) {
+            try {
+                f = f.action(this, fen.charAt(c++));
+            } catch (Exception e) {
+                break;
+            }
+        }
         System.out.println(this);
     }
 

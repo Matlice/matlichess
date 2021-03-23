@@ -37,6 +37,7 @@ public class Game {
     private PieceColor turn = PieceColor.WHITE; //0 white, 1 black
 
     private Map<PieceColor, Map<String, PieceType>> pieceConversionMap = getPieceConversionMap();
+    private Map<String, String> pieceNameToShortNameMap = getPieceNameToShortNameMap();
 
     private Game(List<PlayerInterface> players, List<PlayerInterface> nonPlayers) {
         chessboard = Chessboard.getDefault();
@@ -169,6 +170,20 @@ public class Game {
         return conversionMap;
     }
 
+    private Map<String, String> getPieceNameToShortNameMap() {
+
+        Map<String, String> pieceNameConversionMap = new HashMap<>();
+
+        pieceNameConversionMap.put("Pawn", "P");
+        pieceNameConversionMap.put("Knight", "N");
+        pieceNameConversionMap.put("Bishop", "B");
+        pieceNameConversionMap.put("Rook", "R");
+        pieceNameConversionMap.put("Queen", "Q");
+        pieceNameConversionMap.put("King", "K");
+
+        return pieceNameConversionMap;
+    }
+
     /**
      * Converts a given chessboard into an array of PieceView, which will be utilized by the view
      *
@@ -202,14 +217,23 @@ public class Game {
         return chessboard.getAvailableMoves(piece).keySet();
     }
 
-    public void setPromotion(String promotion) {
+    public void setPromotion(String promotion, PieceColor player) {
         switch (promotion.toUpperCase()) {
-            case "Q": chessboard.setPromotion(turn, Queen.class); break;
-            case "R": chessboard.setPromotion(turn, Rook.class); break;
-            case "B": chessboard.setPromotion(turn, Bishop.class); break;
-            case "N": chessboard.setPromotion(turn, Knight.class); break;
+            case "Q": chessboard.setPromotion(player, Queen.class); break;
+            case "R": chessboard.setPromotion(player, Rook.class); break;
+            case "B": chessboard.setPromotion(player, Bishop.class); break;
+            case "N": chessboard.setPromotion(player, Knight.class); break;
             default: break;
         }
+    }
+
+    public void setPromotion(String promotion) {
+        this.setPromotion(promotion, turn);
+    }
+
+    public void setPromotions(String[] promotionTypes) {
+        this.setPromotion(pieceNameToShortNameMap.get(promotionTypes[PieceColor.WHITE.index]), PieceColor.WHITE);
+        this.setPromotion(pieceNameToShortNameMap.get(promotionTypes[PieceColor.BLACK.index]), PieceColor.BLACK);
     }
 
     public String getPositionFen(boolean complete) {
@@ -247,8 +271,7 @@ public class Game {
     }
 
     private void setPositionFromFen(String fen){
-
-        //chessboard.setPosition(fen);
+        chessboard.setPosition(fen);
     }
 
     public void loadState(PositionInit pos){
@@ -263,4 +286,8 @@ public class Game {
         return chessboard.isMoveValid(src, dest);
     }
 
+    public String[] getPromotions() {
+        Class<? extends Piece>[] promTypes = chessboard.getPromotions();
+        return new String[]{promTypes[0].getSimpleName(), promTypes[1].getSimpleName()};
+    }
 }

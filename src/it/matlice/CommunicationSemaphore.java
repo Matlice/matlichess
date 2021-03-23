@@ -28,7 +28,12 @@ public class CommunicationSemaphore<T> extends Semaphore {
     }
 
     public T r_acquire() throws InterruptedException {
-        super.acquire();
+        try {
+            super.acquire();
+        } catch (InterruptedException e) {
+            super.release();
+            throw new InterruptedException();
+        }
         return returns.size() == 0 ? null : returns.poll();
     }
 

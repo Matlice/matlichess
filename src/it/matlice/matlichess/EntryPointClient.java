@@ -24,7 +24,7 @@ public class EntryPointClient {
             e.printStackTrace();
         }
 
-        Game.getInstance(network, v).setup();
+        Game.getInstance(v, network).setup();
         while (Game.getInstance().mainloop());
     }
 

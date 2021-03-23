@@ -4,6 +4,8 @@ import it.matlice.matlichess.Location;
 import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.controller.net.*;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
+import it.matlice.matlichess.model.Piece;
+import it.matlice.matlichess.model.pieces.Queen;
 import it.matlice.matlichess.view.PieceView;
 import it.matlice.settings.Settings;
 
@@ -174,6 +176,10 @@ public class NetworkPlayer implements PlayerInterface {
                 switch (p.getPacketType()) {
                     case "MOVE":
                         if (((Move) p).getExtendedMove() != null) {
+                            // first set the correct promotion types...
+                            String[] promTypes = ((Move) p).getPromotionTypes();
+                            Game.getInstance().setPromotions(promTypes);
+                            // ... and then do the move
                             move = Location.fromExtendedMove(((Move) p).getExtendedMove());
                             if (!Game.getInstance().isMoveValid(move.get(0), move.get(1)))
                                 throw new InvalidMoveException();
