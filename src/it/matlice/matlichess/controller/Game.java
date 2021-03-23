@@ -109,7 +109,8 @@ public class Game {
     public boolean mainloop() {
         List<Location> move = null;
         try {
-            move = players.get(turn.index).waitForUserMove(PieceColor.WHITE);
+            System.out.println("ask move for" + turn);
+            move = players.get(turn.index).waitForUserMove(turn);
             chessboard.move(move.get(0), move.get(1));
             System.out.println(move);
 
@@ -131,6 +132,7 @@ public class Game {
         } catch (InvalidTurnException e) {
             System.out.println("Wrong turn man " + move.get(0) + " " + move.get(1));
         } catch (InterruptedException e) {
+            System.out.println("interrupted");
             return true;
         } catch (Exception e) {
             return false;
@@ -238,6 +240,10 @@ public class Game {
             this.players.set(1, t);
         }
         setup();
+        interrupt();
+    }
+
+    public void interrupt(){
         this.players.forEach(PlayerInterface::interrupt);
     }
 
@@ -248,10 +254,10 @@ public class Game {
 
     public void loadState(PositionInit pos){
         chessboard.setPositions(pos.getMoves(), pos.getMove_times());
-        this.turn = pos.getTurn();
-        this.chessboard.setTurn(this.turn);
         setPositionFromFen(pos.getCurrentFEN());
-        reinitialize(pos.getColor().equals(PieceColor.BLACK) && this.players.get(1) instanceof NetworkPlayer);
+        this.turn = chessboard.getTurn();
+        //todo check swap condition =(
+        reinitialize(pos.getColor().equals(PieceColor.BLACK) && this.players.get(1) instanceof NetworkPlayer || pos.getColor().equals(PieceColor.WHITE) && this.players.get(0) instanceof NetworkPlayer);
     }
 
     public boolean isMoveValid(Location src, Location dest){
