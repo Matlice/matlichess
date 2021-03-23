@@ -116,8 +116,7 @@ public class Game {
             List<Location> finalMove = move; // needed for the lambda below
             this.players.forEach(e -> {
                 e.setPosition(convertChessboardToView(chessboard));
-                if(!e.equals(players.get(turn.index)))
-                    e.setMove(finalMove.get(0), finalMove.get(1));
+                e.setMove(finalMove.get(0), finalMove.get(1));
                 e.setTurn(chessboard.getTurn());
             });
             GameState state = chessboard.getGameState();
@@ -243,7 +242,7 @@ public class Game {
 
     private void setPositionFromFen(String fen){
 
-        chessboard.setPosition(fen);
+        //chessboard.setPosition(fen);
     }
 
     public void loadState(PositionInit pos){

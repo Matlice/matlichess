@@ -138,8 +138,8 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         }
 
         drawSelectedSquare(g2);
-        drawFeasableMoves(g2);
         drawLastMove(g2);
+        drawFeasableMoves(g2);
         drawPieces(g2);
     }
 
@@ -296,8 +296,6 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
             Game.getInstance().setPromotion(promotion);
         }
         this.feasableMoves = null;
-        lastMove[0] = this.move_from;
-        lastMove[1] = obtained;
         return Arrays.asList(this.move_from, obtained);
     }
 
@@ -331,7 +329,8 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
     @Override
     public void setMove(Location from, Location to) {
-        return;
+        lastMove[0] = from;
+        lastMove[1] = to;
     }
 
     @Override

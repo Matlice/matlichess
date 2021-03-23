@@ -25,6 +25,7 @@ public class NetworkPlayer implements PlayerInterface {
     private PieceColor mycolor = null;
     private Semaphore sem = new Semaphore(1);
     private Thread askingThread = null;
+    private Move lastReceivedMove = null;
 
     /**
      * Server constructor
@@ -201,6 +202,7 @@ public class NetworkPlayer implements PlayerInterface {
             sem.release();
         } while (move == null);
         safeSend(new Nop());
+        this.lastReceivedMove = new Move(move.get(0).toString() + move.get(1).toString());
         return move;
     }
 
@@ -229,11 +231,10 @@ public class NetworkPlayer implements PlayerInterface {
 
     @Override
     public void setMove(Location from, Location to) {
-        if (Game.hasInstance() && this.socketOut != null) {
+        if (Game.hasInstance() && this.socketOut != null && (lastReceivedMove == null || !lastReceivedMove.equals(new Move(from, to))) ) {
             safeSend(new Move(from.toString() + to.toString()));
             var p = (ComPacket) safeRead();
             if (p == null || !p.getPacketType().equals("NOP")) throw new InvalidMoveException();
-            ;
         }
     }
 
