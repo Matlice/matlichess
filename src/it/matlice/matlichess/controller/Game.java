@@ -162,7 +162,8 @@ public class Game {
             System.out.println("interrupted");
             return true;
         } catch (Exception e) {
-
+            e.printStackTrace();
+            System.out.println("FUUUUUUUC");
         }
         return true;
     }
@@ -284,6 +285,7 @@ public class Game {
     }
 
     public void interrupt(){
+        System.out.println("Fucking irq");
         this.players.forEach(PlayerInterface::interrupt);
     }
 
@@ -295,8 +297,13 @@ public class Game {
         chessboard.setPositions(pos.getMoves(), pos.getMove_times());
         setPositionFromFen(pos.getCurrentFEN());
         this.turn = chessboard.getTurn();
-        //todo check swap condition =(
-        reinitialize(pos.getColor().equals(PieceColor.BLACK) && this.players.get(1) instanceof NetworkPlayer || pos.getColor().equals(PieceColor.WHITE) && this.players.get(0) instanceof NetworkPlayer);
+        if(pos.getColor().equals(PieceColor.WHITE) && players.get(0) instanceof NetworkPlayer || pos.getColor().equals(PieceColor.BLACK) && players.get(1) instanceof NetworkPlayer){
+            reinitialize(true);
+//            if(pos.getColor().equals(PieceColor.WHITE) && players.get(1) instanceof NetworkPlayer)
+//                players.get(0).interrupt();
+        } else
+            reinitialize(false);
+
     }
 
     public boolean isMoveValid(Location src, Location dest){

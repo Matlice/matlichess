@@ -31,6 +31,7 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
     private PieceColor mycolor = null;
     private Semaphore sem = new Semaphore(1);
     private Thread askingThread = null;
+    private Thread semThread = null;
     private Move lastReceivedMove = null;
 
     /**
@@ -165,6 +166,7 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
         while (socketIn == null) Thread.sleep(200); // no sockets has connected
         List<Location> move = null;
         do {
+            this.semThread = Thread.currentThread();
             sem.acquire();
             try {
                 if (socket_died) {
@@ -223,6 +225,7 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
 
             }
             sem.release();
+            this.semThread = null;
         } while (move == null);
         safeSend(new Nop());
         this.lastReceivedMove = new Move(move.get(0).toString() + move.get(1).toString());
@@ -276,6 +279,9 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
                 e.printStackTrace();
             }
         }
+        if(this.semThread != null)
+            this.semThread.interrupt();
+
     }
 
     @Override
