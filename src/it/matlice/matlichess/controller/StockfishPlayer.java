@@ -70,7 +70,7 @@ public class StockfishPlayer implements PlayerInterface {
 
     @Override
     public boolean setState(GameState state, boolean generic, PlayerInterface opponent) {
-        return true;
+        return opponent.setState(state, generic, true);
     }
 
     @Override

@@ -145,8 +145,8 @@ public class Game {
             if(!newState.equals(GameState.PLAYING)){
                 System.out.println(newState);
                 boolean rematch = false;
-                if(!players.get(0).isInteractive() && !players.get(0).isInteractive())
-                    rematch = players.get(2).setState(newState, false, true);
+                if(!players.get(0).isInteractive() && !players.get(1).isInteractive())
+                    rematch = players.get(2).setState(newState, true, true);
                 else
                     rematch = players.get(0).setState(newState, false, players.get(1));
 
