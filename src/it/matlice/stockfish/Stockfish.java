@@ -10,6 +10,8 @@ public class Stockfish {
     private static boolean stockfish_is_loaded = false;
     private static Stockfish instance = null;
 
+    // tested on Mac Mini (M1) aarch64, Mac x86_64, Linux 64-bit, Windows 64-bit
+
     static {
         try {
             System.out.println("Loading stockfish...");

@@ -415,7 +415,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     public boolean setState(GameState state, boolean generic, PlayerInterface opponent) {
                 // solo se color è settato, altrimenti è spettatore
         boolean consensus = ask_for_consensus(state, generic);
-        return consensus && opponent == null || opponent.setState(state, generic, consensus);
+        return consensus && opponent == null || opponent instanceof ChessboardView || opponent.setState(state, generic, consensus);
     }
 
     public boolean setState(GameState state, boolean generic, Boolean other_choice){
