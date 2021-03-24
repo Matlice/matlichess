@@ -1,5 +1,8 @@
 package it.matlice.stockfish;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Stockfish {
@@ -15,14 +18,34 @@ public class Stockfish {
         } catch (UnsatisfiedLinkError e){
             System.out.println("Cannot load stockfish from library path, using integrated distribution");
             try {
-                String filename = "stockfish/libstockfishjni";
-                if(System.getProperty("os.name").toLowerCase().contains("win")) filename += ".win.";
-                else if (System.getProperty("os.name").toLowerCase().contains("nux")) filename += ".linux.";
-                else if (System.getProperty("os.name").toLowerCase().contains("mac") ||
-                        System.getProperty("os.name").toLowerCase().contains("darwin")) filename += ".osx.";
+                String filenameBase = "stockfish/libstockfishjni.%s.%s";
 
-                filename += System.getProperty("os.arch");
-                String path = Stockfish.class.getClassLoader().getResource(filename).getPath();
+                String operSys = null;
+                if(System.getProperty("os.name").toLowerCase().contains("win")) operSys = "win";
+                else if (System.getProperty("os.name").toLowerCase().contains("nux")) operSys = "linux";
+                else if (System.getProperty("os.name").toLowerCase().contains("mac") ||
+                        System.getProperty("os.name").toLowerCase().contains("darwin")) operSys = "osx";
+                else {
+                    System.err.println("Cannot identify your OS");
+                    throw new UnsatisfiedLinkError();
+                }
+
+                // Linux            ->      amd64, i386
+                // Windows          ->      x86_64, x86
+                // Mac Mini (M1)    ->      aarch64
+                String osArch = null;
+                if (System.getProperty("os.arch").equals("amd64") || System.getProperty("os.arch").equals("x86_64")) osArch = "amd64";
+                else if (System.getProperty("os.arch").equals("i386") || System.getProperty("os.arch").equals("x86")) osArch = "x86";
+                else if (System.getProperty("os.arch").equals("aarch64") || System.getProperty("os.arch").equals("arm64")) osArch = "aarch64";
+                else {
+                    System.err.println("Cannot identify your OS architecture");
+                    throw new UnsatisfiedLinkError();
+                }
+
+                System.out.println(String.format(filenameBase, operSys, osArch));
+
+                String path = Stockfish.class.getClassLoader().getResource(String.format(filenameBase, operSys, osArch)).getPath();
+
                 if(path == null)
                     throw new UnsatisfiedLinkError("No dist.");
                 System.load(path);
