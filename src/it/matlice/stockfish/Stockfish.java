@@ -13,19 +13,19 @@ public class Stockfish {
             System.loadLibrary("stockfishjni");
             stockfish_is_loaded = true;
         } catch (UnsatisfiedLinkError e){
-            System.out.println("Cannot load stockfish from library path, trying from " + System.getProperty("user.dir"));
+            System.out.println("Cannot load stockfish from library path, using integrated distribution");
             try {
-                if(System.getProperty("os.name").toLowerCase().contains("win")){
-                    System.load(System.getProperty("user.dir") + "/libstockfishjni.win.amd64.dll");
-                    System.out.println("Stockfish found in " + System.getProperty("user.dir"));
-                } else if (System.getProperty("os.name").toLowerCase().contains("nux")) {
-                    System.load(System.getProperty("user.dir") + "/libstockfishjni.linux.amd64.so");
-                    System.out.println("Stockfish found in " + System.getProperty("user.dir"));
-                } else if (System.getProperty("os.name").toLowerCase().contains("mac") ||
-                        System.getProperty("os.name").toLowerCase().contains("darwin")) {
-                    System.load(System.getProperty("user.dir") + "/libstockfishjni.osx.amd64.so");
-                    System.out.println("Stockfish found in " + System.getProperty("user.dir"));
-                }
+                String filename = "stockfish/libstockfishjni";
+                if(System.getProperty("os.name").toLowerCase().contains("win")) filename += ".win.";
+                else if (System.getProperty("os.name").toLowerCase().contains("nux")) filename += ".linux.";
+                else if (System.getProperty("os.name").toLowerCase().contains("mac") ||
+                        System.getProperty("os.name").toLowerCase().contains("darwin")) filename += ".osx.";
+
+                filename += System.getProperty("os.arch");
+                String path = Stockfish.class.getClassLoader().getResource(filename).getPath();
+                if(path == null)
+                    throw new UnsatisfiedLinkError("No dist.");
+                System.load(path);
                 stockfish_is_loaded = true;
             } catch (UnsatisfiedLinkError err){
                 System.err.println("Cannot load stockfish. Some functionalities will be compromised");

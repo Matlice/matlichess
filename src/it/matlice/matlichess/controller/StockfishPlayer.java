@@ -13,7 +13,7 @@ public class StockfishPlayer implements PlayerInterface {
     private int depth;
     private int skill;
 
-    private int delay = 0;
+    private int delay = 200;
 
     public StockfishPlayer(int depth, int skill){
         this.depth = depth;
@@ -60,7 +60,12 @@ public class StockfishPlayer implements PlayerInterface {
     }
 
     @Override
-    public boolean setState(GameState state) {
+    public void interrupt() {
+    }
+
+    @Override
+    public boolean setState(GameState state, boolean generic) {
         return true;
     }
+
 }

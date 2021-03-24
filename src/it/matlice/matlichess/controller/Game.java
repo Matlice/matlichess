@@ -37,8 +37,7 @@ public class Game {
     private PieceColor turn = PieceColor.WHITE; //0 white, 1 black
 
     private Map<PieceColor, Map<String, PieceType>> pieceConversionMap = getPieceConversionMap();
-
-    private static boolean _is_rematch = false;
+    private Map<String, String> pieceNameToShortNameMap = getPieceNameToShortNameMap();
 
     private Game(List<PlayerInterface> players, List<PlayerInterface> nonPlayers) {
         chessboard = Chessboard.getDefault();
@@ -97,25 +96,20 @@ public class Game {
         return instance != null;
     }
 
-    public static void reinstance(boolean invertPlayers) {
-        if (instance == null) return;
-
-        _is_rematch = true;
-
-        List<PlayerInterface> newPlayers = new ArrayList<>();
-        newPlayers.addAll(instance.players);
-
-        if (invertPlayers) {
-            newPlayers.set(0, instance.players.get(1));
-            newPlayers.set(1, instance.players.get(0));
+    public void reinitialize(boolean swapPlayers){
+        if(swapPlayers){
+            var t = this.players.get(0);
+            this.players.set(0, this.players.get(1));
+            this.players.set(1, t);
         }
+        setup();
+        interrupt();
+    }
 
-        if (newPlayers.size() == 2) {
-            instance = new Game(newPlayers, null);
-        } else {
-            instance = new Game(newPlayers.subList(0, 2), newPlayers.subList(2, newPlayers.size()-1));
-        }
-
+    public void rematch(boolean swapPlayers) {
+        this.chessboard = Chessboard.getDefault();
+        this.turn = PieceColor.WHITE;
+        reinitialize(swapPlayers);
     }
 
     public void setup() {
@@ -131,48 +125,60 @@ public class Game {
 
     public boolean mainloop() {
 
-        GameState state = chessboard.getGameState();
-        if (!state.equals(GameState.PLAYING)) {
-            Game.reinstance(true);
-            instance.setup();
-            return true;
-        }
-
-        _is_rematch = false;
         List<Location> move = null;
         List<Boolean> wants_rematch = new ArrayList<>();
         try {
-            move = players.get(turn.index).waitForUserMove(PieceColor.WHITE);
+            System.out.println("ask move for" + turn);
+            move = players.get(turn.index).waitForUserMove(turn);
             chessboard.move(move.get(0), move.get(1));
-
             System.out.println(move);
 
             GameState newState = chessboard.getGameState();
 
-            wants_rematch = new ArrayList<>();
-
             List<Location> finalMove = move; // needed for the lambda below
             for (PlayerInterface e : this.players) {
                 e.setPosition(convertChessboardToView(chessboard));
-                if(!e.equals(players.get(turn.index)))
-                    e.setMove(finalMove.get(0), finalMove.get(1));
+                e.setMove(finalMove.get(0), finalMove.get(1));
                 e.setTurn(chessboard.getTurn());
-                boolean rematch = e.setState(newState);
-                wants_rematch.add(rematch);
             }
 
             if(!newState.equals(GameState.PLAYING)){
                 System.out.println(newState);
-                throw new RuntimeException();
+                // if players[0] == players[1], they are playing on the same instance of view
+                // so the rematch vote is asked only once
+                boolean sameInterface = players.get(0) == players.get(1);
+                boolean whiteRematch = players.get(0).setState(newState, sameInterface);
+
+                boolean blackRematch = true;
+                if (!sameInterface) {
+                    if (!(players.get(0) instanceof StockfishPlayer) || !(players.get(1) instanceof StockfishPlayer))
+                        blackRematch = players.get(1).setState(newState, false);
+                    else
+                        // both of them are Stockfish, the viewer (index 2) is asked for rematch
+                        if (players.size() > 2)
+                            blackRematch = players.get(2).setState(newState, true);
+                        else
+                            // if stockfish vs stockfish but nobody is spectating, don't rematch
+                            blackRematch = false;
+                }
+
+                if (whiteRematch && blackRematch) {
+                    rematch(true);
+                    return true;
+                } else {
+                    return false;
+                }
             }
             turn = chessboard.getTurn();
         } catch (InvalidMoveException e) {
             System.out.println("Invalid move " + move.get(0) + " " + move.get(1));
         } catch (InvalidTurnException e) {
             System.out.println("Wrong turn man " + move.get(0) + " " + move.get(1));
+        } catch (InterruptedException e) {
+            System.out.println("interrupted");
+            return true;
         } catch (Exception e) {
-            // endgame
-            return wants_rematch.get(0) && wants_rematch.get(1);
+
         }
         return true;
     }
@@ -205,6 +211,20 @@ public class Game {
         conversionMap.put(PieceColor.BLACK, blackConversionMap);
 
         return conversionMap;
+    }
+
+    private Map<String, String> getPieceNameToShortNameMap() {
+
+        Map<String, String> pieceNameConversionMap = new HashMap<>();
+
+        pieceNameConversionMap.put("Pawn", "P");
+        pieceNameConversionMap.put("Knight", "N");
+        pieceNameConversionMap.put("Bishop", "B");
+        pieceNameConversionMap.put("Rook", "R");
+        pieceNameConversionMap.put("Queen", "Q");
+        pieceNameConversionMap.put("King", "K");
+
+        return pieceNameConversionMap;
     }
 
     /**
@@ -240,14 +260,23 @@ public class Game {
         return chessboard.getAvailableMoves(piece).keySet();
     }
 
-    public void setPromotion(String promotion) {
+    public void setPromotion(String promotion, PieceColor player) {
         switch (promotion.toUpperCase()) {
-            case "Q": chessboard.setPromotion(turn, Queen.class); break;
-            case "R": chessboard.setPromotion(turn, Rook.class); break;
-            case "B": chessboard.setPromotion(turn, Bishop.class); break;
-            case "N": chessboard.setPromotion(turn, Knight.class); break;
+            case "Q": chessboard.setPromotion(player, Queen.class); break;
+            case "R": chessboard.setPromotion(player, Rook.class); break;
+            case "B": chessboard.setPromotion(player, Bishop.class); break;
+            case "N": chessboard.setPromotion(player, Knight.class); break;
             default: break;
         }
+    }
+
+    public void setPromotion(String promotion) {
+        this.setPromotion(promotion, turn);
+    }
+
+    public void setPromotions(String[] promotionTypes) {
+        this.setPromotion(pieceNameToShortNameMap.get(promotionTypes[PieceColor.WHITE.index]), PieceColor.WHITE);
+        this.setPromotion(pieceNameToShortNameMap.get(promotionTypes[PieceColor.BLACK.index]), PieceColor.BLACK);
     }
 
     public String getPositionFen(boolean complete) {
@@ -258,6 +287,10 @@ public class Game {
         return chessboard.toFEN(true);
     }
 
+    public boolean isPromotionRequired(Location from, Location to){
+        return chessboard.isPromoting(from, to);
+    }
+
     public PieceColor getTurn() {
         return turn;
     }
@@ -266,21 +299,28 @@ public class Game {
         return chessboard.getPositions();
     }
 
+    public void interrupt(){
+        this.players.forEach(PlayerInterface::interrupt);
+    }
+
+    private void setPositionFromFen(String fen){
+        chessboard.setPosition(fen);
+    }
+
     public void loadState(PositionInit pos){
         chessboard.setPositions(pos.getMoves(), pos.getMove_times());
-        this.turn = pos.getTurn();
-        //todo set position from FEN
-        if(pos.getColor().equals(PieceColor.BLACK)){
-            var t = this.players.get(0);
-            this.players.set(0, this.players.get(1));
-            this.players.set(0, t);
-        }
-
-        setup();
+        setPositionFromFen(pos.getCurrentFEN());
+        this.turn = chessboard.getTurn();
+        //todo check swap condition =(
+        reinitialize(pos.getColor().equals(PieceColor.BLACK) && this.players.get(1) instanceof NetworkPlayer || pos.getColor().equals(PieceColor.WHITE) && this.players.get(0) instanceof NetworkPlayer);
     }
 
     public boolean isMoveValid(Location src, Location dest){
         return chessboard.isMoveValid(src, dest);
     }
 
+    public String[] getPromotions() {
+        Class<? extends Piece>[] promTypes = chessboard.getPromotions();
+        return new String[]{promTypes[0].getSimpleName(), promTypes[1].getSimpleName()};
+    }
 }

@@ -22,6 +22,15 @@ public class ImageLoader implements Drawable {
         this.dim = dim;
     }
 
+    public ImageLoader(File image, Dimension dim) {
+        try {
+            this.img = ImageIO.read(image).getScaledInstance(dim.width, dim.height, Settings.USE_ANTIALIAS ? Image.SCALE_AREA_AVERAGING : Image.SCALE_DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.dim = dim;
+    }
+
 
     @Override
     public void accept(Graphics2D g, ScreenLocation l, ScreenLocation offset) {

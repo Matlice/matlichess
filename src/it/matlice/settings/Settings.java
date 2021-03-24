@@ -14,8 +14,8 @@ public class Settings {
     public static final int CHESSBOARD_SIZE = 8*CHESSBOARD_SQUARE_SIZE;
 
     // Chessboard background
-    public static final String CHESSBOARD_BG_STYLE = "blue_marble.jpg";
-    public static final Drawable CHESSBOARD_BG = new ImageLoader("./res/chessboards/" + CHESSBOARD_BG_STYLE, new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE));
+    public static final String CHESSBOARD_BG_STYLE = "blue3.jpg";
+    public static final Drawable CHESSBOARD_BG = new ImageLoader(Settings.class.getClassLoader().getResource("chessboards/" + CHESSBOARD_BG_STYLE).getFile(), new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE));
 
     // Selection marker
     public static final Color SELECTION_BG_COLOR = new Color(0, 172, 151, 77);
@@ -29,24 +29,25 @@ public class Settings {
     public static final int MOVE_DIAMETER = 40;
 
     // Pieces
-    public static final String PIECE_STYLE = "cburnett";
-    public static final Drawable[] CBURNETT_PIECE = new Drawable[]{
-            new ImageLoader("./res/pieces/" + PIECE_STYLE + "/wP.png", new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader("./res/pieces/" + PIECE_STYLE + "/wB.png", new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader("./res/pieces/" + PIECE_STYLE + "/wN.png", new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader("./res/pieces/" + PIECE_STYLE + "/wR.png", new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader("./res/pieces/" + PIECE_STYLE + "/wQ.png", new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader("./res/pieces/" + PIECE_STYLE + "/wK.png", new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader("./res/pieces/" + PIECE_STYLE + "/bP.png", new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader("./res/pieces/" + PIECE_STYLE + "/bB.png", new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader("./res/pieces/" + PIECE_STYLE + "/bN.png", new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader("./res/pieces/" + PIECE_STYLE + "/bR.png", new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader("./res/pieces/" + PIECE_STYLE + "/bQ.png", new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader("./res/pieces/" + PIECE_STYLE + "/bK.png", new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE))
+    public static final String PIECE_STYLE_NAME = "staunty";
+    public static final Drawable[] PIECES = new Drawable[]{
+            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/wP.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/wB.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/wN.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/wR.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/wQ.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/wK.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/bP.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/bB.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/bN.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/bR.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/bQ.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/bK.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE))
     };
 
     // Endgame
     public static final String DRAW_MESSAGE = "The game finished as a draw...";
+    public static final String GENERIC_WIN_MESSAGE = "%s won the game!";
     public static final String WIN_MESSAGE = "You WON the game, congratulations!";
     public static final String LOST_MESSAGE = "You lost the game, next time will be better";
 

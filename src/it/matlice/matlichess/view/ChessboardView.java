@@ -32,11 +32,15 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     private Set<Location> feasableMoves = null;
     private PieceColor myColor = PieceColor.WHITE;
     private PieceColor turn = PieceColor.WHITE;
+    private Thread t = null;
 
     private ArrayList<PieceView> pieces = new ArrayList<>();
     private CommunicationSemaphore<Location> wait_move = new CommunicationSemaphore<>(1);
+    private Location[] lastMove = new Location[2];
+    private JFrame parentFrame;
 
-    public ChessboardView() {
+    public ChessboardView(JFrame frame) {
+        this.parentFrame = frame;
         this.setPreferredSize(new Dimension(Settings.CHESSBOARD_SIZE, Settings.CHESSBOARD_SIZE));
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -56,15 +60,33 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         if (selected != null) {
             if (this.myColor.equals(PieceColor.BLACK)) {
                 g2.fillRect(Settings.CHESSBOARD_SQUARE_SIZE * (7 - selected.col()),
-                            Settings.CHESSBOARD_SQUARE_SIZE * selected.row(),
-                            Settings.CHESSBOARD_SQUARE_SIZE,
-                            Settings.CHESSBOARD_SQUARE_SIZE);
+                        Settings.CHESSBOARD_SQUARE_SIZE * selected.row(),
+                        Settings.CHESSBOARD_SQUARE_SIZE,
+                        Settings.CHESSBOARD_SQUARE_SIZE);
             } else {
                 g2.fillRect(Settings.CHESSBOARD_SQUARE_SIZE * selected.col(),
-                            Settings.CHESSBOARD_SQUARE_SIZE * (7 - selected.row()),
-                            Settings.CHESSBOARD_SQUARE_SIZE,
-                            Settings.CHESSBOARD_SQUARE_SIZE);
+                        Settings.CHESSBOARD_SQUARE_SIZE * (7 - selected.row()),
+                        Settings.CHESSBOARD_SQUARE_SIZE,
+                        Settings.CHESSBOARD_SQUARE_SIZE);
             }
+        }
+    }
+
+    public void drawLastMove(Graphics2D g2){
+        g2.setColor(Settings.SELECTION_BG_COLOR);
+        if(Arrays.equals(lastMove, new Location[2])) return;
+        if (this.myColor.equals(PieceColor.BLACK)) {
+            for (Location l: lastMove)
+                g2.fillRect(Settings.CHESSBOARD_SQUARE_SIZE * (7-l.col()),
+                        Settings.CHESSBOARD_SQUARE_SIZE * l.row(),
+                        Settings.CHESSBOARD_SQUARE_SIZE,
+                        Settings.CHESSBOARD_SQUARE_SIZE);
+        }else{
+            for (Location l: lastMove)
+                g2.fillRect(Settings.CHESSBOARD_SQUARE_SIZE * l.col(),
+                        Settings.CHESSBOARD_SQUARE_SIZE * (7 - l.row()),
+                        Settings.CHESSBOARD_SQUARE_SIZE,
+                        Settings.CHESSBOARD_SQUARE_SIZE);
         }
     }
 
@@ -77,19 +99,19 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
                     pieces.forEach(x -> {
                         if (x.getLocation().equals(e)) {
                             g2.setColor(Settings.CAPTURE_COLOR);
-                            g2.fillOval(p.x + Settings.CHESSBOARD_SQUARE_SIZE/2 - Settings.CAPTURE_DIAMETER/2,
-                                        p.y + Settings.CHESSBOARD_SQUARE_SIZE/2 - Settings.CAPTURE_DIAMETER/2,
-                                        Settings.CAPTURE_DIAMETER,
-                                        Settings.CAPTURE_DIAMETER);
+                            g2.fillOval(p.x + Settings.CHESSBOARD_SQUARE_SIZE / 2 - Settings.CAPTURE_DIAMETER / 2,
+                                    p.y + Settings.CHESSBOARD_SQUARE_SIZE / 2 - Settings.CAPTURE_DIAMETER / 2,
+                                    Settings.CAPTURE_DIAMETER,
+                                    Settings.CAPTURE_DIAMETER);
                             is_capture[0] = true;
                         }
                     });
                     if (!is_capture[0]) {
                         g2.setColor(Settings.MOVE_COLOR);
-                        g2.fillOval(p.x + Settings.CHESSBOARD_SQUARE_SIZE/2 - Settings.MOVE_DIAMETER/2,
-                                    p.y + Settings.CHESSBOARD_SQUARE_SIZE/2 - Settings.MOVE_DIAMETER/2,
-                                    Settings.MOVE_DIAMETER,
-                                    Settings.MOVE_DIAMETER);
+                        g2.fillOval(p.x + Settings.CHESSBOARD_SQUARE_SIZE / 2 - Settings.MOVE_DIAMETER / 2,
+                                p.y + Settings.CHESSBOARD_SQUARE_SIZE / 2 - Settings.MOVE_DIAMETER / 2,
+                                Settings.MOVE_DIAMETER,
+                                Settings.MOVE_DIAMETER);
                     }
                 });
         }
@@ -119,6 +141,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         }
 
         drawSelectedSquare(g2);
+        drawLastMove(g2);
         drawFeasableMoves(g2);
         drawPieces(g2);
     }
@@ -214,7 +237,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        if(mouse[2] != null){
+        if (mouse[2] != null) {
             mouse[2] = null;
             mouse[3] = null;
             mouse_index = 2;
@@ -223,7 +246,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
     @Override
     public void mouseExited(MouseEvent e) {
-        if(mouse[0] != null && mouse[0].equals(mouse[1]) && mouse[2] == null) return;
+        if (mouse[0] != null && mouse[0].equals(mouse[1]) && mouse[2] == null) return;
         this.pieces
                 .stream()
                 .filter(p -> p.getLocation().equals(this.mouse[2] != null ? this.mouse[2] : this.mouse[0]))
@@ -245,22 +268,61 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         this.wait_move.r_acquire();
     }
 
+    private String askPromotionPiece() {
+        String input;
+        do {
+            input = JOptionPane.showInputDialog("Promotion: ");
+        } while (!input.equals("q") && !input.equals("n") && !input.equals("r") && !input.equals("b"));
+        return input;
+    }
+
     @Override
     public void setColor(PieceColor color) {
+        this.feasableMoves = null;
         this.myColor = color;
     }
+
 
     @Override
     public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
         Location obtained;
         do {
             this.askMove();
+            //save thread
+            t = Thread.currentThread();
             obtained = this.wait_move.r_acquire();
+            t = null;
             this.wait_move.r_release(null);
             this.asking_move = false;
         } while (this.move_from == null || obtained == null);
+        if (Game.getInstance().isPromotionRequired(move_from, obtained)) {
+            String promotion = new PromotionChoiceBox(turn).askPromotion(getPromotionCoordinate(obtained));
+            Game.getInstance().setPromotion(promotion);
+        }
         this.feasableMoves = null;
         return Arrays.asList(this.move_from, obtained);
+    }
+
+    private Point getPromotionCoordinate(Location l) {
+        Point origin = this.getLocationOnScreen();
+        int xCoord;
+        int yCoord;
+        if (myColor.equals(PieceColor.WHITE)) {
+            xCoord = l.col() * Settings.CHESSBOARD_SQUARE_SIZE;
+            if (turn.equals(PieceColor.WHITE)) yCoord = (7 - l.row()) * Settings.CHESSBOARD_SQUARE_SIZE;
+            else yCoord = (4 + l.row()) * Settings.CHESSBOARD_SQUARE_SIZE;
+        } else {
+            xCoord = (7 - l.col()) * Settings.CHESSBOARD_SQUARE_SIZE;
+            if (turn.equals(PieceColor.BLACK)) yCoord = l.row() * Settings.CHESSBOARD_SQUARE_SIZE;
+            else yCoord = (l.row() - 3) * Settings.CHESSBOARD_SQUARE_SIZE;
+        }
+        return new Point(origin.x + xCoord, origin.y + yCoord);
+    }
+
+    @Override
+    public void interrupt() {
+        if(t != null)
+            t.interrupt();
     }
 
     @Override
@@ -271,7 +333,8 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
     @Override
     public void setMove(Location from, Location to) {
-        return;
+        lastMove[0] = from;
+        lastMove[1] = to;
     }
 
     @Override
@@ -302,13 +365,16 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     }
 
     @Override
-    public boolean setState(GameState state) {
+    public boolean setState(GameState state, boolean generic) {
         // solo se color è settato, altrimenti è spettatore
         if (state.equals(GameState.PLAYING)) return false;
 
         StringBuilder message = new StringBuilder();
+
         if (state.equals(GameState.DRAW))
             message.append(Settings.DRAW_MESSAGE);
+        else if (generic)
+            message.append(String.format(Settings.GENERIC_WIN_MESSAGE, state.getWinnerString()));
         else if (state.equals(GameState.WHITE_WIN)) {
             if (myColor.equals(PieceColor.WHITE))
                 message.append(Settings.WIN_MESSAGE);
@@ -336,7 +402,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         if (selection == Settings.CANCEL_OPTION_INDEX || selection == Settings.DIALOG_CLOSED_INDEX)
             return false;
         else if (selection == Settings.EXIT_OPTION_INDEX) {
-            // ((Frame) this.getParent()).dispose(); // todo non funziona
+            parentFrame.dispose();
             return false;
         }
         else if (selection == Settings.REMATCH_OPTION_INDEX)

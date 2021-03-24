@@ -11,11 +11,16 @@ import java.util.List;
 
 public class View {
 
-   private ChessboardView chessboardView = new ChessboardView();
+    private JFrame frame;
+    private ChessboardView chessboardView;
+
+    public View() {
+        this.frame = new JFrame();
+        this.chessboardView = new ChessboardView(frame);
+    }
 
     public PlayerInterface initialize(){
         EventQueue.invokeLater(() -> {
-            JFrame frame = new JFrame();
             frame.setBounds(20, 20, 800, 800);
             frame.setExtendedState(JFrame.NORMAL);
             frame.setResizable(false);

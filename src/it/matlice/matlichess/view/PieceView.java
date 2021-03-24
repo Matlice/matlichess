@@ -59,7 +59,7 @@ public class PieceView{
     }
 
     public void draw(Graphics2D g2, boolean invert) {
-        Settings.CBURNETT_PIECE[pieceType.index].accept(g2, locationToPointer(location, invert), offset);
+        Settings.PIECES[pieceType.index].accept(g2, locationToPointer(location, invert), offset);
     }
 
     public void draw(Graphics2D g2) {
