@@ -55,6 +55,7 @@ public class NetworkPlayer implements PlayerInterface {
      * @param address the address of the server
      */
     public NetworkPlayer(InetAddress address) {
+        //todo if server fails, client becomes a server hoping for reconnection
         try {
             sem.acquire();
             while (true) {
@@ -263,7 +264,22 @@ public class NetworkPlayer implements PlayerInterface {
     }
 
     @Override
-    public boolean setState(GameState state, boolean generic) {
-        return true; // todo send true if player wants rematch
+    public boolean setState(GameState state, boolean generic, PlayerInterface opponent) {
+        return opponent.setState(state, generic, this);
+    }
+
+    @Override
+    public boolean setState(GameState state, boolean generic, Boolean other_choice) {
+        try {
+            this.socketOut.writeObject(new RematchChoice(other_choice));
+            this.socketOut.flush();
+            var p = (ComPacket) this.socketIn.readObject();
+            if(p instanceof RematchChoice)
+                return other_choice && ((RematchChoice) p).rematch;
+            else return false;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

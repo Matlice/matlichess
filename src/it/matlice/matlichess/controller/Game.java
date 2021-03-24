@@ -144,30 +144,14 @@ public class Game {
 
             if(!newState.equals(GameState.PLAYING)){
                 System.out.println(newState);
-                // if players[0] == players[1], they are playing on the same instance of view
-                // so the rematch vote is asked only once
-                boolean sameInterface = players.get(0) == players.get(1);
-                boolean whiteRematch = players.get(0).setState(newState, sameInterface);
+                boolean rematch = false;
+                if(!players.get(0).isInteractive() && !players.get(0).isInteractive())
+                    rematch = players.get(2).setState(newState, false, true);
+                else
+                    rematch = players.get(0).setState(newState, false, players.get(1));
 
-                boolean blackRematch = true;
-                if (!sameInterface) {
-                    if (!(players.get(0) instanceof StockfishPlayer) || !(players.get(1) instanceof StockfishPlayer))
-                        blackRematch = players.get(1).setState(newState, false);
-                    else
-                        // both of them are Stockfish, the viewer (index 2) is asked for rematch
-                        if (players.size() > 2)
-                            blackRematch = players.get(2).setState(newState, true);
-                        else
-                            // if stockfish vs stockfish but nobody is spectating, don't rematch
-                            blackRematch = false;
-                }
-
-                if (whiteRematch && blackRematch) {
-                    rematch(true);
-                    return true;
-                } else {
-                    return false;
-                }
+                if(rematch) rematch(true);
+                return rematch;
             }
             turn = chessboard.getTurn();
         } catch (InvalidMoveException e) {

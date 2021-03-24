@@ -64,8 +64,18 @@ public class StockfishPlayer implements PlayerInterface {
     }
 
     @Override
-    public boolean setState(GameState state, boolean generic) {
+    public boolean isInteractive() {
+        return false;
+    }
+
+    @Override
+    public boolean setState(GameState state, boolean generic, PlayerInterface opponent) {
         return true;
+    }
+
+    @Override
+    public boolean setState(GameState state, boolean generic, Boolean other_result) {
+        return other_result;
     }
 
 }

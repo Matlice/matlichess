@@ -364,9 +364,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         return false;
     }
 
-    @Override
-    public boolean setState(GameState state, boolean generic) {
-        // solo se color è settato, altrimenti è spettatore
+    private boolean ask_for_consensus(GameState state, boolean generic){
         if (state.equals(GameState.PLAYING)) return false;
 
         StringBuilder message = new StringBuilder();
@@ -405,9 +403,18 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
             parentFrame.dispose();
             return false;
         }
-        else if (selection == Settings.REMATCH_OPTION_INDEX)
-            return true;
+        return selection == Settings.REMATCH_OPTION_INDEX;
+    }
 
-        return false;
+    @Override
+    public boolean setState(GameState state, boolean generic, PlayerInterface opponent) {
+                // solo se color è settato, altrimenti è spettatore
+        boolean consensus = ask_for_consensus(state, generic);
+        return consensus && opponent == null || opponent.setState(state, generic, consensus);
+    }
+
+    public boolean setState(GameState state, boolean generic, Boolean other_choice){
+        if(!other_choice) return false;
+        return this.ask_for_consensus(state, generic);
     }
 }

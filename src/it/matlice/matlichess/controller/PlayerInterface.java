@@ -14,6 +14,10 @@ public interface PlayerInterface {
     public void setPosition(ArrayList<PieceView> pieces);
     public void setMove(Location from, Location to);
     public void setTurn(PieceColor turn);
+    default boolean isInteractive(){
+        return true;
+    }
     public void interrupt();
-    public boolean setState(GameState state, boolean generic);
+    public boolean setState(GameState state, boolean generic, PlayerInterface opponent);
+    public boolean setState(GameState state, boolean generic, Boolean other_result);
 }
