@@ -16,7 +16,7 @@ public class EntryPoint {
     public static void main(String[] args) {
         var v = new View().initialize();
 
-        Game.getInstance(v, v).setup();
+        Game.getInstance(v, new View().initialize()).setup();
         while (Game.getInstance().mainloop());
     }
 

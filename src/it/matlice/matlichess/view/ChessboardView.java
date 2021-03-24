@@ -36,7 +36,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
     private ArrayList<PieceView> pieces = new ArrayList<>();
     private CommunicationSemaphore<Location> wait_move = new CommunicationSemaphore<>(1);
-    private Location[] lastMove = new Location[2];
+    private Location[] lastMove = null;
     private JFrame parentFrame;
 
     public ChessboardView(JFrame frame) {
@@ -74,7 +74,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
     public void drawLastMove(Graphics2D g2){
         g2.setColor(Settings.SELECTION_BG_COLOR);
-        if(Arrays.equals(lastMove, new Location[2])) return;
+        if(lastMove == null) return;
         if (this.myColor.equals(PieceColor.BLACK)) {
             for (Location l: lastMove)
                 g2.fillRect(Settings.CHESSBOARD_SQUARE_SIZE * (7-l.col()),
@@ -333,8 +333,13 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
     @Override
     public void setMove(Location from, Location to) {
-        lastMove[0] = from;
-        lastMove[1] = to;
+        if (from != null && to != null) {
+            lastMove = new Location[2];
+            lastMove[0] = from;
+            lastMove[1] = to;
+        } else {
+            lastMove = null;
+        }
     }
 
     @Override

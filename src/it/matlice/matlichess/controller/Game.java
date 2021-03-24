@@ -109,6 +109,9 @@ public class Game {
     public void rematch(boolean swapPlayers) {
         this.chessboard = Chessboard.getDefault();
         this.turn = PieceColor.WHITE;
+        this.players.forEach(e -> {
+            e.setMove(null, null);
+        });
         reinitialize(swapPlayers);
     }
 

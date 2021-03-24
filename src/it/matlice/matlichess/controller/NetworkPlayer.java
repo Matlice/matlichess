@@ -239,6 +239,7 @@ public class NetworkPlayer implements PlayerInterface {
 
     @Override
     public void setMove(Location from, Location to) {
+        if (from == null || to == null) return;
         if (Game.hasInstance() && this.socketOut != null && (lastReceivedMove == null || !lastReceivedMove.equals(new Move(from, to))) ) {
             safeSend(new Move(from.toString() + to.toString()));
             var p = (ComPacket) safeRead();
