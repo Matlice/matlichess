@@ -14,12 +14,19 @@ public class View {
     private JFrame frame;
     private ChessboardView chessboardView;
 
-    public View() {
+    private static View instance = null;
+
+    public static View getInstance() {
+        if(instance == null) instance = new View();
+        return instance;
+    }
+
+    private View() {
         this.frame = new JFrame();
         this.chessboardView = new ChessboardView(frame);
     }
 
-    public PlayerInterface initialize(){
+    public void initialize(){
         EventQueue.invokeLater(() -> {
             frame.setBounds(20, 20, 800, 800);
             frame.setExtendedState(JFrame.NORMAL);
@@ -30,14 +37,9 @@ public class View {
             frame.add(chessboardView);
             frame.pack();
         });
-        return chessboardView;
     }
 
-    public void setPosition(ArrayList<PieceView> pieces) {
-        this.chessboardView.setPosition(pieces);
-    }
-
-    public void setTurn(PieceColor turn) {
-        this.chessboardView.setTurn(turn);
+    public PlayerInterface getPlayerInterface(){
+        return this.chessboardView;
     }
 }

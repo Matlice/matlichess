@@ -7,19 +7,22 @@ import it.matlice.matlichess.controller.net.*;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.model.Piece;
 import it.matlice.matlichess.model.pieces.Queen;
+import it.matlice.matlichess.view.ConfigurablePlayer;
 import it.matlice.matlichess.view.PieceView;
 import it.matlice.settings.Settings;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-public class NetworkPlayer implements PlayerInterface {
+public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
 
     private ServerSocket server;
     private Socket socket = null;
@@ -47,6 +50,18 @@ public class NetworkPlayer implements PlayerInterface {
                 System.err.println("Cannot connect, maybe port is already bind");
             }
         }
+    }
+
+    private static InetAddress getByNameSafe(String ip){
+        try {
+            return InetAddress.getByName(ip);
+        } catch (UnknownHostException e) {
+            return getByNameSafe("127.0.0.1");
+        }
+    }
+
+    public NetworkPlayer(String ip){
+        this(getByNameSafe(ip));
     }
 
     /**
@@ -282,4 +297,52 @@ public class NetworkPlayer implements PlayerInterface {
             return false;
         }
     }
+
+    private static class ConfigurationPane extends JPanel{
+        private boolean isServer = true;
+        JTextField ip;
+        public String getIp() {
+            return isServer ? null : ip.getText();
+        }
+
+        public boolean isServer() {
+            return isServer;
+        }
+
+        public ConfigurationPane(){
+            var server_radio = new JRadioButton("Server");
+            var client_radio = new JRadioButton("Client");
+            ButtonGroup method = new ButtonGroup();
+            method.add(server_radio);
+            method.add(client_radio);
+            ip = new JTextField();
+            server_radio.addActionListener((e) -> {
+                ip.setEditable(false);
+                this.isServer = true;
+            });
+            client_radio.addActionListener((e) -> {
+                ip.setEditable(true);
+                this.isServer = false;
+            });
+            server_radio.setSelected(true);
+            ip.setPreferredSize( new Dimension( 200, 24 ) );
+            this.add(server_radio);
+            this.add(client_radio);
+            this.add(new Label("Server ip:"));
+            this.add(ip);
+        }
+    }
+
+    public static JPanel getConfigurationInterface(){
+        return new ConfigurationPane();
+    }
+
+    public static PlayerInterface getInstance(JPanel configured) throws InstantiationError{
+        if(((ConfigurationPane) configured).isServer())
+            return new NetworkPlayer();
+        return new NetworkPlayer(((ConfigurationPane) configured).getIp());
+    }
+
+    public static String getName() {return "Network";}
+
 }

@@ -282,7 +282,6 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         this.myColor = color;
     }
 
-
     @Override
     public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
         Location obtained;
