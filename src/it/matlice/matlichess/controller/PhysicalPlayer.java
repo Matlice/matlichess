@@ -6,7 +6,7 @@ import it.matlice.matlichess.view.View;
 
 import javax.swing.*;
 
-public class PhisicPlayer implements ConfigurablePlayer {
+public class PhysicalPlayer implements ConfigurablePlayer {
 
     public static JPanel getConfigurationInterface(){
         return new JPanel();

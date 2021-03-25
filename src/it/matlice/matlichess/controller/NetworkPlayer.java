@@ -331,6 +331,7 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
                 this.isServer = false;
             });
             server_radio.setSelected(true);
+            ip.setEditable(false);
             ip.setPreferredSize( new Dimension( 200, 24 ) );
             this.add(server_radio);
             this.add(client_radio);

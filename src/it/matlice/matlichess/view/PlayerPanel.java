@@ -28,7 +28,7 @@ public class PlayerPanel extends JPanel implements ItemListener {
             }
         }).filter(Objects::nonNull).toArray(String[]::new);
 
-        JComboBox cb = new JComboBox(comboBoxItems);
+        JComboBox<String> cb = new JComboBox<>(comboBoxItems);
         cb.setEditable(false);
         cb.addItemListener(this);
         this.add(cb);

@@ -2,7 +2,7 @@ package it.matlice.matlichess;
 
 import it.matlice.matlichess.controller.Game;
 import it.matlice.matlichess.controller.NetworkPlayer;
-import it.matlice.matlichess.controller.PhisicPlayer;
+import it.matlice.matlichess.controller.PhysicalPlayer;
 import it.matlice.matlichess.controller.StockfishPlayer;
 import it.matlice.matlichess.view.ConfigurablePlayer;
 import it.matlice.matlichess.view.PlayerPanel;
@@ -10,9 +10,6 @@ import it.matlice.matlichess.view.View;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Arrays;
 
 /**
  * EntryPoint of the program
@@ -20,7 +17,7 @@ import java.util.Arrays;
 public class EntryPoint {
 
     public static void main(String[] args) throws ClassNotFoundException {
-        Class<? extends ConfigurablePlayer>[] players = new Class[]{PhisicPlayer.class, StockfishPlayer.class, NetworkPlayer.class};
+        Class<? extends ConfigurablePlayer>[] players = new Class[]{PhysicalPlayer.class, StockfishPlayer.class, NetworkPlayer.class};
 
         var white = new PlayerPanel(players);
         var black = new PlayerPanel(players);
