@@ -35,14 +35,6 @@ public class EntryPoint {
             new Thread(() -> {
                 View.getInstance().initialize();
                 Game.getInstance(white.getSelectedInterface(), black.getSelectedInterface(), View.getInstance().getPlayerInterface()).setup();
-                try {
-                    Thread.sleep(500);
-                    Game.getInstance().mainloop();
-                    Game.getInstance().interrupt();
-                    Thread.sleep(100);
-                } catch (InterruptedException interruptedException) {
-                    interruptedException.printStackTrace();
-                }
                 while(Game.getInstance().mainloop());
             }).start();
             frame.dispose();
