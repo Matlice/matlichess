@@ -2,6 +2,9 @@ package it.matlice.matlichess.view;
 
 import it.matlice.matlichess.PieceColor;
 
+/**
+ * Enumeration type for the view to notify which piece and which color to display
+ */
 public enum PieceType {
 
     PAWN_WHITE(0),

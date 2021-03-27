@@ -4,6 +4,9 @@ import it.matlice.matlichess.Location;
 import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.model.pieces.*;
 
+/**
+ * Utility class that reads a FEN
+ */
 public enum FenReader {
     PIECE_POSITION,
     TURN,
@@ -17,9 +20,20 @@ public enum FenReader {
     int cur_col = 0;
     String partial = "";
 
+    /**
+     * Method that perform an action based on a given character and on the actual status given by the enum
+     *
+     * @param c the Chessboard to act on
+     * @param character the char to evaluate
+     * @return the next state of the fen reader
+     */
     FenReader action(Chessboard c, char character) {
         switch (this) {
             case PIECE_POSITION:
+                // if it's reading a piece position, if a letter is given then place the piece;
+                // if a number is given it should skip that number of cells
+                // if a '/' is given it should skip to the next line
+                // if a  ' ' is given it should skip to next reading state
                 switch (character) {
                     case 'r':
                     case 'R':
@@ -64,15 +78,22 @@ public enum FenReader {
                 }
                 break;
             case TURN:
+                // reading a turn, if it's 'w' then it's white turns, same with black
+                // ' ' skips to next state
                 if (character == 'b') c.setTurn(PieceColor.BLACK);
                 else if (character == 'w') c.setTurn(PieceColor.WHITE);
                 else if (character == ' ') return FenReader.CASTLING;
                 break;
             case CASTLING:
+                // reading whether castling is available and for which pieces;
+                // q stands for queen's side, k for king's side
+                // upper case is for white king, lower case for black king
                 //todo
                 if (character == ' ') return FenReader.EN_PASSANT;
                 break;
             case EN_PASSANT:
+                // reading the actual en passant cell;
+                // if it's not given there should be a '-'
                 if (character == ' ') {
                     if (!this.partial.equals("-"))
                         c.setEnPassantTargetSquare(new Location(this.partial));
@@ -82,6 +103,8 @@ public enum FenReader {
                 }
                 break;
             case SEMIMOVES:
+                // reading semimoves clock as an int
+                // ' ' skips to next state
                 if (character == ' ') {
                     c.setHalfMoveClock(Integer.parseInt(partial));
                     return FenReader.MOVES;
@@ -90,6 +113,8 @@ public enum FenReader {
                 }
                 break;
             case MOVES:
+                // reading fullmoves clock as an int
+                // ' ' skips to next state
                 if (character == ' ') {
                     c.setFullMoveNumber(Integer.parseInt(partial));
                     return FenReader.FINISHED;
@@ -98,6 +123,7 @@ public enum FenReader {
                 }
                 break;
             case FINISHED:
+                // the reading has finished, do nothing
             default:
                 break;
         }

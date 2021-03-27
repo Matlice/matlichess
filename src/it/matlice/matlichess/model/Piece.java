@@ -98,7 +98,7 @@ public abstract class Piece {
     /**
      * Describes the Locations reachable by a chess Piece
      *
-     * @param chessboard the {@link Chessboard} where are placed the pieces
+     * @param chessboard the {@link Chessboard} where are placed the pieces, also CHECKING whether the king si under attack
      * @param myPosition the Position of the Piece
      * @return the MovePattern of the piece
      */
@@ -132,8 +132,17 @@ public abstract class Piece {
         return moves.get(destination);
     }
 
+    /**
+     * Abstract method that clone a Piece into an identical other piece
+     * @return the cloned Piece
+     */
     public abstract Piece clone();
 
+    /**
+     * Returns whether two pieces are identical, based on type color and if they've moved
+     * @param o the other Piece
+     * @return true if they are identical
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

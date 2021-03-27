@@ -129,6 +129,13 @@ public class King extends Piece {
         }
     }
 
+    /**
+     * Describes the Locations reachable by a chess King, making sure two kings cannot get into two nearby cells
+     *
+     * @param chessboard the {@link Chessboard} where are placed the pieces, also CHECKING whether the king si under attack
+     * @param myPosition the Position of the Piece
+     * @return the MovePattern of the piece
+     */
     @Override
     public MoveList getAvailableMoves(Chessboard chessboard, Location myPosition) {
         var moves = this.unvalidated_move_pattern(chessboard, myPosition).validate().get();
@@ -142,12 +149,23 @@ public class King extends Piece {
         return r;
     }
 
+    /**
+     * Describes the Locations reachable by a chess King without checking if the king is under attack
+     *
+     * @param chessboard the {@link Chessboard} where are placed the pieces
+     * @param myPosition the Position of the King
+     * @return the MovePattern of the piece without checking if the king is under attack
+     */
     @Override
     public MovePattern unvalidated_move_pattern(Chessboard chessboard, Location myPosition) {
         return new MovePattern(chessboard, myPosition, this.getColor())
                 .addKing();
     }
 
+    /**
+     * Abstract method that clone a King into an identical other King
+     * @return the cloned King
+     */
     @Override
     public Piece clone() {
         var clone = new King(this.getColor());

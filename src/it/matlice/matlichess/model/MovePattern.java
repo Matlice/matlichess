@@ -103,11 +103,11 @@ public class MovePattern {
 
     /**
      * Evaluates whether a pawn can capture a piece diagonally, or capture a pawn en passant
-     * @param chessboard      chessboard
-     * @param myPieceColor         color
-     * @param moveTarget      the target location the pawn can capture and move to
+     * @param chessboard chessboard
+     * @param myPieceColor color
+     * @param moveTarget the target location the pawn can capture and move to
      * @param enPassantTarget the location of the other pawn that can be captured en passant
-     * @param actualPosition
+     * @param actualPosition the actual position of the pawn
      */
     private void _pawnCapture(Chessboard chessboard, PieceColor myPieceColor, Location moveTarget, Location enPassantTarget, Location actualPosition) {
         if (chessboard.getPieceAt(moveTarget) != null) {

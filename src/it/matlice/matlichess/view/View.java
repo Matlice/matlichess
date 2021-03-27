@@ -1,14 +1,13 @@
 package it.matlice.matlichess.view;
 
-import it.matlice.matlichess.PieceColor;
-import it.matlice.matlichess.Location;
 import it.matlice.matlichess.controller.PlayerInterface;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * This class is the representative of the view in the MCV architecture.
+ */
 public class View {
 
     private JFrame frame;
@@ -16,6 +15,7 @@ public class View {
 
     private static View instance = null;
 
+    //the instance is a singleton
     public static View getInstance() {
         if(instance == null) instance = new View();
         return instance;
@@ -26,6 +26,9 @@ public class View {
         this.chessboardView = new ChessboardView(frame);
     }
 
+    /**
+     * creates the main frame and adds the {@link ChessboardView} to it
+     */
     public void initialize(){
         EventQueue.invokeLater(() -> {
             frame.setBounds(20, 20, 800, 800);
