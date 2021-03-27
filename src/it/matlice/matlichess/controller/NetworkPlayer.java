@@ -20,6 +20,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+
+/**
+ * This class is responsible of client/server player management.
+ *
+ * the communication is archived by a full duplex object stream setup across a tcp Socket.
+ *
+ * <h1>instantiation process</h1>
+ * <h2>Server side</h2>
+ *
+ * While instantiating, the server accepting thread is started and left waiting for connections.
+ * for each connection, if no connection has been archived yet we send the current position sync packet to the
+ * client which will load the state and ensure the syncronization is archeived.
+ *
+ * if anoter connection is active, an error packet is sent and the connection is closed.
+ *
+ * <h2>Client side</h2>
+ * while instantiating a connection and synchronization thread is started and a mutex lock for the socket activity is achieved.
+ * more precisely we need to ensure full initialization is achieved before the first communication packet is obtained from the server.
+ *
+ *
+ * when connection is ready and sync has happened, releasing the relative Semaphore, the communication can start with the implemented protocol.
+ *
+ * <h1>Protocol</h1>
+ * @see it.matlice.matlichess.controller.net classes.
+ */
 public class NetworkPlayer implements PlayerInterface {
 
     private ServerSocket server;
@@ -33,9 +58,7 @@ public class NetworkPlayer implements PlayerInterface {
     private Move lastReceivedMove = null;
 
     /**
-     * Server constructor
-     *
-     * @throws IOException
+     * Server constructor.
      */
     public NetworkPlayer() {
         boolean serverStarted = false;
@@ -46,11 +69,15 @@ public class NetworkPlayer implements PlayerInterface {
                 serverStarted = true;
             } catch (IOException e) {
                 // todo remove?
-                System.err.println("Cannot connect, maybe port is already bind");
+                System.err.println("Cannot connect, maybe port is already bound");
             }
         }
     }
 
+    /**
+     * Client constructor
+     * @param ip the server ip.
+     */
     public NetworkPlayer(String ip) {
         this(getByNameSafe(ip));
     }
@@ -71,7 +98,7 @@ public class NetworkPlayer implements PlayerInterface {
                     this.socketOut.flush();
                     this.socketIn = new ObjectInputStream(new BufferedInputStream(this.socket.getInputStream()));
                     //this must be done in a separate thread because wants an istance that is being creating while calling this constructor
-                    EventQueue.invokeLater(() -> {
+                    new Thread(() -> {
                         //should receive a welcome
                         while (!Game.hasInstance()) {
                             try {
@@ -90,7 +117,7 @@ public class NetworkPlayer implements PlayerInterface {
                         } catch (IOException | ClassNotFoundException e) {
                             e.printStackTrace();
                         }
-                    });
+                    }).start();
                     break;
                 } catch (IOException e) {
                     System.err.println("Failed to connect, retrying in 1sec");
@@ -111,6 +138,9 @@ public class NetworkPlayer implements PlayerInterface {
         }
     }
 
+    /**
+     * @see it.matlice.matlichess.view.PlayerPanel
+     */
     public static ConfigurationPanel getConfigurationInterface() {
         return new ConfigurationPanel() {
             private boolean isServer = true;
@@ -129,7 +159,7 @@ public class NetworkPlayer implements PlayerInterface {
                 method.add(server_radio);
                 method.add(client_radio);
                 ip = new JTextField();
-
+                ip.setText("127.0.0.1");
                 server_radio.addActionListener((e) -> {
                     ip.setEditable(false);
                     this.isServer = true;
@@ -150,6 +180,9 @@ public class NetworkPlayer implements PlayerInterface {
         };
     }
 
+    /**
+     * @see it.matlice.matlichess.view.PlayerPanel
+     */
     public static String getName() {
         return "Network";
     }
@@ -170,6 +203,13 @@ public class NetworkPlayer implements PlayerInterface {
         }
     }
 
+    /**
+     * if no connection has been archived yet we send the current position sync packet to the
+     * client which will load the state and ensure the syncronization is archeived.
+     *
+     * if anoter connection is active, an error packet is sent and the connection is closed.
+     * @param s connection socket
+     */
     private void handleConnection(Socket s) {
         try {
             var socketOut = new ObjectOutputStream(new BufferedOutputStream(s.getOutputStream()));
@@ -201,8 +241,14 @@ public class NetworkPlayer implements PlayerInterface {
         this.mycolor = color;
     }
 
+    /**
+     * Ask the other end for the next move if the sync Semaphore has been released or else waits for full synchronization
+     * Socket read interruption is achieved by starting the blocking call in another thread and then waiting for joining.
+     * @return the move
+     * @throws InterruptedException if the call has been interrupted from another thread.
+     */
     @Override
-    public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
+    public List<Location> waitForUserMove() throws InterruptedException {
         var socket_died = false;
         while (socketIn == null) Thread.sleep(200); // no sockets has connected
         List<Location> move = null;
@@ -263,7 +309,8 @@ public class NetworkPlayer implements PlayerInterface {
                 System.err.println("received an invalid move");
                 this.safeSend(new ComError("Invalid move"));
             } catch (Exception e) {
-
+                e.printStackTrace();
+                if(!(e instanceof InterruptedException)) new RuntimeException(e);
             }
             sem.release();
             this.semThread = null;
@@ -298,6 +345,8 @@ public class NetworkPlayer implements PlayerInterface {
 
     @Override
     public void setMove(Location from, Location to) {
+        if(from == null || to == null)
+            return;
         if (Game.hasInstance() && this.socketOut != null && (lastReceivedMove == null || !lastReceivedMove.equals(new Move(from, to)))) {
             safeSend(new Move(from.toString() + to.toString()));
             var p = (ComPacket) safeRead();
@@ -311,6 +360,9 @@ public class NetworkPlayer implements PlayerInterface {
         return;
     }
 
+    /**
+     * this call allows other threads from who's calling waitForMove to interrupt the request and make the call throw InterruptedException
+     */
     @Override
     public void interrupt() {
         if (this.askingThread != null) {

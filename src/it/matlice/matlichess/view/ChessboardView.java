@@ -22,6 +22,11 @@ import java.util.Set;
 import static it.matlice.matlichess.view.PieceView.locationToPointer;
 import static it.matlice.matlichess.view.PieceView.pointerToLocation;
 
+/**
+ * this class aggregates the view part of the application with the user I/O.
+ * the asking move process is achieved by acquiring a Semaphore twice, while getting the user input by releasing after the relative mouse click.
+ * this permits the thread to be interrupted while asking the move.
+ */
 public class ChessboardView extends JPanel implements MouseListener, MouseMotionListener, PlayerInterface {
 
     private boolean asking_move = false;
@@ -283,7 +288,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     }
 
     @Override
-    public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
+    public List<Location> waitForUserMove() throws InterruptedException {
         Location obtained;
         do {
             this.askMove();

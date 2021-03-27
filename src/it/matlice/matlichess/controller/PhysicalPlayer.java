@@ -7,10 +7,12 @@ import it.matlice.matlichess.view.ConfigurationPanel;
 import it.matlice.matlichess.view.PieceView;
 import it.matlice.matlichess.view.View;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * basic implementation of the main player
+ */
 public class PhysicalPlayer implements PlayerInterface {
 
     public static ConfigurationPanel getConfigurationInterface(){
@@ -30,8 +32,8 @@ public class PhysicalPlayer implements PlayerInterface {
     public static String getName() {return "Person";}
 
     @Override
-    public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
-        return View.getInstance().getPlayerInterface().waitForUserMove(side);
+    public List<Location> waitForUserMove() throws InterruptedException {
+        return View.getInstance().getPlayerInterface().waitForUserMove();
     }
 
     @Override

@@ -6,6 +6,9 @@ import java.awt.*;
  * Class used to save global settings
  */
 public class Settings {
+    // GAME
+
+    public static final String STARTING_POSITION_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     // VIEW
 

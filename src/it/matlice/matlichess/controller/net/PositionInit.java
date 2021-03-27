@@ -3,6 +3,10 @@ package it.matlice.matlichess.controller.net;
 import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.controller.Game;
 
+/**
+ * This packet is used to synchronize the client and the server after the initialization.
+ * we make the server rule out the position.
+ */
 public class PositionInit implements ComPacket{
 
     private String[] moves;

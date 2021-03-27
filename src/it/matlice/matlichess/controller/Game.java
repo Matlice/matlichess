@@ -14,6 +14,7 @@ import it.matlice.matlichess.model.pieces.Queen;
 import it.matlice.matlichess.model.pieces.Rook;
 import it.matlice.matlichess.view.PieceType;
 import it.matlice.matlichess.view.PieceView;
+import it.matlice.settings.Settings;
 
 import java.util.*;
 
@@ -51,7 +52,7 @@ public class Game {
 
     /**
      * Singleton getter
-     *
+     * if the game is not initialized yet, we throw a RuntimeError because we need to pass arguments the first time.
      * @return the instance of the current game
      */
     public static Game getInstance() {
@@ -64,7 +65,7 @@ public class Game {
      *
      * @param white the white player
      * @param black the black player
-     * @return
+     * @return the controller instance
      */
     public static Game getInstance(PlayerInterface white, PlayerInterface black) {
         return getInstance(white, black, new ArrayList<>());
@@ -76,7 +77,7 @@ public class Game {
      * @param white the white player
      * @param black the black player
      * @param nonPlayer any other "player" who is not really playing
-     * @return
+     * @return the controller instance
      */
     public static Game getInstance(PlayerInterface white, PlayerInterface black, PlayerInterface nonPlayer) {
         List<PlayerInterface> nonPlayers = new ArrayList<>();
@@ -84,6 +85,18 @@ public class Game {
         return getInstance(white, black, nonPlayers);
     }
 
+    /**
+     * Singleton getter, passing the palyers and a list of "viewer" who will receive the updates
+     * for the game in order to display the current position when a view is not necessary
+     * - FE when we have two noninteractive players:
+     * in that case we don't need the view, so that will result in a blank window.
+     * by doing that we allow for external users to see the current position while playing.
+     *
+     * @param white white player
+     * @param black black player
+     * @param nonPlayers a list of external players
+     * @return the controller instance
+     */
     public static Game getInstance(PlayerInterface white, PlayerInterface black, List<PlayerInterface> nonPlayers) {
         ArrayList<PlayerInterface> players = new ArrayList<PlayerInterface>();
         players.add(white);
@@ -92,11 +105,21 @@ public class Game {
         return instance;
     }
 
+    /**
+     * returns true if the game is already been initialized. this is used to wait (busy waiting sadly)
+     * while the game has been instantiated to operate on it.
+     * @return true if an instance of the controller is available.
+     */
     public static boolean hasInstance() {
         return instance != null;
     }
 
-    public void reinitialize(boolean swapPlayers){
+    /**
+     * This method allows to reinstantiate all the players to be reinstantiated in a given position, ready to rematch.
+     * @param fen the fen string representative of the start position.
+     * @param swapPlayers if true, the white player and the black player will be swapped.
+     */
+    public void reinitialize(String fen, boolean swapPlayers){
         if(swapPlayers){
             var t = this.players.get(0);
             this.players.set(0, this.players.get(1));
@@ -106,15 +129,23 @@ public class Game {
         interrupt();
     }
 
+
+    /**
+     * this methods prepares the environment to start a rematch starting from the base position given from the settings.
+     * @param swapPlayers if true the players position will be swapped.
+     */
     public void rematch(boolean swapPlayers) {
         this.chessboard = Chessboard.getDefault();
         this.turn = PieceColor.WHITE;
         this.players.forEach(e -> {
             e.setMove(null, null);
         });
-        reinitialize(swapPlayers);
+        reinitialize(Settings.STARTING_POSITION_FEN, swapPlayers);
     }
 
+    /**
+     * sets up the players setting the required attributes and data structures.
+     */
     public void setup() {
         this.players.forEach(e -> {
             e.setPosition(convertChessboardToView(chessboard));
@@ -126,13 +157,19 @@ public class Game {
         turn = chessboard.getTurn();
     }
 
+    /**
+     * this in the main method.
+     * while this method returns true it should be recalled cyclically.
+     * it will return false if the game has ended
+     * @return true in the game should proceed.
+     */
     public boolean mainloop() {
 
         List<Location> move = null;
         List<Boolean> wants_rematch = new ArrayList<>();
         try {
             System.out.println("ask move for" + turn);
-            move = players.get(turn.index).waitForUserMove(turn);
+            move = players.get(turn.index).waitForUserMove();
             chessboard.move(move.get(0), move.get(1));
             System.out.println(move);
 
@@ -248,6 +285,11 @@ public class Game {
         return chessboard.getAvailableMoves(piece).keySet();
     }
 
+    /**
+     * sets the model next promotion chosen by the user before making a move.
+     * @param promotion String representing the piece to be prometed to
+     * @param player the player who's choosing.
+     */
     public void setPromotion(String promotion, PieceColor player) {
         switch (promotion.toUpperCase()) {
             case "Q": chessboard.setPromotion(player, Queen.class); break;
@@ -258,23 +300,44 @@ public class Game {
         }
     }
 
+    /**
+     * sets the promotion for the current player
+     * @param promotion String representing the piece to be prometed to
+     */
     public void setPromotion(String promotion) {
         this.setPromotion(promotion, turn);
     }
 
+    /**
+     * sets the promotion piece for all the players, given as an array of two elements.
+     * @param promotionTypes an array containing the strings for the piece to promote to as {<white promotion>, <black promotion>}
+     */
     public void setPromotions(String[] promotionTypes) {
         this.setPromotion(pieceNameToShortNameMap.get(promotionTypes[PieceColor.WHITE.index]), PieceColor.WHITE);
         this.setPromotion(pieceNameToShortNameMap.get(promotionTypes[PieceColor.BLACK.index]), PieceColor.BLACK);
     }
 
+    /**
+     * @see Chessboard#toFEN()
+     * @param complete true to get a complete fen
+     * @return the fen
+     */
     public String getPositionFen(boolean complete) {
         return chessboard.toFEN(complete);
     }
 
+    /**
+     * Returns a complete fen. @see Chessboard#toFEN()
+     * @return the fen
+     */
     public String getPositionFen() {
         return chessboard.toFEN(true);
     }
 
+    /**
+     * @see Chessboard#isPromoting(Location, Location)
+     * @return the fen
+     */
     public boolean isPromotionRequired(Location from, Location to){
         return chessboard.isPromoting(from, to);
     }
@@ -287,22 +350,23 @@ public class Game {
         return chessboard.getPositions();
     }
 
+    /**
+     * interrupts all the pending asking moves.
+     */
     public void interrupt(){
         this.players.forEach(PlayerInterface::interrupt);
     }
 
-    private void setPositionFromFen(String fen){
-        chessboard.setPosition(fen);
-    }
-
+    /**
+     * load the game state from a PositionInit class due to network reset. @see NetworkPlayer
+     * @param pos
+     */
     public void loadState(PositionInit pos){
         chessboard.setPositions(pos.getMoves(), pos.getMove_times());
-        setPositionFromFen(pos.getCurrentFEN());
-        this.turn = chessboard.getTurn();
         if(pos.getColor().equals(PieceColor.WHITE) && players.get(0) instanceof NetworkPlayer || pos.getColor().equals(PieceColor.BLACK) && players.get(1) instanceof NetworkPlayer)
-            reinitialize(true);
+            reinitialize(pos.getCurrentFEN(), true);
         else
-            reinitialize(false);
+            reinitialize(pos.getCurrentFEN(), false);
 
     }
 
