@@ -310,7 +310,7 @@ public class NetworkPlayer implements PlayerInterface {
                 this.safeSend(new ComError("Invalid move"));
             } catch (Exception e) {
                 e.printStackTrace();
-                if(!(e instanceof InterruptedException)) new RuntimeException(e);
+                throw new RuntimeException(e);
             }
             sem.release();
             this.semThread = null;

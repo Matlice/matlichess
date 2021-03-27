@@ -18,6 +18,7 @@ import java.util.List;
 public class StockfishPlayer implements PlayerInterface {
     private int depth;
     private int skill;
+    private Thread t;
 
     private int delay = 200;
 
@@ -38,14 +39,22 @@ public class StockfishPlayer implements PlayerInterface {
         Stockfish.nSetOption("Contempt", String.valueOf(-100)); // -100, 100  // lower prefers draw
         Stockfish.nSetOption("Skill Level", String.valueOf(this.skill)); // 0, 20 // skill level, 0 is tough tho
         Stockfish.nSearchBestMove(depth, false);
-        var move = Stockfish.nGetFoundNextMoveStr();
+        final String[] move = {null};
+
+        t = new Thread(() -> {
+            move[0] = Stockfish.nGetFoundNextMoveStr();
+        });
+        t.start();
+        t.join();
+        t = null;
+        if(move[0] == null) throw new InterruptedException();
         Stockfish.nGetScore(true);
-        if (move.length() == 5) {
-            String promotion = move.substring(4, 5);
+        if (move[0].length() == 5) {
+            String promotion = move[0].substring(4, 5);
             Game.getInstance().setPromotion(promotion);
         }
         Thread.sleep(delay);
-        return Location.fromExtendedMove(move.substring(0, 4));
+        return Location.fromExtendedMove(move[0].substring(0, 4));
     }
 
     @Override
@@ -53,7 +62,7 @@ public class StockfishPlayer implements PlayerInterface {
         if(Game.hasInstance()) {
             Stockfish.nSetPosition(Game.getInstance().getPositionFen());
         }
-        Stockfish.nDbgDisplay();
+//        Stockfish.nDbgDisplay();
     }
 
     @Override
@@ -67,6 +76,13 @@ public class StockfishPlayer implements PlayerInterface {
 
     @Override
     public void interrupt() {
+        if(this.t != null) {
+            try {
+                t.join(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
