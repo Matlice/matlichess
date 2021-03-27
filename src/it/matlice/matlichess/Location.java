@@ -61,6 +61,12 @@ public class Location {
         return row;
     }
 
+    /**
+     * Returns whether two locations are identical, so if they represent the same cell
+     *
+     * @param o the other cell
+     * @return true if they represents the same cell
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,11 +76,22 @@ public class Location {
                 col == location.col;
     }
 
+    /**
+     * Returns the hash based only on the column and the row of the position
+     * So two locations that represents the same cell returns the same hash
+     *
+     * @return the hash
+     */
     @Override
     public int hashCode() {
         return Objects.hash(col, row);
     }
 
+    /**
+     * Converts a location to a String
+     * For example the location col=2 row=4 returns C5 (col and row starts from 0)
+     * @return
+     */
     @Override
     public String toString() {
         return String.valueOf((char) (col + 0x41)) + (row + 1);
@@ -83,8 +100,9 @@ public class Location {
     /**
      * Return a list of two locations, to represent a move
      * example: ["A4", "C6"]
+     *
      * @param move
-     * @return
+     * @return the [from, to] list representing the move
      */
     public static List<Location> fromExtendedMove(String move){
         assert move.length() == 4;

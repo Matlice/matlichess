@@ -284,7 +284,7 @@ public class Game {
     }
 
     public HashMap<String, Integer> getPositions() {
-        return chessboard.getPositions();
+        return chessboard.getRepeatedPositions();
     }
 
     public void interrupt(){

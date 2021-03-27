@@ -7,6 +7,7 @@ import it.matlice.matlichess.exceptions.ChessboardLocationException;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.pieces.*;
+import it.matlice.settings.Settings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class Chessboard {
     private PieceColor turn = PieceColor.WHITE;
     private Location enPassantTargetSquare = null;
     //This map is needed to implement a quick algorithm for three repetition rule
-    private HashMap<String, Integer> positions = new HashMap<>();
+    private HashMap<String, Integer> repeatedPositions = new HashMap<>();
     private Class<? extends Piece>[] promotions = new Class[]{Queen.class, Queen.class};
     // this is the number of halfMoves since the last capture or pawn advance.
     // The reason for this field is that the value is used in the fifty-move rule.
@@ -44,56 +45,23 @@ public class Chessboard {
      */
     public static Chessboard getDefault() {
         Chessboard c = new Chessboard();
-
-        c.setPiece(new Rook(PieceColor.WHITE), "A1");
-        c.setPiece(new Knight(PieceColor.WHITE), "B1");
-        c.setPiece(new Bishop(PieceColor.WHITE), "C1");
-        c.setPiece(new Queen(PieceColor.WHITE), "D1");
-        c.setKing(new King(PieceColor.WHITE), "E1");
-        c.setPiece(new Bishop(PieceColor.WHITE), "F1");
-        c.setPiece(new Knight(PieceColor.WHITE), "G1");
-        c.setPiece(new Rook(PieceColor.WHITE), "H1");
-
-        c.setPiece(new Pawn(PieceColor.WHITE), "A2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "B2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "C2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "D2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "E2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "F2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "G2");
-        c.setPiece(new Pawn(PieceColor.WHITE), "H2");
-
-        c.setPiece(new Rook(PieceColor.BLACK), "A8");
-        c.setPiece(new Knight(PieceColor.BLACK), "B8");
-        c.setPiece(new Bishop(PieceColor.BLACK), "C8");
-        c.setPiece(new Queen(PieceColor.BLACK), "D8");
-        c.setKing(new King(PieceColor.BLACK), "E8");
-        c.setPiece(new Bishop(PieceColor.BLACK), "F8");
-        c.setPiece(new Knight(PieceColor.BLACK), "G8");
-        c.setPiece(new Rook(PieceColor.BLACK), "H8");
-
-        c.setPiece(new Pawn(PieceColor.BLACK), "A7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "B7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "C7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "D7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "E7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "F7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "G7");
-        c.setPiece(new Pawn(PieceColor.BLACK), "H7");
-
+        c.setPosition(Settings.STARTING_POSITION_FEN);
         return c;
     }
 
-    public HashMap<String, Integer> getPositions() {
-        return positions;
-    }
-
-    public void setPositions(HashMap<String, Integer> positions) {
-        this.positions = positions;
+    /**
+     * Returns the hashmap that represents how many times a position has been played in the current game
+     * Used to spot repetitions (for endgame)
+     *
+     * @return
+     */
+    public HashMap<String, Integer> getRepeatedPositions() {
+        return repeatedPositions;
     }
 
     /**
      * Puts a {@link Piece} on a certain box in the chessboard, WITHOUT checking whether the destination square is empty.
+     * @see this.setPiece(Piece, Location)
      *
      * @param loc the {@link Location} of the box
      * @param p   the chess {@link Piece} to put
@@ -105,7 +73,8 @@ public class Chessboard {
     }
 
     /**
-     * Puts a {@link Piece} on a certain box in the chessboard, checking whether the destination square is empty
+     * Puts a {@link Piece} on a certain box in the chessboard, CHECKING whether the destination square is empty
+     * @see this._set_piece_at(Location, Piece)
      *
      * @param piece the chess {@link Piece} to put
      * @param loc   the {@link Location} of the box
@@ -194,6 +163,11 @@ public class Chessboard {
         this.enPassantTargetSquare = enPassantTargetSquare;
     }
 
+    /**
+     * Returns the type of the next pawn promotion for white and black
+     *
+     * @return an array of length 2 with the promotion types
+     */
     public Class<? extends Piece>[] getPromotions() {
         return promotions;
     }
@@ -226,7 +200,41 @@ public class Chessboard {
     }
 
     /**
-     * Change the turn
+     * Set the halfMoveClock to a specific number, used for initialisation of a new position
+     * @param halfMoveClock int of the half moves
+     */
+    public void setHalfMoveClock(int halfMoveClock) {
+        this.halfMoveClock = halfMoveClock;
+    }
+
+    /**
+     * Set the fullMoveNumber to a specific number, used for initialisation of a new position
+     * @param fullMoveNumber int of the full moves
+     */
+    public void setFullMoveNumber(int fullMoveNumber) {
+        this.fullMoveNumber = fullMoveNumber;
+    }
+
+    /**
+     * Getter for the turn
+     *
+     * @return which player has to move
+     */
+    public PieceColor getTurn() {
+        return turn;
+    }
+
+    /**
+     * Setter for the turn
+     *
+     * @param t the color of the player's turn
+     */
+    public void setTurn(PieceColor t) {
+        turn = t;
+    }
+
+    /**
+     * Changes the turn
      */
     protected void changeTurn() {
         turn = turn.opponent();
@@ -281,10 +289,41 @@ public class Chessboard {
         return captured;
     }
 
-    public boolean isMoveValid(Location src, Location destination) {
+    /**
+     * Checks if a piece is allowed to move to a certain box, then takes the piece in a {@link Location} and moves it to the new box.
+     * If the final box is occupied, it removes the old piece and replaces it with the new one
+     * @see this.move(Location, Location)
+     *
+     * @param src         String containing the official notation of the Location
+     * @param destination the final {@link Location} as string ("A4")
+     * @return the taken {@link Piece} if exists, else null
+     */
+    public Piece move(String src, String destination) {
+        return move(new Location(src), new Location(destination));
+    }
+
+    /**
+     * Return all the available moves of a piece in a certain Location
+     *
+     * @param l the location where the piece is
+     * @return all the available moves of the piece
+     */
+    public MoveList getAvailableMoves(Location l) {
+        if (this.getPieceAt(l) != null) return this.getPieceAt(l).getAvailableMoves(this, l);
+        return null;
+    }
+
+    /**
+     * Returns whether a move is valid, it's done by doing that move and checking if an InvalidMoveException is thrown
+     *
+     * @param from source of the move
+     * @param to destination of the move
+     * @return true if the move is valid
+     */
+    public boolean isMoveValid(Location from, Location to) {
         var c = this.clone();
         try {
-            c.move(src, destination);
+            c.move(from, to);
             return true;
         } catch (InvalidMoveException e) {
             return false;
@@ -316,6 +355,14 @@ public class Chessboard {
         }
     }
 
+    /**
+     * Returns whether the move is a pawn promotion
+     * Used to decide whether to ask a player to which piece to promote
+     *
+     * @param from source of the move
+     * @param to destination of the move
+     * @return true if the specified move is a promotion
+     */
     public boolean isPromoting (Location from, Location to){
         Piece toMove = getPieceAt(from);
         if(!(toMove instanceof Pawn)) return false;
@@ -323,18 +370,6 @@ public class Chessboard {
         if(toMove.getColor().equals(PieceColor.WHITE) && to.row() == 7) return true;
         if(toMove.getColor().equals(PieceColor.BLACK) && to.row() == 0) return true;
         return false;
-    }
-
-    /**
-     * Checks if a piece is allowed to move to a certain box, then takes the piece in a {@link Location} and moves it to the new box.
-     * If the final box is occupied, it removes the old piece and replaces it with the new one
-     *
-     * @param src         String containing the official notation of the Location
-     * @param destination the final {@link Location} as string ("A4")
-     * @return the taken {@link Piece} if exists, else null
-     */
-    public Piece move(String src, String destination) {
-        return move(new Location(src), new Location(destination));
     }
 
     /**
@@ -485,12 +520,17 @@ public class Chessboard {
      * @param fen the relative FEN of the position
      */
     public void saveFEN(String fen) {
-        if (!positions.containsKey(fen)) positions.put(fen, 1);
-        else positions.put(fen, positions.get(fen) + 1);
+        if (!repeatedPositions.containsKey(fen)) repeatedPositions.put(fen, 1);
+        else repeatedPositions.put(fen, repeatedPositions.get(fen) + 1);
     }
 
+    /**
+     * Imports a position from a FEN
+     *
+     * @param fen the String representation of the FEN
+     */
     public void setPosition(String fen) {
-        positions = new HashMap<>();
+        repeatedPositions = new HashMap<>();
         pieces = new HashMap<>();
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++)
@@ -511,41 +551,16 @@ public class Chessboard {
     }
 
     /**
-     * Getter for the turn
+     * Setter for the repeatedPositions attribute, used for draw by repetition
+     * Note that the pos_fen[i] position has appeared times[i] times etc...
      *
-     * @return which player has to move
+     * @param pos_fen the array of positions
+     * @param times the number of time the positions has appeared
      */
-    public PieceColor getTurn() {
-        return turn;
-    }
-
-    public void setTurn(PieceColor t) {
-        turn = t;
-    }
-
-    /**
-     * Return all the available moves of a piece in a certain Location
-     *
-     * @param l the location where the piece is
-     * @return all the available moves of the piece
-     */
-    public MoveList getAvailableMoves(Location l) {
-        if (this.getPieceAt(l) != null) return this.getPieceAt(l).getAvailableMoves(this, l);
-        return null;
-    }
-
     public void setPositions(String[] pos_fen, Integer[] times) {
         assert times.length == pos_fen.length;
         for (int i = 0; i < pos_fen.length; i++)
-            this.positions.put(pos_fen[i], times[i]);
-    }
-
-    public void setHalfMoveClock(int halfMoveClock) {
-        this.halfMoveClock = halfMoveClock;
-    }
-
-    public void setFullMoveNumber(int fullMoveNumber) {
-        this.fullMoveNumber = fullMoveNumber;
+            this.repeatedPositions.put(pos_fen[i], times[i]);
     }
 
     /**
@@ -558,7 +573,7 @@ public class Chessboard {
             //System.out.println("DRAW by 50 moves");
             return GameState.DRAW;
         }
-        if (positions.containsValue(3)) {
+        if (repeatedPositions.containsValue(3)) {
             //System.out.println("DRAW by repetition");
             return GameState.DRAW;
         }
@@ -583,4 +598,5 @@ public class Chessboard {
             }
         return GameState.PLAYING;
     }
+
 }

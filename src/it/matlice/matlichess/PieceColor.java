@@ -1,5 +1,9 @@
 package it.matlice.matlichess;
 
+/**
+ * Represents the color of a player or of a piece in the game
+ * It is also associated with an integer (0 for white or 1 for black) that is used in arrays as index
+ */
 public enum PieceColor {
     WHITE("White", 0),
     BLACK("Black", 1);
