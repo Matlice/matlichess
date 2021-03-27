@@ -285,7 +285,6 @@ public class Game {
     }
 
     public void interrupt(){
-        System.out.println("Fucking irq");
         this.players.forEach(PlayerInterface::interrupt);
     }
 
@@ -297,11 +296,9 @@ public class Game {
         chessboard.setPositions(pos.getMoves(), pos.getMove_times());
         setPositionFromFen(pos.getCurrentFEN());
         this.turn = chessboard.getTurn();
-        if(pos.getColor().equals(PieceColor.WHITE) && players.get(0) instanceof NetworkPlayer || pos.getColor().equals(PieceColor.BLACK) && players.get(1) instanceof NetworkPlayer){
+        if(pos.getColor().equals(PieceColor.WHITE) && players.get(0) instanceof NetworkPlayer || pos.getColor().equals(PieceColor.BLACK) && players.get(1) instanceof NetworkPlayer)
             reinitialize(true);
-//            if(pos.getColor().equals(PieceColor.WHITE) && players.get(1) instanceof NetworkPlayer)
-//                players.get(0).interrupt();
-        } else
+        else
             reinitialize(false);
 
     }

@@ -32,10 +32,10 @@ public class View {
             frame.setExtendedState(JFrame.NORMAL);
             frame.setResizable(false);
             frame.setTitle("MatliChess");
-            frame.setVisible(true);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.add(chessboardView);
             frame.pack();
+            frame.setVisible(true);
         });
     }
 

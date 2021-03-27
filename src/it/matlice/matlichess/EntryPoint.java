@@ -51,6 +51,7 @@ public class EntryPoint extends JFrame implements ActionListener {
             Game.getInstance(white.getSelectedInterface(), black.getSelectedInterface(), View.getInstance().getPlayerInterface()).setup();
             while (Game.getInstance().mainloop());
             this.dispose();
+            System.exit(0);
         });
         t.start();
     }
