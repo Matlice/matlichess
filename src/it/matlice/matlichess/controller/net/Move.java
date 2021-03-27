@@ -7,6 +7,10 @@ import it.matlice.matlichess.model.Piece;
 
 import java.util.Objects;
 
+/**
+ * This packet is used to share incrementally moves made from the users.
+ * after this packet is sent the sender expect a NOP response
+ */
 public class Move implements ComPacket{
 
     private final String extendedMove;

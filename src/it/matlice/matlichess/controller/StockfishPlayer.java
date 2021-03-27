@@ -12,6 +12,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Cpu JNI Stockfish player implementation.
+ */
 public class StockfishPlayer implements PlayerInterface {
     private int depth;
     private int skill;
@@ -30,7 +33,7 @@ public class StockfishPlayer implements PlayerInterface {
     }
 
     @Override
-    public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
+    public List<Location> waitForUserMove() throws InterruptedException {
         Stockfish.nSetOption("Use NNUE", String.valueOf(false)); // true or false // use neural network
         Stockfish.nSetOption("Contempt", String.valueOf(-100)); // -100, 100  // lower prefers draw
         Stockfish.nSetOption("Skill Level", String.valueOf(this.skill)); // 0, 20 // skill level, 0 is tough tho

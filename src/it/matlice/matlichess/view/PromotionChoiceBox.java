@@ -14,6 +14,9 @@ import java.util.concurrent.Semaphore;
 import static it.matlice.matlichess.view.PieceView.locationToPointer;
 import static it.matlice.matlichess.view.PieceView.pointerToLocation;
 
+/**
+ * Panel to choose which piece will the pawn become, when it reaches the last row and promotes
+ */
 public class PromotionChoiceBox extends JPanel implements MouseListener {
 
     private String selectedPiece;
@@ -39,6 +42,10 @@ public class PromotionChoiceBox extends JPanel implements MouseListener {
         drawPromotionChoiceBox(g2);
     }
 
+    /**
+     * Draws a on screen a promotion choice box
+     * @param g2 Graphics2D object
+     */
     public void drawPromotionChoiceBox(Graphics2D g2) {
         int size = Settings.CHESSBOARD_SQUARE_SIZE;
         PieceView queen;
@@ -68,7 +75,13 @@ public class PromotionChoiceBox extends JPanel implements MouseListener {
         rook.draw(g2);
     }
 
+    /**
+     * Starts a thread to ask the player to choose one option and shows the box
+     * @param point the origin of the frame
+     * @return String representing the chosen piece type
+     */
     public String askPromotion(Point point){
+        //I need a semaphore to stop the execution of the others thread while I'm choosing
         try {
             semaphore.acquire();
         } catch (InterruptedException e) {
@@ -96,6 +109,10 @@ public class PromotionChoiceBox extends JPanel implements MouseListener {
         return selectedPiece;
     }
 
+    /**
+     * when the mouse is clicked, checks if it's a valid click and  sets the selected piece
+     * @param e MouseEvent
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         Location pointerLoc;

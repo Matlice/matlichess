@@ -22,6 +22,12 @@ import java.util.Set;
 import static it.matlice.matlichess.view.PieceView.locationToPointer;
 import static it.matlice.matlichess.view.PieceView.pointerToLocation;
 
+/**
+ * Graphic view of the game for a physicalPlayer or a spectator
+ * this class aggregates the view part of the application with the user I/O.
+ * the asking move process is achieved by acquiring a Semaphore twice, while getting the user input by releasing after the relative mouse click.
+ * this permits the thread to be interrupted while asking the move.
+ */
 public class ChessboardView extends JPanel implements MouseListener, MouseMotionListener, PlayerInterface {
 
     private boolean asking_move = false;
@@ -51,10 +57,18 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         this.turn = turn;
     }
 
+    /**
+     * Draws the chessboard table
+     * @param g2 the Graphics2D object
+     */
     public void drawBoard(Graphics2D g2) {
         Settings.CHESSBOARD_BG.accept(g2, new ScreenLocation());
     }
 
+    /**
+     * Selects the selected square on the chessboard table
+     * @param g2 the Graphics2D object
+     */
     public void drawSelectedSquare(Graphics2D g2) {
         g2.setColor(Settings.SELECTION_BG_COLOR);
         if (selected != null) {
@@ -72,6 +86,10 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         }
     }
 
+    /**
+     * Selects the last move done on the chessboard table
+     * @param g2 the Graphics2D object
+     */
     public void drawLastMove(Graphics2D g2){
         g2.setColor(Settings.SELECTION_BG_COLOR);
         if(lastMove == null) return;
@@ -90,6 +108,10 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         }
     }
 
+    /**
+     * Shows all the locations reachable by the selected chess piece on the chessboard table
+     * @param g2 the Graphics2D object
+     */
     public void drawFeasableMoves(Graphics2D g2) {
         if (selected != null) {
             if (feasableMoves != null)
@@ -117,6 +139,10 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         }
     }
 
+    /**
+     * Draws all the pieces on the chessboard table
+     * @param g2 the Graphics2D object
+     */
     public void drawPieces(Graphics2D g2) {
         PieceView drawLast = null;
         for (PieceView pv : pieces) {
@@ -150,13 +176,14 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     public void mouseClicked(MouseEvent e) {
     }
 
+    /**
+     * When the mouse is pressed, checks if a piece it's already selected or not.
+     * Then, it saves the new state of the clicks
+     * @param e mouse event
+     */
     @Override
     public void mousePressed(MouseEvent e) {
-
-        if (e.getButton() == MouseEvent.BUTTON3) {
-            return;
-        }
-
+        if (e.getButton() == MouseEvent.BUTTON3) return;
         Location pointerLoc;
 
         try {
@@ -170,9 +197,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
                 if (!isMyPiece(pointerLoc)) return;
             }
             if (mouse_index == 2) {
-                if (isMyPiece(pointerLoc)) {
-                    resetClicks();
-                }
+                if (isMyPiece(pointerLoc)) resetClicks();
             }
             this.mouse[this.mouse_index] = pointerLoc;
             if (isMyPiece(pointerLoc)) {
@@ -183,9 +208,14 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         }
     }
 
+    /**
+     * When the mouse is released, checks if a piece it's already selected or not.
+     * Then, it saves the new state of the clicks.
+     * If certain conditions are verified, the move is valid and notifies that the move has been done
+     * @param e mouse event
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
-
         if (e.getButton() == MouseEvent.BUTTON3) {
             var piece_at = this.pieces
                     .stream()
@@ -224,6 +254,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
                 if (!this.mouse[0].equals(this.mouse[2])) {
                     // ... but only if from and to are different locations
                     this.move_from = this.mouse[0];
+                    //it releases the CommunicationSemaphore that was keeping the thread waiting
                     this.wait_move.r_release(this.mouse[2]);
                 }
             }
@@ -235,6 +266,10 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         this.repaint();
     }
 
+    /**
+     * When the mouse enters in the panel, saves the new state of the clicks
+     * @param e mouse event
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
         if (mouse[2] != null) {
@@ -244,6 +279,10 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         }
     }
 
+    /**
+     * When the mouse exits from the panel, saves the new state of the clicks
+     * @param e mouse event
+     */
     @Override
     public void mouseExited(MouseEvent e) {
         if (mouse[0] != null && mouse[0].equals(mouse[1]) && mouse[2] == null) return;
@@ -256,24 +295,23 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         this.repaint();
     }
 
+    /**
+     * Resets intern variables
+     */
     private void resetClicks() {
         this.mouse = new Location[4];
         this.selected = null;
         this.mouse_index = 0;
     }
 
+    /**
+     * Starts the CommunicationSemaphore that will keep the thread waiting
+     * @throws InterruptedException
+     */
     private void askMove() throws InterruptedException {
         this.asking_move = true;
         this.resetClicks();
         this.wait_move.r_acquire();
-    }
-
-    private String askPromotionPiece() {
-        String input;
-        do {
-            input = JOptionPane.showInputDialog("Promotion: ");
-        } while (!input.equals("q") && !input.equals("n") && !input.equals("r") && !input.equals("b"));
-        return input;
     }
 
     @Override
@@ -282,8 +320,13 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         this.myColor = color;
     }
 
+    /**
+     * Waits to receive a location from the semaphore , then it returns the initial and the final position
+     * @return the initial and the final location in an array
+     * @throws InterruptedException
+     */
     @Override
-    public List<Location> waitForUserMove(PieceColor side) throws InterruptedException {
+    public List<Location> waitForUserMove() throws InterruptedException {
         Location obtained;
         do {
             this.askMove();
@@ -302,6 +345,20 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         return Arrays.asList(this.move_from, obtained);
     }
 
+    /**
+     * interrupts the current thread
+     */
+    @Override
+    public void interrupt() {
+        if(t != null)
+            t.interrupt();
+    }
+
+    /**
+     * utility method to find the coordinate of the Location that is clicked by the mouse when a pawn is promoting
+     * @param l the Location reached by the pawn while promoting
+     * @return the Point that represents the coordinates of the Location
+     */
     private Point getPromotionCoordinate(Location l) {
         Point origin = this.getLocationOnScreen();
         int xCoord;
@@ -318,18 +375,21 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         return new Point(origin.x + xCoord, origin.y + yCoord);
     }
 
-    @Override
-    public void interrupt() {
-        if(t != null)
-            t.interrupt();
-    }
-
+    /**
+     * initializes the pieces and updates the view
+     * @param pieces the pieces to initialize
+     */
     @Override
     public void setPosition(ArrayList<PieceView> pieces) {
         this.pieces = pieces;
         this.repaint();
     }
 
+    /**
+     * sets the last move done by a playes
+     * @param from initial location
+     * @param to final location
+     */
     @Override
     public void setMove(Location from, Location to) {
         if (from != null && to != null) {
@@ -341,9 +401,13 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         }
     }
 
+    /**
+     * When the mouse is dragged, if a piece is selected, it updates the view and drags the piece on the chessboard
+     * @param e MouseEvent
+     */
     @Override
     public void mouseDragged(MouseEvent e) {
-        var piece_at = this.pieces
+        PieceView piece_at = this.pieces
                 .stream()
                 .filter(p -> p.getLocation().equals(this.mouse[2] != null ? this.mouse[2] : this.mouse[0]))
                 .findFirst().orElse(null);
@@ -360,6 +424,11 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     public void mouseMoved(MouseEvent e) {
     }
 
+    /**
+     * Checks is a piece in a Location is owned by the player which has to move
+     * @param l location to analyze
+     * @return true if the piece is one of the players' pieces, else false
+     */
     private boolean isMyPiece(Location l) {
         for (PieceView p : pieces) {
             if (p.getLocation().equals(l))
@@ -368,14 +437,20 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         return false;
     }
 
-    private boolean ask_for_consensus(GameState state, boolean generic){
+    /**
+     * When a game is finished, it will ask the player if he wants to rematch or to exit the game
+     * @param state State of the game
+     * @param genericMessage if false it will print a particular message at the and of the game to communicate which player has won
+     * @return true if the player wants to rematch, else false
+     */
+    private boolean askForConsensus(GameState state, boolean genericMessage){
         if (state.equals(GameState.PLAYING)) return false;
 
         StringBuilder message = new StringBuilder();
 
         if (state.equals(GameState.DRAW))
             message.append(Settings.DRAW_MESSAGE);
-        else if (generic)
+        else if (genericMessage)
             message.append(String.format(Settings.GENERIC_WIN_MESSAGE, state.getWinnerString()));
         else if (state.equals(GameState.WHITE_WIN)) {
             if (myColor.equals(PieceColor.WHITE))
@@ -412,13 +487,13 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
 
     @Override
     public boolean setState(GameState state, boolean generic, PlayerInterface opponent) {
-                // solo se color è settato, altrimenti è spettatore
-        boolean consensus = ask_for_consensus(state, generic || opponent instanceof ChessboardView);
+        // solo se color è settato, altrimenti è spettatore
+        boolean consensus = askForConsensus(state, generic || opponent instanceof ChessboardView);
         return consensus && opponent == null || opponent instanceof ChessboardView || opponent.setState(state, generic, consensus);
     }
 
     public boolean setState(GameState state, boolean generic, Boolean other_choice){
         if(!other_choice) return false;
-        return this.ask_for_consensus(state, generic);
+        return this.askForConsensus(state, generic);
     }
 }

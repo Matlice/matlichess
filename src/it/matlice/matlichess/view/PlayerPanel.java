@@ -10,10 +10,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Used at the beginning of the execution, it allows to choose which type of player has to join the game
+ * The selection is made by combo boxes and the user can insert additional options
+ */
 public class PlayerPanel extends JPanel implements ItemListener {
     private final JPanel cards;
-    private String selected;
 
+    /**
+     * Constructor of Player panel. By using a CardLayout displays only one of the possible configuration of a player
+     * @param players The classes of different players
+     */
     public PlayerPanel(Class<? extends PlayerInterface>[] players) {
         String[] comboBoxItems = Arrays.stream(players).map(e -> {
             try {
@@ -32,22 +39,28 @@ public class PlayerPanel extends JPanel implements ItemListener {
         Arrays.stream(players).forEach(e -> {
             try {
                 var config = (JPanel) e.getMethod("getConfigurationInterface").invoke(null);
-                cards.add(config, (String) e.getMethod("getName").invoke(null));
+                cards.add(config, e.getMethod("getName").invoke(null));
             } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
                 System.err.println("Cannot load player: " + ex.getMessage());
             }
         });
-        this.selected = comboBoxItems[0];
         this.add(cards);
     }
 
+    /**
+     * Changes the showed card in the CardLayout
+     * @param e ItemEvent
+     */
     @Override
     public void itemStateChanged(ItemEvent e) {
         CardLayout cl = (CardLayout) (cards.getLayout());
         cl.show(cards, (String) e.getItem());
-        this.selected = (String) e.getItem();
     }
 
+    /**
+     * returns the selected interface in the combo box
+     * @return the selected interface
+     */
     public PlayerInterface getSelectedInterface() {
         return ((ConfigurationPanel) Arrays.stream(cards.getComponents()).filter(Component::isVisible).findFirst().orElseThrow()).getInstance();
     }

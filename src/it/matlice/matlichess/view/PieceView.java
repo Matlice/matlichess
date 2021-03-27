@@ -7,12 +7,21 @@ import it.matlice.settings.Settings;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
+/**
+ * Graphic view of a single chess piece
+ */
 public class PieceView{
 
     private PieceType pieceType;
     private Location location;
     private ScreenLocation offset = new ScreenLocation();
 
+    /**
+     * Converts a Location on the chessboard to a Point on the screen
+     * @param l Location to convert
+     * @param invert if false it is count as White, else as black
+     * @return the {@link ScreenLocation}
+     */
     public static ScreenLocation locationToPointer(Location l, boolean invert){
         int xCoord, yCoord;
         if (!invert) {
@@ -29,6 +38,12 @@ public class PieceView{
         return locationToPointer(l, false);
     }
 
+    /**
+     * Converts a a Point on the screen to a Location on the chessboard
+     * @param e MouseEvent
+     * @param invert if false it is count as White, else as black
+     * @return the {@link Location}
+     */
     public static Location pointerToLocation(MouseEvent e, boolean invert){
         int row, col;
         if (!invert) {
@@ -49,15 +64,17 @@ public class PieceView{
         return pointerToLocation(e, false);
     }
 
-    /**
-     * Constructor for PieceView
-     * @param pieceType path of the image
-     */
+
     public PieceView(PieceType pieceType, Location location) {
         this.pieceType = pieceType;
         this.location = location;
     }
 
+    /**
+     * Draws the chess piece using the saved resources
+     * @param g2 a Graphics2D object
+     * @param invert if false it is count as White, else as black
+     */
     public void draw(Graphics2D g2, boolean invert) {
         Settings.PIECES[pieceType.index].accept(g2, locationToPointer(location, invert), offset);
     }
