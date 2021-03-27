@@ -3,7 +3,7 @@ package it.matlice.matlichess.controller;
 import it.matlice.matlichess.GameState;
 import it.matlice.matlichess.Location;
 import it.matlice.matlichess.PieceColor;
-import it.matlice.matlichess.view.ConfigurablePlayer;
+import it.matlice.matlichess.view.ConfigurationPanel;
 import it.matlice.matlichess.view.PieceView;
 import it.matlice.stockfish.Stockfish;
 
@@ -12,7 +12,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StockfishPlayer implements PlayerInterface, ConfigurablePlayer {
+public class StockfishPlayer implements PlayerInterface {
     private int depth;
     private int skill;
 
@@ -81,33 +81,29 @@ public class StockfishPlayer implements PlayerInterface, ConfigurablePlayer {
         return other_result;
     }
 
-    private static class ConfigurationPane extends JPanel{
-        private boolean isServer = true;
-        JTextField depth = new JTextField(), skill = new JTextField();
+    public static ConfigurationPanel getConfigurationInterface(){
+        return new ConfigurationPanel(){
+            private JTextField depth;
+            private JTextField skill;
+            @Override
+            public PlayerInterface getInstance() {
+                return new StockfishPlayer(Integer.parseInt(depth.getText()), Integer.parseInt(skill.getText()));
+            }
 
-        public Integer getDepth() {
-            return Integer.parseInt(depth.getText());
-        }
-
-        public Integer getSkill() {
-            return Integer.parseInt(skill.getText());
-        }
-        public ConfigurationPane(){
-            depth.setPreferredSize( new Dimension( 200, 24 ) );
-            skill.setPreferredSize( new Dimension( 200, 24 ) );
-            this.add(new Label("Depth:"));
-            this.add(depth);
-            this.add(new Label("Skill (1-20):"));
-            this.add(skill);
-        }
-    }
-
-    public static JPanel getConfigurationInterface(){
-        return new ConfigurationPane();
-    }
-
-    public static PlayerInterface getInstance(JPanel configured) throws InstantiationError{
-        return new StockfishPlayer(((ConfigurationPane) configured).getDepth(), ((ConfigurationPane) configured).getSkill());
+            @Override
+            public void buildPanel() {
+                this.depth = new JTextField();
+                this.skill = new JTextField();
+                depth.setPreferredSize( new Dimension( 200, 24 ) );
+                skill.setPreferredSize( new Dimension( 200, 24 ) );
+                this.add(new Label("Depth:"));
+                this.add(depth);
+                this.depth.setText("8");
+                this.add(new Label("Skill (1-20):"));
+                this.add(skill);
+                this.skill.setText("10");
+            }
+        };
     }
 
     public static String getName() {return "Stockfish CPU";}

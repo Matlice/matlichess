@@ -1,28 +1,23 @@
 package it.matlice.matlichess;
 
-import it.matlice.matlichess.controller.Game;
-import it.matlice.matlichess.controller.NetworkPlayer;
-import it.matlice.matlichess.controller.PhysicalPlayer;
-import it.matlice.matlichess.controller.StockfishPlayer;
-import it.matlice.matlichess.view.ConfigurablePlayer;
+import it.matlice.matlichess.controller.*;
 import it.matlice.matlichess.view.PlayerPanel;
 import it.matlice.matlichess.view.View;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * EntryPoint of the program
  */
-public class EntryPoint {
+public class EntryPoint extends JFrame implements ActionListener {
+    private PlayerPanel white, black;
 
-    public static void main(String[] args) throws ClassNotFoundException {
-        Class<? extends ConfigurablePlayer>[] players = new Class[]{PhysicalPlayer.class, StockfishPlayer.class, NetworkPlayer.class};
-
-        var white = new PlayerPanel(players);
-        var black = new PlayerPanel(players);
-
-        var frame = new JFrame();
+    public EntryPoint(Class<? extends PlayerInterface>[] players) {
+        white = new PlayerPanel(players);
+        black = new PlayerPanel(players);
         var l = new JPanel(new BorderLayout());
         l.add(white, BorderLayout.PAGE_START);
         l.add(new Label("VS."), BorderLayout.CENTER);
@@ -31,20 +26,32 @@ public class EntryPoint {
         var b = new JButton("START");
         l.add(b, BorderLayout.LINE_END);
 
-        b.addActionListener((e) -> {
-            new Thread(() -> {
-                View.getInstance().initialize();
-                Game.getInstance(white.getSelectedInterface(), black.getSelectedInterface(), View.getInstance().getPlayerInterface()).setup();
-                while(Game.getInstance().mainloop());
-            }).start();
-            frame.dispose();
+        b.addActionListener(this);
+
+        this.getContentPane().add(l);
+        this.setTitle("MatliChess");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.pack();
+    }
+
+    public void startApplication(){
+        this.setVisible(true);
+    }
+
+    public static void main(String[] args) throws ClassNotFoundException {
+        final Class<? extends PlayerInterface>[] players = new Class[]{PhysicalPlayer.class, StockfishPlayer.class, NetworkPlayer.class};
+        new EntryPoint(players).startApplication();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        var t = new Thread(() -> {
+            this.setVisible(false);
+            View.getInstance().initialize();
+            Game.getInstance(white.getSelectedInterface(), black.getSelectedInterface(), View.getInstance().getPlayerInterface()).setup();
+            while (Game.getInstance().mainloop());
+            this.dispose();
         });
-
-        frame.getContentPane().add(l);
-
-        frame.setTitle("MatliChess");
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.pack();
+        t.start();
     }
 }

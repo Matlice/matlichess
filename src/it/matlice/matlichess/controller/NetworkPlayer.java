@@ -5,9 +5,7 @@ import it.matlice.matlichess.Location;
 import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.controller.net.*;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
-import it.matlice.matlichess.model.Piece;
-import it.matlice.matlichess.model.pieces.Queen;
-import it.matlice.matlichess.view.ConfigurablePlayer;
+import it.matlice.matlichess.view.ConfigurationPanel;
 import it.matlice.matlichess.view.PieceView;
 import it.matlice.settings.Settings;
 
@@ -22,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
+public class NetworkPlayer implements PlayerInterface {
 
     private ServerSocket server;
     private Socket socket = null;
@@ -53,15 +51,7 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
         }
     }
 
-    private static InetAddress getByNameSafe(String ip){
-        try {
-            return InetAddress.getByName(ip);
-        } catch (UnknownHostException e) {
-            return getByNameSafe("127.0.0.1");
-        }
-    }
-
-    public NetworkPlayer(String ip){
+    public NetworkPlayer(String ip) {
         this(getByNameSafe(ip));
     }
 
@@ -102,7 +92,7 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
                         }
                     });
                     break;
-                } catch (IOException e){
+                } catch (IOException e) {
                     System.err.println("Failed to connect, retrying in 1sec");
                     Thread.sleep(1000);
                 }
@@ -111,6 +101,57 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
             // todo remove?
             System.err.println("Connection lost or broken");
         }
+    }
+
+    private static InetAddress getByNameSafe(String ip) {
+        try {
+            return InetAddress.getByName(ip);
+        } catch (UnknownHostException e) {
+            return getByNameSafe("127.0.0.1");
+        }
+    }
+
+    public static ConfigurationPanel getConfigurationInterface() {
+        return new ConfigurationPanel() {
+            private boolean isServer = true;
+            private JTextField ip;
+            @Override
+            public PlayerInterface getInstance() {
+                if(this.isServer) return new NetworkPlayer();
+                return new NetworkPlayer(this.ip.getText());
+            }
+
+            @Override
+            public void buildPanel() {
+                var server_radio = new JRadioButton("Server");
+                var client_radio = new JRadioButton("Client");
+                ButtonGroup method = new ButtonGroup();
+                method.add(server_radio);
+                method.add(client_radio);
+                ip = new JTextField();
+
+                server_radio.addActionListener((e) -> {
+                    ip.setEditable(false);
+                    this.isServer = true;
+                });
+                client_radio.addActionListener((e) -> {
+                    ip.setEditable(true);
+                    this.isServer = false;
+                });
+                server_radio.setSelected(true);
+                ip.setEditable(false);
+
+                ip.setPreferredSize(new Dimension( 100, 24 ));
+                this.add(server_radio);
+                this.add(client_radio);
+                this.add(new Label("Server ip:"));
+                this.add(ip);
+            }
+        };
+    }
+
+    public static String getName() {
+        return "Network";
     }
 
     /**
@@ -187,8 +228,8 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
                 this.askingThread.join();
                 this.askingThread = null;
 
-                if(pk[0] == null) throw new InterruptedException();
-                if(e[0] != null) throw e[0];
+                if (pk[0] == null) throw new InterruptedException();
+                if (e[0] != null) throw e[0];
 
                 var p = pk[0];
 
@@ -221,7 +262,7 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
                 Thread.sleep(100);
                 System.err.println("received an invalid move");
                 this.safeSend(new ComError("Invalid move"));
-            } catch (Exception e){
+            } catch (Exception e) {
 
             }
             sem.release();
@@ -257,7 +298,7 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
 
     @Override
     public void setMove(Location from, Location to) {
-        if (Game.hasInstance() && this.socketOut != null && (lastReceivedMove == null || !lastReceivedMove.equals(new Move(from, to))) ) {
+        if (Game.hasInstance() && this.socketOut != null && (lastReceivedMove == null || !lastReceivedMove.equals(new Move(from, to)))) {
             safeSend(new Move(from.toString() + to.toString()));
             var p = (ComPacket) safeRead();
             if (p == null || !p.getPacketType().equals("NOP")) throw new InvalidMoveException();
@@ -272,14 +313,14 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
 
     @Override
     public void interrupt() {
-        if(this.askingThread != null) {
+        if (this.askingThread != null) {
             try {
                 this.askingThread.join(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        if(this.semThread != null)
+        if (this.semThread != null)
             this.semThread.interrupt();
 
     }
@@ -295,7 +336,7 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
             this.socketOut.writeObject(new RematchChoice(other_choice));
             this.socketOut.flush();
             var p = (ComPacket) this.socketIn.readObject();
-            if(p instanceof RematchChoice)
+            if (p instanceof RematchChoice)
                 return other_choice && ((RematchChoice) p).rematch;
             else return false;
         } catch (IOException | ClassNotFoundException e) {
@@ -303,53 +344,5 @@ public class NetworkPlayer implements PlayerInterface, ConfigurablePlayer {
             return false;
         }
     }
-
-    private static class ConfigurationPane extends JPanel{
-        private boolean isServer = true;
-        JTextField ip;
-        public String getIp() {
-            return isServer ? null : ip.getText();
-        }
-
-        public boolean isServer() {
-            return isServer;
-        }
-
-        public ConfigurationPane(){
-            var server_radio = new JRadioButton("Server");
-            var client_radio = new JRadioButton("Client");
-            ButtonGroup method = new ButtonGroup();
-            method.add(server_radio);
-            method.add(client_radio);
-            ip = new JTextField();
-            server_radio.addActionListener((e) -> {
-                ip.setEditable(false);
-                this.isServer = true;
-            });
-            client_radio.addActionListener((e) -> {
-                ip.setEditable(true);
-                this.isServer = false;
-            });
-            server_radio.setSelected(true);
-            ip.setEditable(false);
-            ip.setPreferredSize( new Dimension( 200, 24 ) );
-            this.add(server_radio);
-            this.add(client_radio);
-            this.add(new Label("Server ip:"));
-            this.add(ip);
-        }
-    }
-
-    public static JPanel getConfigurationInterface(){
-        return new ConfigurationPane();
-    }
-
-    public static PlayerInterface getInstance(JPanel configured) throws InstantiationError{
-        if(((ConfigurationPane) configured).isServer())
-            return new NetworkPlayer();
-        return new NetworkPlayer(((ConfigurationPane) configured).getIp());
-    }
-
-    public static String getName() {return "Network";}
 
 }
