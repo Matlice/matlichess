@@ -74,6 +74,9 @@ public enum FenReader {
                         this.cur_rank -= 1;
                         break;
                     case ' ':
+                        cur_rank = 7;
+                        cur_col = 0;
+                        partial = "";
                         return FenReader.TURN;
                 }
                 break;
@@ -97,6 +100,7 @@ public enum FenReader {
                 if (character == ' ') {
                     if (!this.partial.equals("-"))
                         c.setEnPassantTargetSquare(new Location(this.partial));
+                    this.partial = "";
                     return FenReader.SEMIMOVES;
                 } else {
                     this.partial += character;
@@ -107,6 +111,7 @@ public enum FenReader {
                 // ' ' skips to next state
                 if (character == ' ') {
                     c.setHalfMoveClock(Integer.parseInt(partial));
+                    this.partial = "";
                     return FenReader.MOVES;
                 } else {
                     this.partial += character;
@@ -117,6 +122,7 @@ public enum FenReader {
                 // ' ' skips to next state
                 if (character == ' ') {
                     c.setFullMoveNumber(Integer.parseInt(partial));
+                    this.partial = "";
                     return FenReader.FINISHED;
                 } else {
                     this.partial += character;
@@ -124,6 +130,7 @@ public enum FenReader {
                 break;
             case FINISHED:
                 // the reading has finished, do nothing
+                break;
             default:
                 break;
         }
