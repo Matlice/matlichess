@@ -249,18 +249,12 @@ public class NetworkPlayer implements PlayerInterface {
      */
     @Override
     public List<Location> waitForUserMove() throws InterruptedException {
-        var socket_died = false;
         while (socketIn == null) Thread.sleep(200); // no sockets has connected
         List<Location> move = null;
         do {
             this.semThread = Thread.currentThread();
             sem.acquire();
             try {
-                if (socket_died) {
-                    this.socketOut.writeObject(new PositionInit(this.mycolor));
-                    socketOut.flush();
-                }
-
                 ComPacket pk[] = {null};
                 Exception e[] = {null};
                 askingThread = new Thread(() -> {
@@ -274,8 +268,8 @@ public class NetworkPlayer implements PlayerInterface {
                 this.askingThread.join();
                 this.askingThread = null;
 
-                if (pk[0] == null) throw new InterruptedException();
                 if (e[0] != null) throw e[0];
+                if (pk[0] == null) throw new InterruptedException();
 
                 var p = pk[0];
 
@@ -303,14 +297,13 @@ public class NetworkPlayer implements PlayerInterface {
             } catch (IOException e) {
                 // socket has been closed, repeat
                 Thread.sleep(100);
-                socket_died = true;
             } catch (RuntimeException | ClassNotFoundException e) {
                 Thread.sleep(100);
                 System.err.println("received an invalid move");
                 this.safeSend(new ComError("Invalid move"));
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new RuntimeException(e);
+//                throw new RuntimeException(e);
             }
             sem.release();
             this.semThread = null;
