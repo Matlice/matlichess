@@ -169,10 +169,10 @@ public class Game {
         List<Location> move = null;
         List<Boolean> wants_rematch = new ArrayList<>();
         try {
-            System.out.println("ask move for" + turn);
+            System.out.println("Asking move for " + turn.toString().toLowerCase());
             move = players.get(turn.index).waitForUserMove();
             chessboard.move(move.get(0), move.get(1));
-            System.out.println(move);
+            System.out.println(turn.name + " played " + move.get(0) + move.get(1));
 
             GameState newState = chessboard.getGameState();
 
@@ -184,7 +184,7 @@ public class Game {
             }
 
             if(!newState.equals(GameState.PLAYING)){
-                System.out.println(newState);
+                System.out.println(newState.getEndStatement());
                 boolean rematch = false;
                 if(!players.get(0).isInteractive() && !players.get(1).isInteractive())
                     rematch = players.get(2).setState(newState, true, true);
@@ -200,11 +200,9 @@ public class Game {
         } catch (InvalidTurnException e) {
             System.out.println("Wrong turn man " + move.get(0) + " " + move.get(1));
         } catch (InterruptedException e) {
-            System.out.println("interrupted");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("FUUUUUUUC");
         }
         return true;
     }
