@@ -46,6 +46,10 @@ public interface PlayerInterface {
      */
     void setTurn(PieceColor turn);
 
+    /**
+     * tells if the program has to ask the player if he wants a rematch
+     * @return true if Is needed to ask the player if he wants the rematch, else false
+     */
     default boolean isInteractive() {
         return true;
     }
@@ -56,12 +60,12 @@ public interface PlayerInterface {
     void interrupt();
 
     /**
-     * Tells the player the game has reached the current state, fired for every turn.
+     * Tells the player which is the current state of the game, fired for every turn.
      * <p>
      * if this function is called that means that is a duty of the player class to call {@link PlayerInterface#setState(GameState, boolean, Boolean)}
      * of the opponent referenced passing his choice.
      *
-     * @param state    game state
+     * @param state    the {@link GameState}
      * @param generic  true if the player is an external watcher
      * @param opponent the reference to the opponent
      * @return

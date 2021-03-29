@@ -36,6 +36,8 @@ public class PlayerPanel extends JPanel implements ItemListener {
         cb.addItemListener(this);
         this.add(cb);
 
+        //getConfigurationInterface and getName are static methods in Network, Physical and Stockfish Player
+        //Here is needed the reflection because they cannot be overridden using the interface PlayerInterface
         cards = new JPanel(new CardLayout());
         Arrays.stream(players).forEach(e -> {
             try {

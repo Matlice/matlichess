@@ -282,7 +282,7 @@ public class Chessboard {
      *
      * @param src         the source {@link Location}
      * @param destination the final {@link Location}
-     * @return the taken {@link Piece} if exists, else null
+     * @return the captured {@link Piece} if exists, else null
      */
     public Piece move(Location src, Location destination) {
         assert kings[0] != null && kings[1] != null;

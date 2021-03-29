@@ -168,7 +168,6 @@ public class Game {
     public boolean mainloop() {
 
         List<Location> move = null;
-        List<Boolean> wants_rematch = new ArrayList<>();
         try {
             System.out.println("Asking move for " + turn.toString().toLowerCase());
             move = players.get(turn.index).waitForUserMove();
@@ -177,16 +176,15 @@ public class Game {
 
             GameState newState = chessboard.getGameState();
 
-            List<Location> finalMove = move; // needed for the lambda below
             for (PlayerInterface e : this.players) {
                 e.setPosition(convertChessboardToView(chessboard));
-                e.setMove(finalMove.get(0), finalMove.get(1));
+                e.setMove(move.get(0), move.get(1));
                 e.setTurn(chessboard.getTurn());
             }
 
             if (!newState.equals(GameState.PLAYING)) {
                 System.out.println(newState.getEndStatement());
-                boolean rematch = false;
+                boolean rematch;
                 if (!players.get(0).isInteractive() && !players.get(1).isInteractive())
                     rematch = players.get(2).setState(newState, true, true);
                 else
@@ -199,7 +197,7 @@ public class Game {
         } catch (InvalidMoveException e) {
             System.out.println("Invalid move " + move.get(0) + " " + move.get(1));
         } catch (InvalidTurnException e) {
-            System.out.println("Wrong turn man " + move.get(0) + " " + move.get(1));
+            System.out.println("Wrong turn " + move.get(0) + " " + move.get(1));
         } catch (InterruptedException e) {
             return true;
         } catch (Exception e) {

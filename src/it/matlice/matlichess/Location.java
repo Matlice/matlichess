@@ -103,7 +103,7 @@ public class Location {
      * Converts a location to a String
      * For example the location col=2 row=4 returns C5 (col and row starts from 0)
      *
-     * @return
+     * @return to string
      */
     @Override
     public String toString() {
