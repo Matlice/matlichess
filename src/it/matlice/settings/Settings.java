@@ -1,5 +1,6 @@
 package it.matlice.settings;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -11,6 +12,13 @@ public class Settings {
     public static final String STARTING_POSITION_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     // VIEW
+    /*
+    UIManager.getSystemLookAndFeelClassName()
+    UIManager.getCrossPlatformLookAndFeelClassName();
+    "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
+    "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+     */
+    public static final String LOOK_AND_FEEL = UIManager.getSystemLookAndFeelClassName();
 
     // Chessboard dimensions
     public static final int CHESSBOARD_SQUARE_SIZE = 90;
