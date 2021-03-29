@@ -198,7 +198,7 @@ public class NetworkPlayer implements PlayerInterface {
                 Socket s = server.accept();
                 handleConnection(s);
             } catch (IOException e) {
-                System.err.println("Connection lost");
+                System.err.println("Connection lost...");
             }
         }
     }
@@ -217,7 +217,6 @@ public class NetworkPlayer implements PlayerInterface {
             socketOut.flush();
             var socketIn = new ObjectInputStream(new BufferedInputStream(s.getInputStream()));
             if (this.socket != null && !this.socket.isConnected()) {
-                // todo do bad things
                 socketOut.writeObject(new ComError("User is already in a game."));
                 socketOut.flush();
                 s.close();
@@ -232,8 +231,7 @@ public class NetworkPlayer implements PlayerInterface {
                 socketOut.flush();
             }
         } catch (IOException | InterruptedException e) {
-            // todo remove?
-            System.err.println("Connection lost");
+            System.err.println("Connection lost...");
         }
     }
 
@@ -301,7 +299,7 @@ public class NetworkPlayer implements PlayerInterface {
                 Thread.sleep(100);
             } catch (RuntimeException | ClassNotFoundException e) {
                 Thread.sleep(100);
-                System.err.println("received an invalid move");
+                System.err.println("Received an invalid move");
                 this.safeSend(new ComError("Invalid move"));
             } catch (Exception e) {
                 e.printStackTrace();

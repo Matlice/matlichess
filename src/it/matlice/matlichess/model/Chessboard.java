@@ -547,7 +547,6 @@ public class Chessboard {
                 break;
             }
         }
-        System.out.println(this);
     }
 
     /**

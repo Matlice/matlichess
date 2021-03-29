@@ -102,25 +102,25 @@ public class StockfishPlayer implements PlayerInterface {
 
     public static ConfigurationPanel getConfigurationInterface(){
         return new ConfigurationPanel(){
-            private JTextField depth;
-            private JTextField skill;
+            private JSpinner depth;
+            private JSpinner skill;
             @Override
             public PlayerInterface getInstance() {
-                return new StockfishPlayer(Integer.parseInt(depth.getText()), Integer.parseInt(skill.getText()));
+                return new StockfishPlayer( (Integer) this.depth.getValue(), (Integer) this.skill.getValue());
             }
 
             @Override
             public void buildPanel() {
-                this.depth = new JTextField();
-                this.skill = new JTextField();
-                depth.setPreferredSize( new Dimension( 200, 24 ) );
-                skill.setPreferredSize( new Dimension( 200, 24 ) );
+                SpinnerModel depthModel = new SpinnerNumberModel(12, 1, Integer.MAX_VALUE, 1);
+                SpinnerModel skillModel = new SpinnerNumberModel(12, 1, 20, 1);
+                this.depth = new JSpinner(depthModel);
+                this.depth.setPreferredSize( new Dimension( 70, 24 ) );
+                this.skill = new JSpinner(skillModel);
+                this.skill.setPreferredSize( new Dimension( 70, 24 ) );
                 this.add(new Label("Depth:"));
                 this.add(depth);
-                this.depth.setText("8");
                 this.add(new Label("Skill (1-20):"));
                 this.add(skill);
-                this.skill.setText("10");
             }
         };
     }

@@ -34,7 +34,6 @@ public class Game {
     // chessboard model instance
     private Chessboard chessboard;
 
-    // todo get from model instead of having it saved here
     private PieceColor turn = PieceColor.WHITE; //0 white, 1 black
 
     private Map<PieceColor, Map<String, PieceType>> pieceConversionMap = getPieceConversionMap();
@@ -170,10 +169,10 @@ public class Game {
         List<Location> move = null;
         List<Boolean> wants_rematch = new ArrayList<>();
         try {
-            System.out.println("ask move for" + turn);
+            System.out.println("Asking move for " + turn.toString().toLowerCase());
             move = players.get(turn.index).waitForUserMove();
             chessboard.move(move.get(0), move.get(1));
-            System.out.println(move);
+            System.out.println(turn.name + " played " + move.get(0) + move.get(1));
 
             GameState newState = chessboard.getGameState();
 
@@ -185,7 +184,7 @@ public class Game {
             }
 
             if(!newState.equals(GameState.PLAYING)){
-                System.out.println(newState);
+                System.out.println(newState.getEndStatement());
                 boolean rematch = false;
                 if(!players.get(0).isInteractive() && !players.get(1).isInteractive())
                     rematch = players.get(2).setState(newState, true, true);
@@ -201,11 +200,9 @@ public class Game {
         } catch (InvalidTurnException e) {
             System.out.println("Wrong turn man " + move.get(0) + " " + move.get(1));
         } catch (InterruptedException e) {
-            System.out.println("interrupted");
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("FUUUUUUUC");
         }
         return true;
     }
@@ -372,10 +369,22 @@ public class Game {
 
     }
 
+    /**
+     * Returns if a move is valid
+     *
+     * @param src from of the move
+     * @param dest to of the move
+     * @return true if the move is valid
+     */
     public boolean isMoveValid(Location src, Location dest){
         return chessboard.isMoveValid(src, dest);
     }
 
+    /**
+     * Returns the type of the next pawn promotion for white and black as string
+     *
+     * @return an array of length 2 with the promotion types as string
+     */
     public String[] getPromotions() {
         Class<? extends Piece>[] promTypes = chessboard.getPromotions();
         return new String[]{promTypes[0].getSimpleName(), promTypes[1].getSimpleName()};

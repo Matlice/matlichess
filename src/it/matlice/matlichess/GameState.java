@@ -5,15 +5,25 @@ package it.matlice.matlichess;
  * The game could be ended as win (for both players), as a draw or not finished yet
  */
 public enum GameState {
-    PLAYING(null),
-    DRAW(null),
-    BLACK_WIN("Black"),
-    WHITE_WIN("White");
+    PLAYING("Game still playing...", null),
+    DRAW("The game ended as a draw", null),
+    BLACK_WIN("Black won the game", "Black"),
+    WHITE_WIN("White won the game", "White");
 
     private String winner;
+    private String endStatement;
 
-    GameState(String s) {
+    GameState(String endStatement, String s) {
+        this.endStatement = endStatement;
         this.winner = s;
+    }
+
+    /**
+     * Returns the ending statement to print
+     * @return
+     */
+    public String getEndStatement() {
+        return endStatement;
     }
 
     /**
