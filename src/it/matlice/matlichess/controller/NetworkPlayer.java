@@ -23,26 +23,27 @@ import java.util.concurrent.Semaphore;
 
 /**
  * This class is responsible of client/server player management.
- *
+ * <p>
  * the communication is archived by a full duplex object stream setup across a tcp Socket.
  *
  * <h1>instantiation process</h1>
  * <h2>Server side</h2>
- *
+ * <p>
  * While instantiating, the server accepting thread is started and left waiting for connections.
  * for each connection, if no connection has been archived yet we send the current position sync packet to the
  * client which will load the state and ensure the syncronization is archeived.
- *
+ * <p>
  * if anoter connection is active, an error packet is sent and the connection is closed.
  *
  * <h2>Client side</h2>
  * while instantiating a connection and synchronization thread is started and a mutex lock for the socket activity is achieved.
  * more precisely we need to ensure full initialization is achieved before the first communication packet is obtained from the server.
- *
- *
+ * <p>
+ * <p>
  * when connection is ready and sync has happened, releasing the relative Semaphore, the communication can start with the implemented protocol.
  *
  * <h1>Protocol</h1>
+ *
  * @see it.matlice.matlichess.controller.net classes.
  */
 public class NetworkPlayer implements PlayerInterface {
@@ -60,26 +61,30 @@ public class NetworkPlayer implements PlayerInterface {
     /**
      * Server constructor.
      */
-    public NetworkPlayer() {
+    public NetworkPlayer() throws IOException {
         boolean serverStarted = false;
         while (!serverStarted) {
-            try {
-                server = new ServerSocket(Settings.NETWORK_PORT);
-                (new Thread(this::handleServer)).start();
-                serverStarted = true;
-            } catch (IOException e) {
-                // todo remove?
-                System.err.println("Cannot connect, maybe port is already bound");
-            }
+            server = new ServerSocket(Settings.NETWORK_PORT);
+            (new Thread(this::handleServer)).start();
+            serverStarted = true;
         }
     }
 
     /**
      * Client constructor
+     *
      * @param ip the server ip.
      */
-    public NetworkPlayer(String ip) {
+    public NetworkPlayer(String ip) throws IOException, InterruptedException {
         this(getByNameSafe(ip));
+    }
+
+    public NetworkPlayer(String ip, int port) throws IOException, InterruptedException {
+        this(getByNameSafe(ip), port);
+    }
+
+    public NetworkPlayer(InetAddress address) throws IOException, InterruptedException {
+        this(address, Settings.NETWORK_PORT);
     }
 
     /**
@@ -87,47 +92,36 @@ public class NetworkPlayer implements PlayerInterface {
      *
      * @param address the address of the server
      */
-    public NetworkPlayer(InetAddress address) {
+    public NetworkPlayer(InetAddress address, int port) throws IOException, InterruptedException {
         //todo if server fails, client becomes a server hoping for reconnection
-        try {
-            sem.acquire();
-            while (true) {
-                try {
-                    this.socket = new Socket(address, Settings.NETWORK_PORT);
-                    this.socketOut = new ObjectOutputStream(new BufferedOutputStream(this.socket.getOutputStream()));
-                    this.socketOut.flush();
-                    this.socketIn = new ObjectInputStream(new BufferedInputStream(this.socket.getInputStream()));
-                    //this must be done in a separate thread because wants an istance that is being creating while calling this constructor
-                    new Thread(() -> {
-                        //should receive a welcome
-                        while (!Game.hasInstance()) {
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
+        sem.acquire();
+        this.socket = new Socket(address, port);
+        this.socketOut = new ObjectOutputStream(new BufferedOutputStream(this.socket.getOutputStream()));
+        this.socketOut.flush();
+        this.socketIn = new ObjectInputStream(new BufferedInputStream(this.socket.getInputStream()));
 
-                        try {
-                            var p = (ComPacket) socketIn.readObject();
-                            if (!p.getPacketType().equals("POS_INIT"))
-                                throw new ClassNotFoundException("Protocol error");
-                            Game.getInstance().loadState((PositionInit) p);
-                            sem.release();
-                        } catch (IOException | ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    }).start();
-                    break;
-                } catch (IOException e) {
-                    System.err.println("Failed to connect, retrying in 1sec");
-                    Thread.sleep(1000);
+        //this must be done in a separate thread because wants an istance that is being creating while calling this constructor
+        new Thread(() -> {
+            //should receive a welcome
+            while (!Game.hasInstance()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (InterruptedException e) {
-            // todo remove?
-            System.err.println("Connection lost or broken");
-        }
+
+            ComPacket p = null;
+            try {
+                p = (ComPacket) socketIn.readObject();
+                if (!p.getPacketType().equals("POS_INIT"))
+                    throw new ProtocolErrorException();
+                Game.getInstance().loadState((PositionInit) p);
+                sem.release();
+            } catch (IOException | ClassNotFoundException e) {
+                throw new ProtocolErrorException();
+            }
+        }).start();
     }
 
     private static InetAddress getByNameSafe(String ip) {
@@ -145,10 +139,12 @@ public class NetworkPlayer implements PlayerInterface {
         return new ConfigurationPanel() {
             private boolean isServer = true;
             private JTextField ip;
+            private JTextField port;
+
             @Override
-            public PlayerInterface getInstance() {
-                if(this.isServer) return new NetworkPlayer();
-                return new NetworkPlayer(this.ip.getText());
+            public PlayerInterface getInstance() throws Exception {
+                if (this.isServer) return new NetworkPlayer();
+                return new NetworkPlayer(this.ip.getText(), Integer.parseInt(this.port.getText()));
             }
 
             @Override
@@ -160,6 +156,8 @@ public class NetworkPlayer implements PlayerInterface {
                 method.add(client_radio);
                 ip = new JTextField();
                 ip.setText("127.0.0.1");
+                port = new JTextField();
+                port.setText(String.valueOf(Settings.NETWORK_PORT));
                 server_radio.addActionListener((e) -> {
                     ip.setEditable(false);
                     this.isServer = true;
@@ -171,11 +169,13 @@ public class NetworkPlayer implements PlayerInterface {
                 server_radio.setSelected(true);
                 ip.setEditable(false);
 
-                ip.setPreferredSize(new Dimension( 100, 24 ));
+                ip.setPreferredSize(new Dimension(100, 24));
                 this.add(server_radio);
                 this.add(client_radio);
                 this.add(new Label("Server ip:"));
                 this.add(ip);
+                this.add(new Label("Port:"));
+                this.add(port);
             }
         };
     }
@@ -206,8 +206,9 @@ public class NetworkPlayer implements PlayerInterface {
     /**
      * if no connection has been archived yet we send the current position sync packet to the
      * client which will load the state and ensure the syncronization is archeived.
-     *
+     * <p>
      * if anoter connection is active, an error packet is sent and the connection is closed.
+     *
      * @param s connection socket
      */
     private void handleConnection(Socket s) {
@@ -244,6 +245,7 @@ public class NetworkPlayer implements PlayerInterface {
     /**
      * Ask the other end for the next move if the sync Semaphore has been released or else waits for full synchronization
      * Socket read interruption is achieved by starting the blocking call in another thread and then waiting for joining.
+     *
      * @return the move
      * @throws InterruptedException if the call has been interrupted from another thread.
      */
@@ -289,10 +291,10 @@ public class NetworkPlayer implements PlayerInterface {
                         Game.getInstance().loadState((PositionInit) p);
                         break;
                     default:
-                        throw new ClassNotFoundException("Protocol error");
+                        throw new ProtocolErrorException();
                 }
                 if (!p.getPacketType().equals("MOVE"))
-                    throw new ClassNotFoundException("Protocol error");
+                    throw new ProtocolErrorException();
 
             } catch (IOException e) {
                 // socket has been closed, repeat
@@ -338,7 +340,7 @@ public class NetworkPlayer implements PlayerInterface {
 
     @Override
     public void setMove(Location from, Location to) {
-        if(from == null || to == null)
+        if (from == null || to == null)
             return;
         if (Game.hasInstance() && this.socketOut != null && (lastReceivedMove == null || !lastReceivedMove.equals(new Move(from, to)))) {
             safeSend(new Move(from.toString() + to.toString()));

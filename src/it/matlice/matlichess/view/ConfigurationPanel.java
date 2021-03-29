@@ -12,6 +12,6 @@ public abstract class ConfigurationPanel extends JPanel {
     public ConfigurationPanel(){
         this.buildPanel();
     }
-    public abstract PlayerInterface getInstance();
+    public abstract PlayerInterface getInstance() throws Exception;
     public abstract void buildPanel();
 }

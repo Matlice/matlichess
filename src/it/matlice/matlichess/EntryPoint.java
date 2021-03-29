@@ -43,19 +43,24 @@ public class EntryPoint extends JFrame implements ActionListener {
     }
 
     /**
-     * Starts the application after having initialised the frame with the panel
-     */
-    public void startApplication(){
-        this.setVisible(true);
-    }
-
-    /**
      * Main of the program, initialises the main frame and starts the program
+     *
      * @param args no args :(
      */
     public static void main(String[] args) {
-        final Class<? extends PlayerInterface>[] players = new Class[]{PhysicalPlayer.class, StockfishPlayer.class, NetworkPlayer.class};
+        //matlichess server -nogui -white_port=40916 -black_port=41916
+
+
+
+        var players = new Class[]{PhysicalPlayer.class, StockfishPlayer.class, NetworkPlayer.class};
         new EntryPoint(players).startApplication();
+    }
+
+    /**
+     * Starts the application after having initialised the frame with the panel
+     */
+    public void startApplication() {
+        this.setVisible(true);
     }
 
     /**
@@ -65,13 +70,24 @@ public class EntryPoint extends JFrame implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        var t = new Thread(() -> {
+        try {
+            var w = white.getSelectedInterface();
+            var b = black.getSelectedInterface();
+            runGame(w, b, () -> {
+                this.setVisible(true);
+            });
             this.setVisible(false);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Errore nell'inizializzazione: " + ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void runGame(PlayerInterface white, PlayerInterface black, Runnable after) {
+        var t = new Thread(() -> {
             View.getInstance().initialize();
-            Game.getInstance(white.getSelectedInterface(), black.getSelectedInterface(), View.getInstance().getPlayerInterface()).setup();
-            while (Game.getInstance().mainloop());
-            this.dispose();
-            System.exit(0);
+            Game.getInstance(white, black, View.getInstance().getPlayerInterface()).setup();
+            while (Game.getInstance().mainloop()) ;
+            if(after != null) after.run();
         });
         t.start();
     }
