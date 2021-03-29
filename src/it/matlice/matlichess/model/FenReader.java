@@ -79,7 +79,6 @@ public enum FenReader {
             // reading whether castling is available and for which pieces;
             // q stands for queen's side, k for king's side
             // upper case is for white king, lower case for black king
-            //todo
             if (character == ' ') return FenReader.EN_PASSANT;
             return this;
         }

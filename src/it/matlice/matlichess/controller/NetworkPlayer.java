@@ -68,7 +68,6 @@ public class NetworkPlayer implements PlayerInterface {
                 (new Thread(this::handleServer)).start();
                 serverStarted = true;
             } catch (IOException e) {
-                // todo remove?
                 System.err.println("Cannot connect, maybe port is already bound");
             }
         }
@@ -88,7 +87,6 @@ public class NetworkPlayer implements PlayerInterface {
      * @param address the address of the server
      */
     public NetworkPlayer(InetAddress address) {
-        //todo if server fails, client becomes a server hoping for reconnection
         try {
             sem.acquire();
             while (true) {
@@ -97,7 +95,7 @@ public class NetworkPlayer implements PlayerInterface {
                     this.socketOut = new ObjectOutputStream(new BufferedOutputStream(this.socket.getOutputStream()));
                     this.socketOut.flush();
                     this.socketIn = new ObjectInputStream(new BufferedInputStream(this.socket.getInputStream()));
-                    //this must be done in a separate thread because wants an istance that is being creating while calling this constructor
+                    //this must be done in a separate thread because wants an instance that is being creating while calling this constructor
                     new Thread(() -> {
                         //should receive a welcome
                         while (!Game.hasInstance()) {
@@ -125,8 +123,7 @@ public class NetworkPlayer implements PlayerInterface {
                 }
             }
         } catch (InterruptedException e) {
-            // todo remove?
-            System.err.println("Connection lost or broken");
+            System.err.println("Connection lost...");
         }
     }
 
@@ -216,7 +213,6 @@ public class NetworkPlayer implements PlayerInterface {
             socketOut.flush();
             var socketIn = new ObjectInputStream(new BufferedInputStream(s.getInputStream()));
             if (this.socket != null && !this.socket.isConnected()) {
-                // todo do bad things
                 socketOut.writeObject(new ComError("User is already in a game."));
                 socketOut.flush();
                 s.close();
@@ -231,8 +227,7 @@ public class NetworkPlayer implements PlayerInterface {
                 socketOut.flush();
             }
         } catch (IOException | InterruptedException e) {
-            // todo remove?
-            System.err.println("Connection lost");
+            System.err.println("Connection lost...");
         }
     }
 

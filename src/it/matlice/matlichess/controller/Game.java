@@ -34,7 +34,6 @@ public class Game {
     // chessboard model instance
     private Chessboard chessboard;
 
-    // todo get from model instead of having it saved here
     private PieceColor turn = PieceColor.WHITE; //0 white, 1 black
 
     private Map<PieceColor, Map<String, PieceType>> pieceConversionMap = getPieceConversionMap();
@@ -372,10 +371,22 @@ public class Game {
 
     }
 
+    /**
+     * Returns if a move is valid
+     *
+     * @param src from of the move
+     * @param dest to of the move
+     * @return true if the move is valid
+     */
     public boolean isMoveValid(Location src, Location dest){
         return chessboard.isMoveValid(src, dest);
     }
 
+    /**
+     * Returns the type of the next pawn promotion for white and black as string
+     *
+     * @return an array of length 2 with the promotion types as string
+     */
     public String[] getPromotions() {
         Class<? extends Piece>[] promTypes = chessboard.getPromotions();
         return new String[]{promTypes[0].getSimpleName(), promTypes[1].getSimpleName()};
