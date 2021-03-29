@@ -25,18 +25,34 @@ public class EntryPoint extends JFrame implements ActionListener {
         // option panel, which contains the settings for both the two players
         white = new PlayerPanel(players);
         black = new PlayerPanel(players);
-        var l = new JPanel(new BorderLayout());
-        l.add(white, BorderLayout.PAGE_START);
-        l.add(new Label("VS."), BorderLayout.CENTER);
-        l.add(black, BorderLayout.PAGE_END);
+
+        var contentPanel = new JPanel(new BorderLayout());
+
+        // add players
+        contentPanel.add(white, BorderLayout.PAGE_START);
+        contentPanel.add(black, BorderLayout.PAGE_END);
+
+        // add VS. label
+        var vsLabel = new Label("VS.");
+        vsLabel.setAlignment(Label.CENTER);
+        contentPanel.add(vsLabel, BorderLayout.CENTER);
 
         // add the start button, to start the game with actual settings
         var b = new JButton("START");
-        l.add(b, BorderLayout.LINE_END);
+        contentPanel.add(b, BorderLayout.LINE_END);
         b.addActionListener(this);
 
+        // add another panel to add border
+        JPanel containerPanel = new JPanel();
+        containerPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        containerPanel.setLayout(new BorderLayout());
+        containerPanel.add(contentPanel,BorderLayout.CENTER);
+
+        // set panel size
+        containerPanel.setPreferredSize( new Dimension(650, 150) );
+
         // set the jframe options, title and exit behaviour
-        this.getContentPane().add(l);
+        this.getContentPane().add(containerPanel);
         this.setTitle("MatliChess");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
