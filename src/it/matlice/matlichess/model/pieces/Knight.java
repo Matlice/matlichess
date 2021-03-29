@@ -32,7 +32,7 @@ public class Knight extends Piece {
      */
     @Override
     public Piece clone() {
-        var clone = new Knight(this.getColor());
+        Knight clone = new Knight(this.getColor());
         clone.has_moved = this.has_moved;
         return clone;
     }

@@ -34,7 +34,7 @@ public class Queen extends Piece {
      */
     @Override
     public Piece clone() {
-        var clone = new Queen(this.getColor());
+        Queen clone = new Queen(this.getColor());
         clone.has_moved = this.has_moved;
         return clone;
     }

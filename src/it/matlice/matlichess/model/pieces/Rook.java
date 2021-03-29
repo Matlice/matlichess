@@ -33,7 +33,7 @@ public class Rook extends Piece {
      */
     @Override
     public Piece clone() {
-        var clone = new Rook(this.getColor());
+        Rook clone = new Rook(this.getColor());
         clone.has_moved = this.has_moved;
         return clone;
     }

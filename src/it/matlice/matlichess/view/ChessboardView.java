@@ -116,7 +116,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
         if (selected != null) {
             if (feasableMoves != null)
                 feasableMoves.forEach((e) -> {
-                    var p = locationToPointer(e, this.myColor.equals(PieceColor.BLACK));
+                    ScreenLocation p = locationToPointer(e, this.myColor.equals(PieceColor.BLACK));
                     final boolean[] is_capture = new boolean[]{false};
                     pieces.forEach(x -> {
                         if (x.getLocation().equals(e)) {
@@ -217,7 +217,7 @@ public class ChessboardView extends JPanel implements MouseListener, MouseMotion
     @Override
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON3) {
-            var piece_at = this.pieces
+            PieceView piece_at = this.pieces
                     .stream()
                     .filter(p -> p.getLocation().equals(this.mouse[2] != null ? this.mouse[2] : this.mouse[0]))
                     .findFirst().orElse(null);

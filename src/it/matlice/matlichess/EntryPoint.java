@@ -26,19 +26,19 @@ public class EntryPoint extends JFrame implements ActionListener {
         white = new PlayerPanel(players);
         black = new PlayerPanel(players);
 
-        var contentPanel = new JPanel(new BorderLayout());
+        JPanel contentPanel = new JPanel(new BorderLayout());
 
         // add players
         contentPanel.add(white, BorderLayout.PAGE_START);
         contentPanel.add(black, BorderLayout.PAGE_END);
 
         // add VS. label
-        var vsLabel = new Label("VS.");
+        Label vsLabel = new Label("VS.");
         vsLabel.setAlignment(Label.CENTER);
         contentPanel.add(vsLabel, BorderLayout.CENTER);
 
         // add the start button, to start the game with actual settings
-        var b = new JButton("START");
+        JButton b = new JButton("START");
         contentPanel.add(b, BorderLayout.LINE_END);
         b.addActionListener(this);
 
@@ -81,7 +81,7 @@ public class EntryPoint extends JFrame implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        var t = new Thread(() -> {
+        Thread t = new Thread(() -> {
             this.setVisible(false);
             View.getInstance().initialize();
             Game.getInstance(white.getSelectedInterface(), black.getSelectedInterface(), View.getInstance().getPlayerInterface()).setup();

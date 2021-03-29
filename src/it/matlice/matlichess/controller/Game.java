@@ -122,9 +122,9 @@ public class Game {
         this.chessboard.setPosition(fen);
         this.turn = this.chessboard.getTurn();
         if(swapPlayers){
-            var t = this.players.get(0);
+            PlayerInterface player = this.players.get(0);
             this.players.set(0, this.players.get(1));
-            this.players.set(1, t);
+            this.players.set(1, player);
         }
         setup();
         interrupt();

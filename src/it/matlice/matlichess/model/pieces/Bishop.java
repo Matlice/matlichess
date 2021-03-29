@@ -32,7 +32,7 @@ public class Bishop extends Piece {
      */
     @Override
     public Piece clone() {
-        var clone = new Bishop(this.getColor());
+        Bishop clone = new Bishop(this.getColor());
         clone.has_moved = this.has_moved;
         return clone;
     }

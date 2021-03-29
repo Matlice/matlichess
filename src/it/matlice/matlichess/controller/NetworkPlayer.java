@@ -107,7 +107,7 @@ public class NetworkPlayer implements PlayerInterface {
                         }
 
                         try {
-                            var p = (ComPacket) socketIn.readObject();
+                            ComPacket p = (ComPacket) socketIn.readObject();
                             if (!p.getPacketType().equals("POS_INIT"))
                                 throw new ClassNotFoundException("Protocol error");
                             Game.getInstance().loadState((PositionInit) p);
@@ -150,8 +150,8 @@ public class NetworkPlayer implements PlayerInterface {
 
             @Override
             public void buildPanel() {
-                var server_radio = new JRadioButton("Server");
-                var client_radio = new JRadioButton("Client");
+                JRadioButton server_radio = new JRadioButton("Server");
+                JRadioButton client_radio = new JRadioButton("Client");
                 ButtonGroup method = new ButtonGroup();
                 method.add(server_radio);
                 method.add(client_radio);
@@ -209,9 +209,9 @@ public class NetworkPlayer implements PlayerInterface {
      */
     private void handleConnection(Socket s) {
         try {
-            var socketOut = new ObjectOutputStream(new BufferedOutputStream(s.getOutputStream()));
+            ObjectOutputStream socketOut = new ObjectOutputStream(new BufferedOutputStream(s.getOutputStream()));
             socketOut.flush();
-            var socketIn = new ObjectInputStream(new BufferedInputStream(s.getInputStream()));
+            ObjectInputStream socketIn = new ObjectInputStream(new BufferedInputStream(s.getInputStream()));
             if (this.socket != null && !this.socket.isConnected()) {
                 socketOut.writeObject(new ComError("User is already in a game."));
                 socketOut.flush();
@@ -266,7 +266,7 @@ public class NetworkPlayer implements PlayerInterface {
                 if (e[0] != null) throw e[0];
                 if (pk[0] == null) throw new InterruptedException();
 
-                var p = pk[0];
+                ComPacket p = pk[0];
 
                 switch (p.getPacketType()) {
                     case "MOVE":
@@ -337,7 +337,7 @@ public class NetworkPlayer implements PlayerInterface {
             return;
         if (Game.hasInstance() && this.socketOut != null && (lastReceivedMove == null || !lastReceivedMove.equals(new Move(from, to)))) {
             safeSend(new Move(from.toString() + to.toString()));
-            var p = (ComPacket) safeRead();
+            ComPacket p = (ComPacket) safeRead();
             if (p == null || !p.getPacketType().equals("NOP")) throw new InvalidMoveException();
         }
     }
@@ -375,7 +375,7 @@ public class NetworkPlayer implements PlayerInterface {
         try {
             this.socketOut.writeObject(new RematchChoice(other_choice));
             this.socketOut.flush();
-            var p = (ComPacket) this.socketIn.readObject();
+            ComPacket p = (ComPacket) this.socketIn.readObject();
             if (p instanceof RematchChoice)
                 return other_choice && ((RematchChoice) p).rematch;
             else return false;

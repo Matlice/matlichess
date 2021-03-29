@@ -58,7 +58,7 @@ public class King extends Piece {
      * @return true if queen side castling is available
      */
     public boolean isQueenCastlingAvailable(Chessboard c) {
-        var rook = c.getPieceAt(this.getColor().equals(PieceColor.WHITE) ? WHITE_QUEEN_ROOK_LOCATION : BLACK_QUEEN_ROOK_LOCATION);
+        Piece rook = c.getPieceAt(this.getColor().equals(PieceColor.WHITE) ? WHITE_QUEEN_ROOK_LOCATION : BLACK_QUEEN_ROOK_LOCATION);
         if(rook == null) return false;
         return rook.getName().equals("Rook") && !rook.hasMoved() && !this.has_moved;
     }
@@ -85,7 +85,7 @@ public class King extends Piece {
     public boolean canCastle(Chessboard c, String side) {
         //if the king has moved, it cannot castle
         if (this.hasMoved()) return false;
-        var king_position = this.getColor().equals(PieceColor.WHITE) ? new Location("E1") : new Location("E8");
+        Location king_position = this.getColor().equals(PieceColor.WHITE) ? new Location("E1") : new Location("E8");
         //if the king is under check, it cannot castle
         if (this.isUnderCheck(c, king_position)) return false;
 
@@ -138,11 +138,11 @@ public class King extends Piece {
      */
     @Override
     public MoveList getAvailableMoves(Chessboard chessboard, Location myPosition) {
-        var moves = this.unvalidated_move_pattern(chessboard, myPosition).validate().get();
-        var other_king = chessboard.getOpponentKing(getColor());
-        var oth_k_location = chessboard.getPieces().get("King").get(other_king);
+        MoveList moves = this.unvalidated_move_pattern(chessboard, myPosition).validate().get();
+        King other_king = chessboard.getOpponentKing(getColor());
+        Location oth_k_location = chessboard.getPieces().get("King").get(other_king);
 
-        var r = new MoveList();
+        MoveList r = new MoveList();
         moves.keySet().forEach(e -> {
             if(!(Math.abs(e.row()-oth_k_location.row()) <= 1 && Math.abs(e.col()-oth_k_location.col()) <= 1)) r.put(e, moves.get(e));
         });
@@ -168,7 +168,7 @@ public class King extends Piece {
      */
     @Override
     public Piece clone() {
-        var clone = new King(this.getColor());
+        King clone = new King(this.getColor());
         clone.has_moved = this.has_moved;
         return clone;
     }

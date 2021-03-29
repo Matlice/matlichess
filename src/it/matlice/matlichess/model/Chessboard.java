@@ -321,7 +321,7 @@ public class Chessboard {
      * @return true if the move is valid
      */
     public boolean isMoveValid(Location from, Location to) {
-        var c = this.clone();
+        Chessboard c = this.clone();
         try {
             c.move(from, to);
             return true;
@@ -414,7 +414,7 @@ public class Chessboard {
         final King[] kings = new King[]{null, null};
         cloned.kings = new King[]{this.kings[0], this.kings[1]};
         this.forEachPiece((Piece p, Location l) -> {
-            var c = p.clone();
+            Piece c = p.clone();
             cloned.setPiece(c, l);
             if (c instanceof King)
                 kings[c.getColor().index] = (King) c;
@@ -439,7 +439,7 @@ public class Chessboard {
 
     @Override
     public String toString() {
-        var s = new StringBuilder();
+        StringBuilder s = new StringBuilder();
         for (int i = 7; i >= 0; i--) {
             s.append("  +---+---+---+---+---+---+---+---+\n");
             for (int j = 0; j < 8; j++) {

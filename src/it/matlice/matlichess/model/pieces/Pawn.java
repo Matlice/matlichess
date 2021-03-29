@@ -41,7 +41,7 @@ public class Pawn extends Piece {
      */
     @Override
     public Piece clone() {
-        var clone = new Pawn(this.getColor());
+        Pawn clone = new Pawn(this.getColor());
         clone.has_moved = this.has_moved;
         return clone;
     }

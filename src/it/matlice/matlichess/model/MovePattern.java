@@ -52,8 +52,8 @@ public class MovePattern {
      * @return the updated pattern
      */
     public MovePattern addPawn() {
-        var col = pieceLocation.col();
-        var row = pieceLocation.row();
+        int col = pieceLocation.col();
+        int row = pieceLocation.row();
 
         // forward movements
         if (myPieceColor == PieceColor.WHITE) {
@@ -141,8 +141,8 @@ public class MovePattern {
      * @return the updated pattern
      */
     public MovePattern addRow() {
-        var col = pieceLocation.col();
-        var row = pieceLocation.row();
+        int col = pieceLocation.col();
+        int row = pieceLocation.row();
         for (int i = col + 1; i < 8; i++)
             if (piece_can_take(i, row, myPieceColor)) break;
 
@@ -158,8 +158,8 @@ public class MovePattern {
      * @return the updated pattern
      */
     public MovePattern addColumn() {
-        var col = pieceLocation.col();
-        var row = pieceLocation.row();
+        int col = pieceLocation.col();
+        int row = pieceLocation.row();
         for (int i = row + 1; i < 8; i++)
             if (piece_can_take(col, i, myPieceColor)) break;
         for (int i = row - 1; i >= 0; i--)
@@ -174,8 +174,8 @@ public class MovePattern {
      * @return the updated pattern
      */
     public MovePattern addDiagonals() {
-        var col = pieceLocation.col();
-        var row = pieceLocation.row();
+        int col = pieceLocation.col();
+        int row = pieceLocation.row();
 
         for (int i = 1; i < 8; i++) {
             if (piece_can_take(col + i, row + i, myPieceColor)) break;
@@ -198,8 +198,8 @@ public class MovePattern {
      * @return the updated pattern
      */
     public MovePattern addKnight() {
-        var col = pieceLocation.col();
-        var row = pieceLocation.row();
+        int col = pieceLocation.col();
+        int row = pieceLocation.row();
         piece_can_take(col + 1, row + 2, myPieceColor);
         piece_can_take(col - 1, row + 2, myPieceColor);
         piece_can_take(col + 2, row + 1, myPieceColor);
@@ -217,8 +217,8 @@ public class MovePattern {
      * @return the updated pattern
      */
     public MovePattern addKing() {
-        var col = pieceLocation.col();
-        var row = pieceLocation.row();
+        int col = pieceLocation.col();
+        int row = pieceLocation.row();
         piece_can_take(col + 1, row + 1, myPieceColor);
         piece_can_take(col, row + 1, myPieceColor);
         piece_can_take(col - 1, row + 1, myPieceColor);
@@ -269,7 +269,7 @@ public class MovePattern {
         MoveList validatedLocations = new MoveList();
         validatedLocations.putAll(this.locations);
 
-        var has_moved = chessboard.getPieceAt(pieceLocation).hasMoved();
+        boolean has_moved = chessboard.getPieceAt(pieceLocation).hasMoved();
         for (Location dest : locations.keySet()) {
             Chessboard nextMoveBoard = chessboard.clone();
             chessboard.getPieceAt(pieceLocation)._reset_movement(has_moved);

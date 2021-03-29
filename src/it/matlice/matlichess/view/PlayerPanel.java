@@ -38,7 +38,7 @@ public class PlayerPanel extends JPanel implements ItemListener {
         cards = new JPanel(new CardLayout());
         Arrays.stream(players).forEach(e -> {
             try {
-                var config = (JPanel) e.getMethod("getConfigurationInterface").invoke(null);
+                JPanel config = (JPanel) e.getMethod("getConfigurationInterface").invoke(null);
                 cards.add(config, e.getMethod("getName").invoke(null));
             } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
                 System.err.println("Cannot load player: " + ex.getMessage());
