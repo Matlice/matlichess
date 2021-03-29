@@ -125,6 +125,6 @@ public class StockfishPlayer implements PlayerInterface {
         };
     }
 
-    public static String getName() {return "Stockfish CPU";}
+    public static String getName() { return "CPU (Stockfish)"; }
 
 }

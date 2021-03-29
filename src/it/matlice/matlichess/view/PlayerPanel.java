@@ -61,7 +61,7 @@ public class PlayerPanel extends JPanel implements ItemListener {
      * returns the selected interface in the combo box
      * @return the selected interface
      */
-    public PlayerInterface getSelectedInterface() {
+    public PlayerInterface getSelectedInterface() throws Exception {
         return ((ConfigurationPanel) Arrays.stream(cards.getComponents()).filter(Component::isVisible).findFirst().orElseThrow()).getInstance();
     }
 }
