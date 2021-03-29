@@ -18,7 +18,6 @@ public class Settings {
     "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
     "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
      */
-    public static final String LOOK_AND_FEEL = UIManager.getSystemLookAndFeelClassName();
 
     // Chessboard dimensions
     public static final int CHESSBOARD_SQUARE_SIZE = 90;

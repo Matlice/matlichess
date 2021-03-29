@@ -9,7 +9,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static it.matlice.settings.Settings.LOOK_AND_FEEL;
 
 /**
  * EntryPoint of the program, extends a JFrame for the initial menu
@@ -58,13 +57,6 @@ public class EntryPoint extends JFrame implements ActionListener {
         this.getContentPane().add(containerPanel);
         this.setTitle("MatliChess");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        try {
-            UIManager.setLookAndFeel(LOOK_AND_FEEL);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
-        SwingUtilities.updateComponentTreeUI(this);
 
         this.pack();
     }
