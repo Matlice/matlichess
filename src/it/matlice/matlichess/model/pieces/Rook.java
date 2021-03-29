@@ -1,8 +1,10 @@
 package it.matlice.matlichess.model.pieces;
 
-import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.Location;
-import it.matlice.matlichess.model.*;
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.model.Chessboard;
+import it.matlice.matlichess.model.MovePattern;
+import it.matlice.matlichess.model.Piece;
 
 /**
  * Identifies the Rook Piece in a chess game
@@ -29,6 +31,7 @@ public class Rook extends Piece {
 
     /**
      * Abstract method that clone a Rook into an identical other Rook
+     *
      * @return the cloned Rook
      */
     @Override

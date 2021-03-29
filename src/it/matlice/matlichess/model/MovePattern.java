@@ -1,7 +1,7 @@
 package it.matlice.matlichess.model;
 
-import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.Location;
+import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.model.pieces.King;
 
 import java.util.function.Supplier;
@@ -12,10 +12,10 @@ import java.util.function.Supplier;
  */
 public class MovePattern {
 
-    private MoveList locations = new MoveList();
     private final Chessboard chessboard;
     private final Location pieceLocation;
     private final PieceColor myPieceColor;
+    private MoveList locations = new MoveList();
 
     public MovePattern(Chessboard c, Location l, PieceColor myPieceColor) {
         this.chessboard = c;
@@ -30,7 +30,7 @@ public class MovePattern {
      *
      * @param col        the column index of the location to check
      * @param row        the row index of the location to check
-     * @param pieceColor      the player's color
+     * @param pieceColor the player's color
      * @return true if it's needed to stop the iteration, false to continue
      */
     private boolean piece_can_take(int col, int row, PieceColor pieceColor) {
@@ -103,11 +103,12 @@ public class MovePattern {
 
     /**
      * Evaluates whether a pawn can capture a piece diagonally, or capture a pawn en passant
-     * @param chessboard chessboard
-     * @param myPieceColor color
-     * @param moveTarget the target location the pawn can capture and move to
+     *
+     * @param chessboard      chessboard
+     * @param myPieceColor    color
+     * @param moveTarget      the target location the pawn can capture and move to
      * @param enPassantTarget the location of the other pawn that can be captured en passant
-     * @param actualPosition the actual position of the pawn
+     * @param actualPosition  the actual position of the pawn
      */
     private void _pawnCapture(Chessboard chessboard, PieceColor myPieceColor, Location moveTarget, Location enPassantTarget, Location actualPosition) {
         if (chessboard.getPieceAt(moveTarget) != null) {

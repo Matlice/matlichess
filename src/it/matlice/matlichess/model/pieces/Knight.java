@@ -1,8 +1,10 @@
 package it.matlice.matlichess.model.pieces;
 
-import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.Location;
-import it.matlice.matlichess.model.*;
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.model.Chessboard;
+import it.matlice.matlichess.model.MovePattern;
+import it.matlice.matlichess.model.Piece;
 
 /**
  * Identifies the Knight Piece in a chess game
@@ -28,6 +30,7 @@ public class Knight extends Piece {
 
     /**
      * Abstract method that clone a Knight into an identical other Knight
+     *
      * @return the cloned Knight
      */
     @Override

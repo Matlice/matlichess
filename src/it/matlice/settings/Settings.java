@@ -22,7 +22,7 @@ public class Settings {
 
     // Chessboard dimensions
     public static final int CHESSBOARD_SQUARE_SIZE = 90;
-    public static final int CHESSBOARD_SIZE = 8*CHESSBOARD_SQUARE_SIZE;
+    public static final int CHESSBOARD_SIZE = 8 * CHESSBOARD_SQUARE_SIZE;
 
     // Chessboard background
     public static final String CHESSBOARD_BG_STYLE = "blue3.jpg";
@@ -64,7 +64,7 @@ public class Settings {
 
     public static final String REMATCH_MESSAGE = "Do you want to play again?";
 
-    public static final Object[] DIALOG_OPTIONS = {"Cancel", "Exit", "Yes, again!" };
+    public static final Object[] DIALOG_OPTIONS = {"Cancel", "Exit", "Yes, again!"};
     public static final int DIALOG_CLOSED_INDEX = -1;
     public static final int CANCEL_OPTION_INDEX = 0;
     public static final int EXIT_OPTION_INDEX = 1;

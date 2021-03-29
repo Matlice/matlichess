@@ -3,7 +3,7 @@ package it.matlice.matlichess.controller.net;
 /**
  * This packet contains the opponent rematch choice
  */
-public class RematchChoice implements ComPacket{
+public class RematchChoice implements ComPacket {
 
     public final boolean rematch;
 

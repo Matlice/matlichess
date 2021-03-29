@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.concurrent.Semaphore;
 
-import static it.matlice.matlichess.view.PieceView.locationToPointer;
 import static it.matlice.matlichess.view.PieceView.pointerToLocation;
 
 /**
@@ -19,12 +18,12 @@ import static it.matlice.matlichess.view.PieceView.pointerToLocation;
  */
 public class PromotionChoiceBox extends JPanel implements MouseListener {
 
+    private final Semaphore semaphore = new Semaphore(1);
+    private final PieceColor turn;
     private String selectedPiece;
-    private Semaphore semaphore = new Semaphore(1);
-    private PieceColor turn;
 
     public PromotionChoiceBox(PieceColor turn) {
-        this.setPreferredSize(new Dimension(Settings.CHESSBOARD_SQUARE_SIZE, Settings.CHESSBOARD_SQUARE_SIZE*4));
+        this.setPreferredSize(new Dimension(Settings.CHESSBOARD_SQUARE_SIZE, Settings.CHESSBOARD_SQUARE_SIZE * 4));
         this.addMouseListener(this);
         this.turn = turn;
     }
@@ -44,6 +43,7 @@ public class PromotionChoiceBox extends JPanel implements MouseListener {
 
     /**
      * Draws a on screen a promotion choice box
+     *
      * @param g2 Graphics2D object
      */
     public void drawPromotionChoiceBox(Graphics2D g2) {
@@ -52,15 +52,14 @@ public class PromotionChoiceBox extends JPanel implements MouseListener {
         PieceView knight;
         PieceView bishop;
         PieceView rook;
-        Rectangle box = new Rectangle(0, 0, size, size*4);;
+        Rectangle box = new Rectangle(0, 0, size, size * 4);
 
-        if(turn.equals(PieceColor.WHITE)){
+        if (turn.equals(PieceColor.WHITE)) {
             queen = new PieceView(PieceType.QUEEN_WHITE, new Location("A8"));
             knight = new PieceView(PieceType.KNIGHT_WHITE, new Location("A7"));
             rook = new PieceView(PieceType.ROOK_WHITE, new Location("A6"));
             bishop = new PieceView(PieceType.BISHOP_WHITE, new Location("A5"));
-        }
-        else{
+        } else {
             queen = new PieceView(PieceType.QUEEN_BLACK, new Location("A8"));
             knight = new PieceView(PieceType.KNIGHT_BLACK, new Location("A7"));
             rook = new PieceView(PieceType.ROOK_BLACK, new Location("A6"));
@@ -77,10 +76,11 @@ public class PromotionChoiceBox extends JPanel implements MouseListener {
 
     /**
      * Starts a thread to ask the player to choose one option and shows the box
+     *
      * @param point the origin of the frame
      * @return String representing the chosen piece type
      */
-    public String askPromotion(Point point){
+    public String askPromotion(Point point) {
         //I need a semaphore to stop the execution of the others thread while I'm choosing
         try {
             semaphore.acquire();
@@ -111,6 +111,7 @@ public class PromotionChoiceBox extends JPanel implements MouseListener {
 
     /**
      * when the mouse is clicked, checks if it's a valid click and  sets the selected piece
+     *
      * @param e MouseEvent
      */
     @Override

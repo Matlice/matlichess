@@ -1,9 +1,7 @@
 package it.matlice.matlichess.controller.net;
 
 import it.matlice.matlichess.Location;
-import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.controller.Game;
-import it.matlice.matlichess.model.Piece;
 
 import java.util.Objects;
 
@@ -11,7 +9,7 @@ import java.util.Objects;
  * This packet is used to share incrementally moves made from the users.
  * after this packet is sent the sender expect a NOP response
  */
-public class Move implements ComPacket{
+public class Move implements ComPacket {
 
     private final String extendedMove;
     private String[] promotionTypes = new String[2];

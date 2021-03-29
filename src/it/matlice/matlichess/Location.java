@@ -35,6 +35,18 @@ public class Location {
     }
 
     /**
+     * Return a list of two locations, to represent a move
+     * example: ["A4", "C6"]
+     *
+     * @param move
+     * @return the [from, to] list representing the move
+     */
+    public static List<Location> fromExtendedMove(String move) {
+        assert move.length() == 4;
+        return Arrays.asList(new Location(move.substring(0, 2)), new Location(move.substring(2, 4)));
+    }
+
+    /**
      * Getter for coordinates, row first, then column
      *
      * @return the coordinates
@@ -90,22 +102,11 @@ public class Location {
     /**
      * Converts a location to a String
      * For example the location col=2 row=4 returns C5 (col and row starts from 0)
+     *
      * @return
      */
     @Override
     public String toString() {
         return String.valueOf((char) (col + 0x41)) + (row + 1);
-    }
-
-    /**
-     * Return a list of two locations, to represent a move
-     * example: ["A4", "C6"]
-     *
-     * @param move
-     * @return the [from, to] list representing the move
-     */
-    public static List<Location> fromExtendedMove(String move){
-        assert move.length() == 4;
-        return Arrays.asList(new Location(move.substring(0, 2)), new Location(move.substring(2, 4)));
     }
 }

@@ -16,16 +16,45 @@ import java.util.List;
  * Cpu JNI Stockfish player implementation.
  */
 public class StockfishPlayer implements PlayerInterface {
-    private int depth;
-    private int skill;
+    private final int depth;
+    private final int skill;
+    private final int delay = 200;
     private Thread t;
 
-    private int delay = 200;
-
-    public StockfishPlayer(int depth, int skill){
+    public StockfishPlayer(int depth, int skill) {
         this.depth = depth;
         this.skill = skill;
         Stockfish.getInstance();
+    }
+
+    public static ConfigurationPanel getConfigurationInterface() {
+        return new ConfigurationPanel() {
+            private JSpinner depth;
+            private JSpinner skill;
+
+            @Override
+            public PlayerInterface getInstance() {
+                return new StockfishPlayer((Integer) this.depth.getValue(), (Integer) this.skill.getValue());
+            }
+
+            @Override
+            public void buildPanel() {
+                SpinnerModel depthModel = new SpinnerNumberModel(12, 1, Integer.MAX_VALUE, 1);
+                SpinnerModel skillModel = new SpinnerNumberModel(12, 1, 20, 1);
+                this.depth = new JSpinner(depthModel);
+                this.depth.setPreferredSize(new Dimension(70, 24));
+                this.skill = new JSpinner(skillModel);
+                this.skill.setPreferredSize(new Dimension(70, 24));
+                this.add(new Label("Depth:"));
+                this.add(depth);
+                this.add(new Label("Skill (1-20):"));
+                this.add(skill);
+            }
+        };
+    }
+
+    public static String getName() {
+        return "CPU (Stockfish)";
     }
 
     @Override
@@ -47,7 +76,7 @@ public class StockfishPlayer implements PlayerInterface {
         t.start();
         t.join();
         t = null;
-        if(move[0] == null) throw new InterruptedException();
+        if (move[0] == null) throw new InterruptedException();
         Stockfish.nGetScore(true);
         if (move[0].length() == 5) {
             String promotion = move[0].substring(4, 5);
@@ -59,7 +88,7 @@ public class StockfishPlayer implements PlayerInterface {
 
     @Override
     public void setPosition(ArrayList<PieceView> pieces) {
-        if(Game.hasInstance()) {
+        if (Game.hasInstance()) {
             Stockfish.nSetPosition(Game.getInstance().getPositionFen());
         }
 //        Stockfish.nDbgDisplay();
@@ -76,7 +105,7 @@ public class StockfishPlayer implements PlayerInterface {
 
     @Override
     public void interrupt() {
-        if(this.t != null) {
+        if (this.t != null) {
             try {
                 t.join(1);
             } catch (InterruptedException e) {
@@ -99,32 +128,5 @@ public class StockfishPlayer implements PlayerInterface {
     public boolean setState(GameState state, boolean generic, Boolean other_result) {
         return other_result;
     }
-
-    public static ConfigurationPanel getConfigurationInterface(){
-        return new ConfigurationPanel(){
-            private JSpinner depth;
-            private JSpinner skill;
-            @Override
-            public PlayerInterface getInstance() {
-                return new StockfishPlayer( (Integer) this.depth.getValue(), (Integer) this.skill.getValue());
-            }
-
-            @Override
-            public void buildPanel() {
-                SpinnerModel depthModel = new SpinnerNumberModel(12, 1, Integer.MAX_VALUE, 1);
-                SpinnerModel skillModel = new SpinnerNumberModel(12, 1, 20, 1);
-                this.depth = new JSpinner(depthModel);
-                this.depth.setPreferredSize( new Dimension( 70, 24 ) );
-                this.skill = new JSpinner(skillModel);
-                this.skill.setPreferredSize( new Dimension( 70, 24 ) );
-                this.add(new Label("Depth:"));
-                this.add(depth);
-                this.add(new Label("Skill (1-20):"));
-                this.add(skill);
-            }
-        };
-    }
-
-    public static String getName() { return "CPU (Stockfish)"; }
 
 }

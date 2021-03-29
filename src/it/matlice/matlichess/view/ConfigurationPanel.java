@@ -9,9 +9,11 @@ import javax.swing.*;
  * Every different player has to explain what options to show
  */
 public abstract class ConfigurationPanel extends JPanel {
-    public ConfigurationPanel(){
+    public ConfigurationPanel() {
         this.buildPanel();
     }
+
     public abstract PlayerInterface getInstance() throws Exception;
+
     public abstract void buildPanel();
 }

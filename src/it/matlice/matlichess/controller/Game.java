@@ -1,12 +1,12 @@
 package it.matlice.matlichess.controller;
 
 import it.matlice.matlichess.GameState;
+import it.matlice.matlichess.Location;
+import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.controller.net.PositionInit;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
 import it.matlice.matlichess.model.Chessboard;
-import it.matlice.matlichess.PieceColor;
-import it.matlice.matlichess.Location;
 import it.matlice.matlichess.model.Piece;
 import it.matlice.matlichess.model.pieces.Bishop;
 import it.matlice.matlichess.model.pieces.Knight;
@@ -27,17 +27,13 @@ public class Game {
 
     // singleton
     private static Game instance = null;
-
+    private final Map<PieceColor, Map<String, PieceType>> pieceConversionMap = getPieceConversionMap();
+    private final Map<String, String> pieceNameToShortNameMap = getPieceNameToShortNameMap();
     // list of player interfaces; 0 is white, 1 is black, any others are watchers
     List<PlayerInterface> players;
-
     // chessboard model instance
     private Chessboard chessboard;
-
     private PieceColor turn = PieceColor.WHITE; //0 white, 1 black
-
-    private Map<PieceColor, Map<String, PieceType>> pieceConversionMap = getPieceConversionMap();
-    private Map<String, String> pieceNameToShortNameMap = getPieceNameToShortNameMap();
 
     private Game(List<PlayerInterface> players, List<PlayerInterface> nonPlayers) {
         chessboard = Chessboard.getDefault();
@@ -52,6 +48,7 @@ public class Game {
     /**
      * Singleton getter
      * if the game is not initialized yet, we throw a RuntimeError because we need to pass arguments the first time.
+     *
      * @return the instance of the current game
      */
     public static Game getInstance() {
@@ -73,8 +70,8 @@ public class Game {
     /**
      * Singleton getter, passing white, black and any other "only watching" player interfaces
      *
-     * @param white the white player
-     * @param black the black player
+     * @param white     the white player
+     * @param black     the black player
      * @param nonPlayer any other "player" who is not really playing
      * @return the controller instance
      */
@@ -91,8 +88,8 @@ public class Game {
      * in that case we don't need the view, so that will result in a blank window.
      * by doing that we allow for external users to see the current position while playing.
      *
-     * @param white white player
-     * @param black black player
+     * @param white      white player
+     * @param black      black player
      * @param nonPlayers a list of external players
      * @return the controller instance
      */
@@ -107,6 +104,7 @@ public class Game {
     /**
      * returns true if the game is already been initialized. this is used to wait (busy waiting sadly)
      * while the game has been instantiated to operate on it.
+     *
      * @return true if an instance of the controller is available.
      */
     public static boolean hasInstance() {
@@ -115,13 +113,14 @@ public class Game {
 
     /**
      * This method allows to reinstantiate all the players to be reinstantiated in a given position, ready to rematch.
-     * @param fen the fen string representative of the start position.
+     *
+     * @param fen         the fen string representative of the start position.
      * @param swapPlayers if true, the white player and the black player will be swapped.
      */
-    public void reinitialize(String fen, boolean swapPlayers){
+    public void reinitialize(String fen, boolean swapPlayers) {
         this.chessboard.setPosition(fen);
         this.turn = this.chessboard.getTurn();
-        if(swapPlayers){
+        if (swapPlayers) {
             PlayerInterface player = this.players.get(0);
             this.players.set(0, this.players.get(1));
             this.players.set(1, player);
@@ -133,6 +132,7 @@ public class Game {
 
     /**
      * this methods prepares the environment to start a rematch starting from the base position given from the settings.
+     *
      * @param swapPlayers if true the players position will be swapped.
      */
     public void rematch(boolean swapPlayers) {
@@ -162,6 +162,7 @@ public class Game {
      * this in the main method.
      * while this method returns true it should be recalled cyclically.
      * it will return false if the game has ended
+     *
      * @return true in the game should proceed.
      */
     public boolean mainloop() {
@@ -183,15 +184,15 @@ public class Game {
                 e.setTurn(chessboard.getTurn());
             }
 
-            if(!newState.equals(GameState.PLAYING)){
+            if (!newState.equals(GameState.PLAYING)) {
                 System.out.println(newState.getEndStatement());
                 boolean rematch = false;
-                if(!players.get(0).isInteractive() && !players.get(1).isInteractive())
+                if (!players.get(0).isInteractive() && !players.get(1).isInteractive())
                     rematch = players.get(2).setState(newState, true, true);
                 else
                     rematch = players.get(0).setState(newState, false, players.get(1));
 
-                if(rematch) rematch(true);
+                if (rematch) rematch(true);
                 return rematch;
             }
             turn = chessboard.getTurn();
@@ -286,21 +287,32 @@ public class Game {
 
     /**
      * sets the model next promotion chosen by the user before making a move.
+     *
      * @param promotion String representing the piece to be prometed to
-     * @param player the player who's choosing.
+     * @param player    the player who's choosing.
      */
     public void setPromotion(String promotion, PieceColor player) {
         switch (promotion.toUpperCase()) {
-            case "Q": chessboard.setPromotion(player, Queen.class); break;
-            case "R": chessboard.setPromotion(player, Rook.class); break;
-            case "B": chessboard.setPromotion(player, Bishop.class); break;
-            case "N": chessboard.setPromotion(player, Knight.class); break;
-            default: break;
+            case "Q":
+                chessboard.setPromotion(player, Queen.class);
+                break;
+            case "R":
+                chessboard.setPromotion(player, Rook.class);
+                break;
+            case "B":
+                chessboard.setPromotion(player, Bishop.class);
+                break;
+            case "N":
+                chessboard.setPromotion(player, Knight.class);
+                break;
+            default:
+                break;
         }
     }
 
     /**
      * sets the promotion for the current player
+     *
      * @param promotion String representing the piece to be prometed to
      */
     public void setPromotion(String promotion) {
@@ -308,18 +320,9 @@ public class Game {
     }
 
     /**
-     * sets the promotion piece for all the players, given as an array of two elements.
-     * @param promotionTypes an array containing the strings for the piece to promote to as {<white promotion>, <black promotion>}
-     */
-    public void setPromotions(String[] promotionTypes) {
-        this.setPromotion(pieceNameToShortNameMap.get(promotionTypes[PieceColor.WHITE.index]), PieceColor.WHITE);
-        this.setPromotion(pieceNameToShortNameMap.get(promotionTypes[PieceColor.BLACK.index]), PieceColor.BLACK);
-    }
-
-    /**
-     * @see Chessboard#toFEN()
      * @param complete true to get a complete fen
      * @return the fen
+     * @see Chessboard#toFEN()
      */
     public String getPositionFen(boolean complete) {
         return chessboard.toFEN(complete);
@@ -327,6 +330,7 @@ public class Game {
 
     /**
      * Returns a complete fen. @see Chessboard#toFEN()
+     *
      * @return the fen
      */
     public String getPositionFen() {
@@ -334,10 +338,10 @@ public class Game {
     }
 
     /**
-     * @see Chessboard#isPromoting(Location, Location)
      * @return the fen
+     * @see Chessboard#isPromoting(Location, Location)
      */
-    public boolean isPromotionRequired(Location from, Location to){
+    public boolean isPromotionRequired(Location from, Location to) {
         return chessboard.isPromoting(from, to);
     }
 
@@ -352,31 +356,29 @@ public class Game {
     /**
      * interrupts all the pending asking moves.
      */
-    public void interrupt(){
+    public void interrupt() {
         this.players.forEach(PlayerInterface::interrupt);
     }
 
     /**
      * load the game state from a PositionInit class due to network reset. @see NetworkPlayer
+     *
      * @param pos
      */
-    public void loadState(PositionInit pos){
+    public void loadState(PositionInit pos) {
         chessboard.setPositions(pos.getMoves(), pos.getMove_times());
-        if(pos.getColor().equals(PieceColor.WHITE) && players.get(0) instanceof NetworkPlayer || pos.getColor().equals(PieceColor.BLACK) && players.get(1) instanceof NetworkPlayer)
-            reinitialize(pos.getCurrentFEN(), true);
-        else
-            reinitialize(pos.getCurrentFEN(), false);
+        reinitialize(pos.getCurrentFEN(), pos.getColor().equals(PieceColor.WHITE) && players.get(0) instanceof NetworkPlayer || pos.getColor().equals(PieceColor.BLACK) && players.get(1) instanceof NetworkPlayer);
 
     }
 
     /**
      * Returns if a move is valid
      *
-     * @param src from of the move
+     * @param src  from of the move
      * @param dest to of the move
      * @return true if the move is valid
      */
-    public boolean isMoveValid(Location src, Location dest){
+    public boolean isMoveValid(Location src, Location dest) {
         return chessboard.isMoveValid(src, dest);
     }
 
@@ -388,5 +390,15 @@ public class Game {
     public String[] getPromotions() {
         Class<? extends Piece>[] promTypes = chessboard.getPromotions();
         return new String[]{promTypes[0].getSimpleName(), promTypes[1].getSimpleName()};
+    }
+
+    /**
+     * sets the promotion piece for all the players, given as an array of two elements.
+     *
+     * @param promotionTypes an array containing the strings for the piece to promote to as {<white promotion>, <black promotion>}
+     */
+    public void setPromotions(String[] promotionTypes) {
+        this.setPromotion(pieceNameToShortNameMap.get(promotionTypes[PieceColor.WHITE.index]), PieceColor.WHITE);
+        this.setPromotion(pieceNameToShortNameMap.get(promotionTypes[PieceColor.BLACK.index]), PieceColor.BLACK);
     }
 }

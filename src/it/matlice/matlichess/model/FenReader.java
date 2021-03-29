@@ -144,7 +144,7 @@ public enum FenReader {
     /**
      * Method that perform an action based on a given character and on the actual status given by the enum
      *
-     * @param c the Chessboard to act on
+     * @param c         the Chessboard to act on
      * @param character the char to evaluate
      * @return the next state of the fen reader
      */

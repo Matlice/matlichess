@@ -26,8 +26,8 @@ public enum PieceType {
         this.index = index;
     }
 
-    public PieceColor getColor(){
-        if(index <= 5) return PieceColor.WHITE;
+    public PieceColor getColor() {
+        if (index <= 5) return PieceColor.WHITE;
         return PieceColor.BLACK;
     }
 

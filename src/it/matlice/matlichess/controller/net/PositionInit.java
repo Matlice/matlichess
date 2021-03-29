@@ -11,10 +11,10 @@ import java.util.HashMap;
  */
 public class PositionInit implements ComPacket {
 
-    private String[] moves;
-    private Integer[] move_times;
-    private String currentFEN;
-    private PieceColor user_color;
+    private final String[] moves;
+    private final Integer[] move_times;
+    private final String currentFEN;
+    private final PieceColor user_color;
 
     public PositionInit(PieceColor recipient_color) {
         HashMap<String, Integer> m = Game.getInstance().getPositions();

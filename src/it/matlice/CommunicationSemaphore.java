@@ -6,7 +6,7 @@ import java.util.concurrent.Semaphore;
 
 public class CommunicationSemaphore<T> extends Semaphore {
 
-    private Queue<T> returns = new LinkedList<>();
+    private final Queue<T> returns = new LinkedList<>();
 
     /**
      * Creates a {@code Semaphore} with the given number of
@@ -20,10 +20,11 @@ public class CommunicationSemaphore<T> extends Semaphore {
         super(permits);
     }
 
-    public void acquire(){
+    public void acquire() {
         throw new RuntimeException();
     }
-    public void release(){
+
+    public void release() {
         throw new RuntimeException();
     }
 

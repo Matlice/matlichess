@@ -7,19 +7,19 @@ import java.awt.*;
  */
 public class ScreenLocation extends Point {
 
-    public ScreenLocation(int w, int h){
+    public ScreenLocation(int w, int h) {
         super(w, h);
     }
 
-    public ScreenLocation(){
+    public ScreenLocation() {
         super();
     }
 
-    public ScreenLocation diff(Point d){
+    public ScreenLocation diff(Point d) {
         return new ScreenLocation(this.x - d.x, this.y - d.y);
     }
 
-    public ScreenLocation diff(int x, int y){
+    public ScreenLocation diff(int x, int y) {
         return new ScreenLocation(this.x - x, this.y - y);
     }
 }

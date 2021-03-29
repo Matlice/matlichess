@@ -12,13 +12,14 @@ import java.io.IOException;
  */
 public class ImageLoader implements Drawable {
 
+    private final Dimension dim;
     private Image img;
-    private Dimension dim;
 
     /**
      * Constructor to load the image from resources path
+     *
      * @param image_path the path of the image
-     * @param dim the wanted dimension for the image
+     * @param dim        the wanted dimension for the image
      */
     public ImageLoader(String image_path, Dimension dim) {
         try {
@@ -32,12 +33,12 @@ public class ImageLoader implements Drawable {
     /**
      * Draws directly the loaded image to a Graphics2D
      *
-     * @param g the Graphics2D to print to
-     * @param l the location to start printing to
+     * @param g      the Graphics2D to print to
+     * @param l      the location to start printing to
      * @param offset the offset referred to the base l Location
      */
     @Override
     public void accept(Graphics2D g, ScreenLocation l, ScreenLocation offset) {
-            g.drawImage(img, l.x - offset.x, l.y - offset.y, this.dim.width, this.dim.height, null);
+        g.drawImage(img, l.x - offset.x, l.y - offset.y, this.dim.width, this.dim.height, null);
     }
 }

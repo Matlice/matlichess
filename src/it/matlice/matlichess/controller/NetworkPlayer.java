@@ -48,12 +48,12 @@ import java.util.concurrent.Semaphore;
  */
 public class NetworkPlayer implements PlayerInterface {
 
+    private final Semaphore sem = new Semaphore(1);
     private ServerSocket server;
     private Socket socket = null;
     private ObjectInputStream socketIn;
     private ObjectOutputStream socketOut;
     private PieceColor mycolor = null;
-    private Semaphore sem = new Semaphore(1);
     private Thread askingThread = null;
     private Thread semThread = null;
     private Move lastReceivedMove = null;
@@ -255,8 +255,8 @@ public class NetworkPlayer implements PlayerInterface {
             this.semThread = Thread.currentThread();
             sem.acquire();
             try {
-                ComPacket pk[] = {null};
-                Exception e[] = {null};
+                ComPacket[] pk = {null};
+                Exception[] e = {null};
                 askingThread = new Thread(() -> {
                     try {
                         pk[0] = (ComPacket) socketIn.readObject();

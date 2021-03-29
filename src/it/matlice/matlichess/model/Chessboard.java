@@ -6,7 +6,9 @@ import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.exceptions.ChessboardLocationException;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 import it.matlice.matlichess.exceptions.InvalidTurnException;
-import it.matlice.matlichess.model.pieces.*;
+import it.matlice.matlichess.model.pieces.King;
+import it.matlice.matlichess.model.pieces.Pawn;
+import it.matlice.matlichess.model.pieces.Queen;
 import it.matlice.settings.Settings;
 
 import java.lang.reflect.InvocationTargetException;
@@ -24,13 +26,13 @@ import java.util.function.Supplier;
 public class Chessboard {
 
     private final Piece[][] chessboard = new Piece[8][8];
+    private final Class<? extends Piece>[] promotions = new Class[]{Queen.class, Queen.class};
     private Map<String, Map<Piece, Location>> pieces = new HashMap<>();
     private King[] kings = new King[2];
     private PieceColor turn = PieceColor.WHITE;
     private Location enPassantTargetSquare = null;
     //This map is needed to implement a quick algorithm for three repetition rule
     private HashMap<String, Integer> repeatedPositions = new HashMap<>();
-    private Class<? extends Piece>[] promotions = new Class[]{Queen.class, Queen.class};
     // this is the number of halfMoves since the last capture or pawn advance.
     // The reason for this field is that the value is used in the fifty-move rule.
     private int halfMoveClock = 0;
@@ -61,10 +63,10 @@ public class Chessboard {
 
     /**
      * Puts a {@link Piece} on a certain box in the chessboard, WITHOUT checking whether the destination square is empty.
-     * @see this.setPiece(Piece, Location)
      *
      * @param loc the {@link Location} of the box
      * @param p   the chess {@link Piece} to put
+     * @see this.setPiece(Piece, Location)
      */
     public void _set_piece_at(Location loc, Piece p) {
         chessboard[loc.col()][loc.row()] = p;
@@ -74,10 +76,10 @@ public class Chessboard {
 
     /**
      * Puts a {@link Piece} on a certain box in the chessboard, CHECKING whether the destination square is empty
-     * @see this._set_piece_at(Location, Piece)
      *
      * @param piece the chess {@link Piece} to put
      * @param loc   the {@link Location} of the box
+     * @see this._set_piece_at(Location, Piece)
      */
     public void setPiece(Piece piece, Location loc) {
         if (getPieceAt(loc) != null) throw new ChessboardLocationException();
@@ -201,6 +203,7 @@ public class Chessboard {
 
     /**
      * Set the halfMoveClock to a specific number, used for initialisation of a new position
+     *
      * @param halfMoveClock int of the half moves
      */
     public void setHalfMoveClock(int halfMoveClock) {
@@ -209,6 +212,7 @@ public class Chessboard {
 
     /**
      * Set the fullMoveNumber to a specific number, used for initialisation of a new position
+     *
      * @param fullMoveNumber int of the full moves
      */
     public void setFullMoveNumber(int fullMoveNumber) {
@@ -292,11 +296,11 @@ public class Chessboard {
     /**
      * Checks if a piece is allowed to move to a certain box, then takes the piece in a {@link Location} and moves it to the new box.
      * If the final box is occupied, it removes the old piece and replaces it with the new one
-     * @see this.move(Location, Location)
      *
      * @param src         String containing the official notation of the Location
      * @param destination the final {@link Location} as string ("A4")
      * @return the taken {@link Piece} if exists, else null
+     * @see this.move(Location, Location)
      */
     public Piece move(String src, String destination) {
         return move(new Location(src), new Location(destination));
@@ -317,7 +321,7 @@ public class Chessboard {
      * Returns whether a move is valid, it's done by doing that move and checking if an InvalidMoveException is thrown
      *
      * @param from source of the move
-     * @param to destination of the move
+     * @param to   destination of the move
      * @return true if the move is valid
      */
     public boolean isMoveValid(Location from, Location to) {
@@ -360,16 +364,15 @@ public class Chessboard {
      * Used to decide whether to ask a player to which piece to promote
      *
      * @param from source of the move
-     * @param to destination of the move
+     * @param to   destination of the move
      * @return true if the specified move is a promotion
      */
-    public boolean isPromoting (Location from, Location to){
+    public boolean isPromoting(Location from, Location to) {
         Piece toMove = getPieceAt(from);
-        if(!(toMove instanceof Pawn)) return false;
-        if(!isMoveValid(from, to)) return false;
-        if(toMove.getColor().equals(PieceColor.WHITE) && to.row() == 7) return true;
-        if(toMove.getColor().equals(PieceColor.BLACK) && to.row() == 0) return true;
-        return false;
+        if (!(toMove instanceof Pawn)) return false;
+        if (!isMoveValid(from, to)) return false;
+        if (toMove.getColor().equals(PieceColor.WHITE) && to.row() == 7) return true;
+        return toMove.getColor().equals(PieceColor.BLACK) && to.row() == 0;
     }
 
     /**
@@ -540,7 +543,7 @@ public class Chessboard {
 
         FenReader f = FenReader.PIECE_POSITION;
         int c = 0;
-        while(f != FenReader.FINISHED) {
+        while (f != FenReader.FINISHED) {
             try {
                 f = f.action(this, fen.charAt(c++));
             } catch (Exception e) {
@@ -554,7 +557,7 @@ public class Chessboard {
      * Note that the pos_fen[i] position has appeared times[i] times etc...
      *
      * @param pos_fen the array of positions
-     * @param times the number of time the positions has appeared
+     * @param times   the number of time the positions has appeared
      */
     public void setPositions(String[] pos_fen, Integer[] times) {
         assert times.length == pos_fen.length;

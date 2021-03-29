@@ -10,8 +10,8 @@ public enum GameState {
     BLACK_WIN("Black won the game", "Black"),
     WHITE_WIN("White won the game", "White");
 
-    private String winner;
-    private String endStatement;
+    private final String winner;
+    private final String endStatement;
 
     GameState(String endStatement, String s) {
         this.endStatement = endStatement;
@@ -20,6 +20,7 @@ public enum GameState {
 
     /**
      * Returns the ending statement to print
+     *
      * @return
      */
     public String getEndStatement() {
@@ -28,6 +29,7 @@ public enum GameState {
 
     /**
      * Returns the String representation of the winning player, null if still playing or draw
+     *
      * @return
      */
     public String getWinnerString() {

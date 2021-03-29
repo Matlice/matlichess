@@ -15,7 +15,7 @@ public class MoveList extends HashMap<Location, Supplier<Piece>> {
     /**
      * Utility method that converts a String to a Location and then puts it inside the map
      *
-     * @param key the String representing the location
+     * @param key    the String representing the location
      * @param action the action associated with the move
      * @return the previously value associated with the key
      */
@@ -26,8 +26,8 @@ public class MoveList extends HashMap<Location, Supplier<Piece>> {
     /**
      * Utility method that converts a pair of ints to a Location and then puts it inside the map
      *
-     * @param col the int representing the column
-     * @param row the int representing the column
+     * @param col    the int representing the column
+     * @param row    the int representing the column
      * @param action the action associated with the move
      * @return the previously value associated with the key
      */

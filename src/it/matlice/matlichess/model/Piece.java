@@ -1,7 +1,7 @@
 package it.matlice.matlichess.model;
 
-import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.Location;
+import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.exceptions.InvalidMoveException;
 
 import java.util.Objects;
@@ -13,11 +13,11 @@ import java.util.function.Supplier;
  */
 public abstract class Piece {
 
-    protected boolean has_moved = false;
     private final String name;
     private final String shortName;
     private final int value;
     private final PieceColor pieceColor;
+    protected boolean has_moved = false;
 
     public Piece(String name, String shortName, int value, PieceColor pieceColor) {
         this.name = name;
@@ -37,6 +37,7 @@ public abstract class Piece {
 
     /**
      * Method used to reset the movement of a piece during th validation of a move
+     *
      * @param v boolean to set the variable in the class
      */
     public void _reset_movement(boolean v) {
@@ -124,7 +125,7 @@ public abstract class Piece {
      *
      * @param chessboard  Chessboard
      * @param destination the move location to go to
-     * @param myPosition the position of the piece
+     * @param myPosition  the position of the piece
      */
     public Supplier<Piece> getAction(Chessboard chessboard, Location destination, Location myPosition) {
         MoveList moves = getAvailableMoves(chessboard, myPosition);
@@ -134,12 +135,14 @@ public abstract class Piece {
 
     /**
      * Abstract method that clone a Piece into an identical other piece
+     *
      * @return the cloned Piece
      */
     public abstract Piece clone();
 
     /**
      * Returns whether two pieces are identical, based on type color and if they've moved
+     *
      * @param o the other Piece
      * @return true if they are identical
      */

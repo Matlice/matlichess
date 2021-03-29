@@ -19,6 +19,7 @@ public class PlayerPanel extends JPanel implements ItemListener {
 
     /**
      * Constructor of Player panel. By using a CardLayout displays only one of the possible configuration of a player
+     *
      * @param players The classes of different players
      */
     public PlayerPanel(Class<? extends PlayerInterface>[] players) {
@@ -49,6 +50,7 @@ public class PlayerPanel extends JPanel implements ItemListener {
 
     /**
      * Changes the showed card in the CardLayout
+     *
      * @param e ItemEvent
      */
     @Override
@@ -59,6 +61,7 @@ public class PlayerPanel extends JPanel implements ItemListener {
 
     /**
      * returns the selected interface in the combo box
+     *
      * @return the selected interface
      */
     public PlayerInterface getSelectedInterface() throws Exception {

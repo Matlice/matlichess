@@ -1,7 +1,6 @@
 package it.matlice.matlichess;
 
 import it.matlice.matlichess.controller.*;
-import it.matlice.matlichess.model.Piece;
 import it.matlice.matlichess.view.PlayerPanel;
 import it.matlice.matlichess.view.View;
 
@@ -16,7 +15,8 @@ import static it.matlice.settings.Settings.LOOK_AND_FEEL;
  * EntryPoint of the program, extends a JFrame for the initial menu
  */
 public class EntryPoint extends JFrame implements ActionListener {
-    private PlayerPanel white, black;
+    private final PlayerPanel white;
+    private final PlayerPanel black;
 
     /**
      * Constructor that initialises the frame and its panel,
@@ -49,10 +49,10 @@ public class EntryPoint extends JFrame implements ActionListener {
         JPanel containerPanel = new JPanel();
         containerPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         containerPanel.setLayout(new BorderLayout());
-        containerPanel.add(contentPanel,BorderLayout.CENTER);
+        containerPanel.add(contentPanel, BorderLayout.CENTER);
 
         // set panel size
-        containerPanel.setPreferredSize( new Dimension(770, 165) );
+        containerPanel.setPreferredSize(new Dimension(770, 165));
 
         // set the jframe options, title and exit behaviour
         this.getContentPane().add(containerPanel);
@@ -109,6 +109,7 @@ public class EntryPoint extends JFrame implements ActionListener {
 
     /**
      * Given two players starts the game and keep it playing until mainloop() returns false
+     *
      * @param white white player
      * @param black black player
      * @param after Runnable to run after the game
@@ -116,9 +117,9 @@ public class EntryPoint extends JFrame implements ActionListener {
     private void runGame(PlayerInterface white, PlayerInterface black, Runnable after) {
         Thread t = new Thread(() -> {
             View.getInstance().initialize();
-            Game.getInstance(white, black, View.getInstance().getPlayerInterface()).setup();
+            Game.getInstance(white, black, new PhysicalPlayer()).setup();
             while (Game.getInstance().mainloop()) ;
-            if(after != null) after.run();
+            if (after != null) after.run();
         });
         t.start();
     }

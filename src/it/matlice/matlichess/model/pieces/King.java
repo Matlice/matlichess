@@ -1,8 +1,11 @@
 package it.matlice.matlichess.model.pieces;
 
-import it.matlice.matlichess.PieceColor;
 import it.matlice.matlichess.Location;
-import it.matlice.matlichess.model.*;
+import it.matlice.matlichess.PieceColor;
+import it.matlice.matlichess.model.Chessboard;
+import it.matlice.matlichess.model.MoveList;
+import it.matlice.matlichess.model.MovePattern;
+import it.matlice.matlichess.model.Piece;
 
 import java.util.Map;
 
@@ -59,7 +62,7 @@ public class King extends Piece {
      */
     public boolean isQueenCastlingAvailable(Chessboard c) {
         Piece rook = c.getPieceAt(this.getColor().equals(PieceColor.WHITE) ? WHITE_QUEEN_ROOK_LOCATION : BLACK_QUEEN_ROOK_LOCATION);
-        if(rook == null) return false;
+        if (rook == null) return false;
         return rook.getName().equals("Rook") && !rook.hasMoved() && !this.has_moved;
     }
 
@@ -71,14 +74,14 @@ public class King extends Piece {
      */
     public boolean isKingCastlingAvailable(Chessboard c) {
         Piece rook = c.getPieceAt(this.getColor().equals(PieceColor.WHITE) ? WHITE_KING_ROOK_LOCATION : BLACK_KING_ROOK_LOCATION);
-        if(rook == null) return false;
+        if (rook == null) return false;
         return rook.getName().equals("Rook") && !rook.hasMoved() && !this.has_moved;
     }
 
     /**
      * Check whether the castling is doable right now
      *
-     * @param c chessboard
+     * @param c    chessboard
      * @param side the side to check, "Queen" or "King"
      * @return true if can castle
      */
@@ -144,7 +147,8 @@ public class King extends Piece {
 
         MoveList r = new MoveList();
         moves.keySet().forEach(e -> {
-            if(!(Math.abs(e.row()-oth_k_location.row()) <= 1 && Math.abs(e.col()-oth_k_location.col()) <= 1)) r.put(e, moves.get(e));
+            if (!(Math.abs(e.row() - oth_k_location.row()) <= 1 && Math.abs(e.col() - oth_k_location.col()) <= 1))
+                r.put(e, moves.get(e));
         });
         return r;
     }
@@ -164,6 +168,7 @@ public class King extends Piece {
 
     /**
      * Abstract method that clone a King into an identical other King
+     *
      * @return the cloned King
      */
     @Override
