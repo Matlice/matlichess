@@ -45,13 +45,9 @@ public class EntryPoint extends JFrame implements ActionListener {
     /**
      * Main of the program, initialises the main frame and starts the program
      *
-     * @param args no args :(
+     * @param args no args :( ):
      */
     public static void main(String[] args) {
-        //matlichess server -nogui -white_port=40916 -black_port=41916
-
-
-
         var players = new Class[]{PhysicalPlayer.class, StockfishPlayer.class, NetworkPlayer.class};
         new EntryPoint(players).startApplication();
     }
@@ -70,16 +66,18 @@ public class EntryPoint extends JFrame implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
-            var w = white.getSelectedInterface();
-            var b = black.getSelectedInterface();
-            runGame(w, b, () -> {
-                this.setVisible(true);
-            });
-            this.setVisible(false);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Errore nell'inizializzazione: " + ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
-        }
+        EventQueue.invokeLater(() -> {
+            try {
+                var w = white.getSelectedInterface();
+                var b = black.getSelectedInterface();
+                runGame(w, b, () -> {
+                    this.setVisible(true);
+                });
+                this.setVisible(false);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Errore nell'inizializzazione: " + ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 
     private void runGame(PlayerInterface white, PlayerInterface black, Runnable after) {
