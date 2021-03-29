@@ -25,7 +25,7 @@ public class Settings {
 
     // Chessboard background
     public static final String CHESSBOARD_BG_STYLE = "blue3.jpg";
-    public static final Drawable CHESSBOARD_BG = new ImageLoader(Settings.class.getClassLoader().getResource("chessboards/" + CHESSBOARD_BG_STYLE).getFile(), new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE));
+    public static final Drawable CHESSBOARD_BG = new ImageLoader(Settings.class.getResourceAsStream("/chessboards/" + CHESSBOARD_BG_STYLE), new Dimension(CHESSBOARD_SIZE, CHESSBOARD_SIZE));
 
     // Selection marker
     public static final Color SELECTION_BG_COLOR = new Color(0, 172, 151, 77);
@@ -41,18 +41,18 @@ public class Settings {
     // Pieces
     public static final String PIECE_STYLE_NAME = "staunty";
     public static final Drawable[] PIECES = new Drawable[]{
-            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/wP.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/wB.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/wN.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/wR.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/wQ.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/wK.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/bP.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/bB.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/bN.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/bR.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/bQ.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
-            new ImageLoader(Settings.class.getClassLoader().getResource("pieces/" + PIECE_STYLE_NAME + "/bK.png").getFile(), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE))
+            new ImageLoader(Settings.class.getResourceAsStream("/pieces/" + PIECE_STYLE_NAME + "/wP.png"), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getResourceAsStream("/pieces/" + PIECE_STYLE_NAME + "/wB.png"), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getResourceAsStream("/pieces/" + PIECE_STYLE_NAME + "/wN.png"), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getResourceAsStream("/pieces/" + PIECE_STYLE_NAME + "/wR.png"), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getResourceAsStream("/pieces/" + PIECE_STYLE_NAME + "/wQ.png"), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getResourceAsStream("/pieces/" + PIECE_STYLE_NAME + "/wK.png"), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getResourceAsStream("/pieces/" + PIECE_STYLE_NAME + "/bP.png"), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getResourceAsStream("/pieces/" + PIECE_STYLE_NAME + "/bB.png"), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getResourceAsStream("/pieces/" + PIECE_STYLE_NAME + "/bN.png"), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getResourceAsStream("/pieces/" + PIECE_STYLE_NAME + "/bR.png"), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getResourceAsStream("/pieces/" + PIECE_STYLE_NAME + "/bQ.png"), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE)),
+            new ImageLoader(Settings.class.getResourceAsStream("/pieces/" + PIECE_STYLE_NAME + "/bK.png"), new Dimension(CHESSBOARD_SQUARE_SIZE, CHESSBOARD_SQUARE_SIZE))
     };
 
     // Endgame

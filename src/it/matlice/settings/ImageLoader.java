@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Class used to load an image from resources and scale it to the wanted dimension
@@ -18,12 +19,12 @@ public class ImageLoader implements Drawable {
     /**
      * Constructor to load the image from resources path
      *
-     * @param image_path the path of the image
+     * @param image      the image stream
      * @param dim        the wanted dimension for the image
      */
-    public ImageLoader(String image_path, Dimension dim) {
+    public ImageLoader(InputStream image, Dimension dim) {
         try {
-            this.img = ImageIO.read(new File(image_path)).getScaledInstance(dim.width, dim.height, Settings.USE_ANTIALIAS ? Image.SCALE_AREA_AVERAGING : Image.SCALE_DEFAULT);
+            this.img = ImageIO.read(image).getScaledInstance(dim.width, dim.height, Settings.USE_ANTIALIAS ? Image.SCALE_AREA_AVERAGING : Image.SCALE_DEFAULT);
         } catch (IOException e) {
             e.printStackTrace();
         }

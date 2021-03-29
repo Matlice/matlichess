@@ -1,6 +1,9 @@
 package it.matlice.stockfish;
 
+import java.io.IOException;
 import java.util.Map;
+
+import static it.matlice.Utils.getResourceAsFile;
 
 /**
  * Class to call the JNI library of Stockfish, a chess engine
@@ -20,7 +23,7 @@ public class Stockfish {
         } catch (UnsatisfiedLinkError e) {
             System.out.println("Cannot load stockfish from library path, using integrated distribution");
             try {
-                String filenameBase = "stockfish/libstockfishjni.%s.%s";
+                String filenameBase = "/stockfish/libstockfishjni.%s.%s";
 
                 // detect operating systems
                 String operSys;
@@ -50,14 +53,14 @@ public class Stockfish {
                     throw new UnsatisfiedLinkError();
                 }
 
-                String path = Stockfish.class.getClassLoader().getResource(String.format(filenameBase, operSys, osArch)).getPath();
+                String path = String.format(filenameBase, operSys, osArch);
                 if (path == null) throw new UnsatisfiedLinkError("No dist.");
-                System.load(path);
+                System.load(getResourceAsFile(path).getPath());
 
                 System.out.println("Loaded Stockfish from " + String.format(filenameBase, operSys, osArch));
                 stockfish_is_loaded = true;
 
-            } catch (UnsatisfiedLinkError err) {
+            } catch (UnsatisfiedLinkError | IOException err) {
                 System.err.println("Cannot load stockfish. Some functionalities will be compromised");
             }
         }
