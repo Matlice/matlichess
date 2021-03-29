@@ -93,7 +93,7 @@ public class NetworkPlayer implements PlayerInterface {
      * @param address the address of the server
      */
     public NetworkPlayer(InetAddress address, int port) throws IOException, InterruptedException {
-        //todo if server fails, client becomes a server hoping for reconnection
+        
         sem.acquire();
         this.socket = new Socket(address, port);
         this.socketOut = new ObjectOutputStream(new BufferedOutputStream(this.socket.getOutputStream()));
