@@ -89,9 +89,7 @@ public class EntryPoint extends JFrame implements ActionListener {
             try {
                 PlayerInterface w = white.getSelectedInterface();
                 PlayerInterface b = black.getSelectedInterface();
-                runGame(w, b, () -> {
-                    this.setVisible(true);
-                });
+                runGame(w, b);
                 this.setVisible(false);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Errore nell'inizializzazione: " + ex.getMessage(), "Errore!", JOptionPane.ERROR_MESSAGE);
@@ -104,14 +102,12 @@ public class EntryPoint extends JFrame implements ActionListener {
      *
      * @param white white player
      * @param black black player
-     * @param after Runnable to run after the game
      */
-    private void runGame(PlayerInterface white, PlayerInterface black, Runnable after) {
+    private void runGame(PlayerInterface white, PlayerInterface black) {
         Thread t = new Thread(() -> {
             View.getInstance().initialize();
             Game.getInstance(white, black, new PhysicalPlayer()).setup();
-            while (Game.getInstance().mainloop()) ;
-            if (after != null) after.run();
+            while (Game.getInstance().mainloop());
         });
         t.start();
     }
