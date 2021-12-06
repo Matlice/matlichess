@@ -82,7 +82,7 @@ public class Game {
     }
 
     /**
-     * Singleton getter, passing the palyers and a list of "viewer" who will receive the updates
+     * Singleton getter, passing the players and a list of "viewer" who will receive the updates
      * for the game in order to display the current position when a view is not necessary
      * - FE when we have two noninteractive players:
      * in that case we don't need the view, so that will result in a blank window.
